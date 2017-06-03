@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <act_window 
+            id="act_res_partner_map"
+            name="Map"
+            res_model="res.partner"
+            view_type="map"
+            view_mode="map"/>
+            
+        <record id="view_partner_form" model="ir.ui.view">
+            <field name="name">Google Places Partner Form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <field name="street" position="attributes">
+                    <attribute name="widget">google_places</attribute>
+                </field>
+                <div name="button_box" position="inside">
+                    <button name="%(web_google_maps.act_res_partner_map)d" type="action" 
+                        class="oe_stat_button" context="{'search_default_name': name}" 
+                        icon="fa-map-marker" string="Map"
+                        attrs="{'invisible': ['|',('partner_latitude', '=', 0.0), ('partner_longitude', '=', 0.0)]}"/>
+                </div>
+            </field>
+        </record>
+        <record id="view_partner_address_form" model="ir.ui.view">
+            <field name="name">Google Places Partner Address form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_address_form"/>
+            <field name="arch" type="xml">
+                <field name="street" position="attributes">
+                    <attribute name="widget">google_places</attribute>
+                </field>
+            </field>
+        </record>
+        <record id="view_partner_map" model="ir.ui.view">
+            <field name="name">view.partner.map</field>
+            <field name="model">res.partner</field>
+            <field name="arch" type="xml">
+                <map string="Map">
+                    <field name="name"/>
+                    <field name="street"/>
+                    <field name="street2"/>
+                    <field name="city"/>
+                    <field name="zip"/>
+                    <field name="email"/>
+                    <field name="state_id"/>
+                    <field name="country_id"/>
+                    <field name="partner_latitude"/>
+                    <field name="partner_longitude"/>
+                </map>
+            </field>
+        </record>
+        <record id="base.action_partner_form" model="ir.actions.act_window">
+            <field name="view_mode">kanban,tree,form,map</field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <t t-extend="Dialog">
+        <t t-jquery="button.close" t-operation="inner">
+            <i class="fa fa-close"/>
+        </t>
+        <t t-jquery="button.close" t-operation="attributes">
+            <attribute name="title">Close</attribute>
+        </t>
+        <t t-jquery="button.close" t-operation="after">
+            <button type="button" class="maximize close" title="Maximize"><i class="fa fa-plus"/></button>
+            <button type="button" class="minimize close" title="Minimize" style="display:none;"><i class="fa fa-minus"/></button>
+        </t>
+    </t>
+
+</templates>

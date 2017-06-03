@@ -1,0 +1,20 @@
+.modal .modal-header button.maximize {
+    padding-right: 8px;
+}
+
+.modal .modal-header button.minimize {
+    padding-right: 8px;
+}
+
+.fullscreen-modal .modal-dialog {
+    width: calc(100% - 20px);
+    padding: 10px 0 10px 0;
+}
+
+.fullscreen-modal .modal-dialog .modal-body {
+    height: 100%;
+}
+
+.fullscreen-modal .modal-content {
+    height: 100%;
+}
