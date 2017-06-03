@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <template id="assets_backend" name="web_wizard_dialog_resize assets backend" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <link rel="stylesheet" href="/web_wizard_dialog_resize/static/src/css/web_wizard_dialog_resize.css"/>
+                <script type="text/javascript" src="/web_wizard_dialog_resize/static/src/js/web_wizard_dialog_resize.js"/>
+            </xpath>
+        </template>
+    </data>
+</odoo>
