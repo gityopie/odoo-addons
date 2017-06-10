@@ -1,23 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates id="template" xml:space="preserve">
-
     <t t-name="web_google_maps.FieldGooglePlaces">
-
-        <input t-if="!widget.get('effective_readonly')" class="o_form_input"
-            t-att-type="widget.password ? 'password' : 'text'"
-            t-att-barcode_events="widget.options.barcode_events"
-            t-att-id="widget.id_for_label"
-            t-att-tabindex="widget.node.attrs.tabindex"
-            t-att-autofocus="widget.node.attrs.autofocus"
-            t-att-placeholder="widget.node.attrs.placeholder"
+        <input t-if="!widget.get('effective_readonly')" class="o_form_input" 
+            t-att-type="widget.password ? 'password' : 'text'" 
+            t-att-barcode_events="widget.options.barcode_events" 
+            t-att-id="widget.id_for_label" 
+            t-att-tabindex="widget.node.attrs.tabindex" 
+            t-att-autofocus="widget.node.attrs.autofocus" 
+            t-att-placeholder="widget.node.attrs.placeholder" 
             t-att-maxlength="widget.field.size"/>
-        
         <span t-if="widget.get('effective_readonly')"/>
-
     </t>
-
     <t t-name="MapView">
         <div class="o_map_view"></div>
     </t>
-
+    <t t-name="MapViewControl">
+        <div class="o_map_control">
+            <div class="btn_map_control" title="Map Layers">
+                <i class="fa fa-bars" aria-hidden="true"></i>
+            </div>
+            <div class="sidenav" id="o_map_sidenav">
+                <b>Layers</b>
+                <p id="map_layer" data-layer="traffic">
+                    <img src="/web_google_maps/static/src/img/layer_traffic.png" alt="Traffic"/> Traffic
+                </p>
+                <p id="map_layer" data-layer="transit">
+                    <img src="/web_google_maps/static/src/img/layer_transit.png" alt="Transit"/> Transit
+                </p>
+                <p id="map_layer" data-layer="bicycle">
+                    <img src="/web_google_maps/static/src/img/layer_bike.png" alt="Bike"/> Bicycle
+                </p>
+                <div id="o_map_travel_mode">
+                    <b>Mode of Travel</b>
+                    <span id="travel_mode" class="active" data-mode="DRIVING">
+                        <img src="/web_google_maps/static/src/img/mode_driving.png" alt="Driving" title="Driving"/> Driving                    
+                    </span>
+                    <span id="travel_mode" data-mode="WALKING">
+                        <img src="/web_google_maps/static/src/img/mode_walking.png" alt="Walking" title="Walking"/> Walking                    
+                    </span>
+                    <span id="travel_mode" data-mode="BICYCLING">
+                        <img src="/web_google_maps/static/src/img/mode_bicycling.png" alt="Bicycling" title="Bicycling"/> Bicycling                    
+                    </span>
+                    <span id="travel_mode" data-mode="TRANSIT">
+                        <img src="/web_google_maps/static/src/img/mode_transit.png" alt="Transit" title="Transit"/>Transit                    
+                    </span>
+                </div>
+            </div>
+        </div>
+    </t>
+    <t t-name="MapViewRoutes">
+        <div class="o_map_routes_window">
+            <span/>
+        </div>
+    </t>
+    <t t-name="MapRedirectToGoogle">
+        <div class="o_map_redirect_google">
+            <i class="fa fa-external-link-square" aria-hidden="true" title="Open in Google maps"></i>
+        </div>
+    </t>
 </templates>

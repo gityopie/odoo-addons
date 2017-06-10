@@ -1,7 +1,7 @@
 Web Google Maps
 ===============    
 
-[![Demo](https://img.youtube.com/vi/A-VbWwznuhc/0.jpg)](https://youtu.be/A-VbWwznuhc "Demo")    
+[![Demo](https://img.youtube.com/vi/A-VbWwznuhc/0.jpg)](https://youtu.be/YmM-8VCNRzE "Demo")    
 
 
 This module contains two new features:
