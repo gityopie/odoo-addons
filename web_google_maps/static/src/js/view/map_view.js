@@ -212,7 +212,7 @@ odoo.define('web.MapView', function (require) {
                 } else if (status === 'ZERO_RESULTS') {
                     self.on_add_polyline(origin, destination);
                 } else {
-                    window.alert(_('Directions request failed due to ' + status));
+                    window.alert(_t('Directions request failed due to ' + status));
                 }
             });
         },
@@ -275,7 +275,7 @@ odoo.define('web.MapView', function (require) {
                 _.each(arguments, function (val) {
                     if (val['origin'] == false || val['destination'] == false) {
                         is_success = false;
-                        alert('Reverse geocoding is failed!');
+                        window.alert(_t('Reverse geocoding is failed!'));
                         return false;
                     } else {
                         if (val.hasOwnProperty('origin')) {
@@ -301,7 +301,6 @@ odoo.define('web.MapView', function (require) {
                     res[path] = address;
                 } else {
                     res[path] = false;
-                    res['message'] = status;
                 }
                 def.resolve(res);
             });
