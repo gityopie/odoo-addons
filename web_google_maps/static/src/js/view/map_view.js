@@ -205,12 +205,14 @@ odoo.define('web.MapView', function (require) {
                 avoidHighways: false,
                 avoidTolls: false
             }, function (response, status) {
-                if (status == google.maps.places.PlacesServiceStatus.OK) {
+                if (status === 'OK') {
                     google.maps.event.trigger(self.map, 'resize');
                     self.directionsDisplay.setDirections(response);
                     self.get_routes_distance(response.routes[0]);
-                } else {
+                } else if (status === 'ZERO_RESULTS') {
                     self.on_add_polyline(origin, destination);
+                } else {
+                    window.alert(_('Directions request failed due to ' + status));
                 }
             });
         },
@@ -292,17 +294,16 @@ odoo.define('web.MapView', function (require) {
             var def = $.Deferred();
             var lat_lng = location['lat_lng'];
             var path = location['path'];
-            var res = {}
+            var res = {};
             this.geocoder.geocode({'location': lat_lng}, function (results, status) {
-                if (status == google.maps.places.PlacesServiceStatus.OK) {
+                if (status === 'OK') {
                     var address = "&" + path + "=" + results[0].formatted_address;
                     res[path] = address;
-                    def.resolve(res);
                 } else {
                     res[path] = false;
                     res['message'] = status;
-                    def.resolve(res);
                 }
+                def.resolve(res);
             });
             return def;
         },
