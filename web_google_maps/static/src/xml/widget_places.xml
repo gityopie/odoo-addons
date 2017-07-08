@@ -32,18 +32,18 @@
                 </p>
                 <div id="o_map_travel_mode">
                     <b>Mode of Travel</b>
-                    <span id="travel_mode" class="active" data-mode="DRIVING">
+                    <p id="travel_mode" class="active" data-mode="DRIVING">
                         <img src="/web_google_maps/static/src/img/mode_driving.png" alt="Driving" title="Driving"/> Driving                    
-                    </span>
-                    <span id="travel_mode" data-mode="WALKING">
+                    </p>
+                    <p id="travel_mode" data-mode="WALKING">
                         <img src="/web_google_maps/static/src/img/mode_walking.png" alt="Walking" title="Walking"/> Walking                    
-                    </span>
-                    <span id="travel_mode" data-mode="BICYCLING">
+                    </p>
+                    <p id="travel_mode" data-mode="BICYCLING">
                         <img src="/web_google_maps/static/src/img/mode_bicycling.png" alt="Bicycling" title="Bicycling"/> Bicycling                    
-                    </span>
-                    <span id="travel_mode" data-mode="TRANSIT">
+                    </p>
+                    <p id="travel_mode" data-mode="TRANSIT">
                         <img src="/web_google_maps/static/src/img/mode_transit.png" alt="Transit" title="Transit"/>Transit                    
-                    </span>
+                    </p>
                 </div>
             </div>
         </div>
@@ -55,7 +55,7 @@
     </t>
     <t t-name="MapRedirectToGoogle">
         <div class="o_map_redirect_google">
-            <i class="fa fa-external-link-square" aria-hidden="true" title="Open in Google maps"></i>
+            <i class="fa fa-external-link-square" aria-hidden="true" title="Redirect to Google maps website"></i>
         </div>
     </t>
 </templates>

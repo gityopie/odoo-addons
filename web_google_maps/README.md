@@ -11,8 +11,11 @@ This module contains two new features:
 
 ## Map view (`map`)
 Basically, this new view(`map`) will integrate Google Maps into Odoo.    
-Enabled you to display a partner location or all your partners location around the world on a map.    
+Enable you to display a partner location or all your partners location around the world on a map.   
 This feature will work seamlessly with Odoo means you can search your partner location using Odoo search feature.
+_[08 July 2017]_    
+_Not just partner(`res.partner`) model but any model contains geolocation fields ._   
+
 
 How to create the view?    
 Example
@@ -22,7 +25,8 @@ Example
         <field name="name">view.partner.map</field>
         <field name="model">res.partner</field>
         <field name="arch" type="xml">
-            <map string="Map">
+            <!-- Define aliase name for geolocation fields into view attributes -->
+            <map string="Map" lat="partner_latitude" lng="partner_longitude">
                 <field name="name"/>
                 <field name="street"/>
                 <field name="street2"/>
@@ -46,7 +50,12 @@ Example
     </record>
 
  #### Note:
- This view required `fields` contains geolocation information (`partner_latitude` and `partner_longitude`) and the other fields will be use in infowindow of marker. 
+ This view required `fields` contains geolocation information (`partner_latitude` and `partner_longitude`) and the other fields will be use for marker infowindow.    
+ 
+ ***IMPORTANT!*** (Update: 08 July 2017)   
+You have to set alias name for fields geolocation into `map` attributes  
+- __lat__ : latitude
+- __lng__: longitude 
 
 
 ## New widget (`google_places`)
@@ -139,12 +148,9 @@ This module will install `website_google_maps`.
 
 
 The goal of this module is to bring the power of Google Maps into Odoo    
-If you found a bug, want to improve the code, or want to add another feature of Google Maps    
-you can reach me here yopiangi@gmail.com    
-
-
 This module has tested on Odoo Version 10.0c    
 
 
-Thank you    
-Yopi
+Regards,  
+Yopi  
+yopiangi[at]gmail[dot]com

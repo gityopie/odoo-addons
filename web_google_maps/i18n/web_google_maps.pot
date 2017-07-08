@@ -52,6 +52,13 @@ msgstr ""
 
 #. module: web_google_maps
 #. openerp-web
+#: code:addons/web_google_maps/static/src/js/view/map_view.js:45
+#, python-format
+msgid "Error: cannot display locations"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
 #: code:addons/web_google_maps/static/src/js/google_places_widget.js:13
 #, python-format
 msgid "Google Places"
@@ -100,9 +107,16 @@ msgstr ""
 
 #. module: web_google_maps
 #. openerp-web
+#: code:addons/web_google_maps/static/src/js/view/map_view.js:45
+#, python-format
+msgid "Please define alias name for geolocations fields for map view!"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
 #: code:addons/web_google_maps/static/src/xml/widget_places.xml:58
 #, python-format
-msgid "Open in Google maps"
+msgid "Redirect to Google maps website"
 msgstr ""
 
 #. module: web_google_maps
