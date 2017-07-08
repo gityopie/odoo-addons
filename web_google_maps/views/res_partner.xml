@@ -34,7 +34,7 @@
             <field name="name">view.partner.map</field>
             <field name="model">res.partner</field>
             <field name="arch" type="xml">
-                <map string="Map">
+                <map string="Map" lat="partner_latitude" lng="partner_longitude">
                     <field name="name"/>
                     <field name="street"/>
                     <field name="street2"/>

@@ -50,12 +50,8 @@
     font-weight: bold;
 }
 
-.o_map_control .sidenav p img {
-    padding-left: 5px;
-    padding-right: 10px;
-}
-
-.o_map_control .sidenav #o_map_travel_mode span img {
+.o_map_control .sidenav p img,
+.o_map_control .sidenav #o_map_travel_mode p img {
     padding-left: 5px;
     padding-right: 10px;
 }

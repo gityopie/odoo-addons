@@ -25,12 +25,26 @@ odoo.define('web.MapView', function (require) {
         start: function () {
             var self = this;
             this.shown.done(this.proxy('_init_start'));
-            return this._super(this, arguments);
+            return this._super.apply(this, arguments);
         },
         _init_start: function () {
             this.init_map();
             this.on_load_markers();
             return $.when();
+        },
+        willStart: function () {
+            this.set_geolocation_fields();
+            return this._super.apply(this, arguments);
+        },
+        set_geolocation_fields: function () {
+            if (this.fields_view.arch.attrs.lat && this.fields_view.arch.attrs.lng) {
+                this.latitude = this.fields_view.arch.attrs.lat;
+                this.longitude = this.fields_view.arch.attrs.lng;
+                return true;
+            } else {
+                this.do_warn(_t('Error: cannot display locations'), _t('Please define alias name for geolocations fields for map view!'));
+                return false;
+            }
         },
         on_load_markers: function () {
             var self = this;
@@ -48,15 +62,15 @@ odoo.define('web.MapView', function (require) {
                     return false;
                 }
                 _.each(records, function (record) {
-                    if (record.partner_latitude && record.partner_longitude) {
-                        var latLng = new google.maps.LatLng(record.partner_latitude, record.partner_longitude);
+                    if (record[self.latitude] && record[self.longitude]) {
+                        var latLng = new google.maps.LatLng(record[self.latitude], record[self.longitude]);
                         self._create_marker(latLng, record);
                     };
                 });
             }));
         },
         _create_marker: function (lat_lng, record) {
-            var record = record || {'name': 'A'};
+            var record = record || {'name': 'XY'};
             var marker = new google.maps.Marker({
                 position: lat_lng,
                 map: this.map,
@@ -88,7 +102,7 @@ odoo.define('web.MapView', function (require) {
         },
         marker_infowindow_content: function (record) {
             var self = this;
-            var ignored_fields = ['id', 'partner_longitude', 'partner_latitude'];
+            var ignored_fields = ['id', this.latitude, this.longitude];
             var contents = [];
             var title = "";
             _.each(record, function (val, key) {
@@ -97,9 +111,9 @@ odoo.define('web.MapView', function (require) {
                         title += '<h3>' + val + '</h3>';
                     } else {
                         if (val instanceof Array && val.length > 0) {
-                            contents.push('<dt>' + self.fields[key].string + '</dt><dd>' + val[1] + '</dd>');
+                            contents.push('<p><strong>' + self.fields[key].string + '</strong> : <span>' + val[1] + '</span></p>');
                         } else {
-                            contents.push('<dt>' + self.fields[key].string + '</dt><dd>' + val + '</dd>');
+                            contents.push('<p><strong>' + self.fields[key].string + '</strong> : <span>' + val + '</span></p>');
                         }
                     }
                 }
@@ -205,20 +219,22 @@ odoo.define('web.MapView', function (require) {
                 avoidHighways: false,
                 avoidTolls: false
             }, function (response, status) {
-                if (status == google.maps.places.PlacesServiceStatus.OK) {
+                if (status === 'OK') {
                     google.maps.event.trigger(self.map, 'resize');
                     self.directionsDisplay.setDirections(response);
                     self.get_routes_distance(response.routes[0]);
+                } else if (status === 'ZERO_RESULTS') {
+                    self.on_add_polyline(paths);
                 } else {
-                    self.on_add_polyline(origin, destination);
+                    window.alert(_t('Directions request failed due to ' + status));
                 }
             });
         },
         get_routes_distance: function (route) {
             var content = "";
             for (var i = 0; i < route.legs.length; i++) {
-                content += '<strong>' + route.legs[i].start_address + '</strong> to <strong>';
-                content += route.legs[i].end_address + '</strong>';
+                content += '<strong>' + route.legs[i].start_address + '</strong> &#8594;';
+                content += ' <strong>' + route.legs[i].end_address + '</strong>';
                 content += '<p>' + route.legs[i].distance.text + '</p>';
             }
             this.on_add_routes_window(content);
@@ -230,12 +246,12 @@ odoo.define('web.MapView', function (require) {
             }
             this.$route_window.find('span').html(content);
         },
-        on_add_polyline: function (origin, destination) {
+        on_add_polyline: function (paths) {
             var self = this;
             var context = this.dataset.context;
-            var partners_route = [origin, destination];
+            var route_path = _.pluck(paths, 'lat_lng');
             var polyline = new google.maps.Polyline({
-                path: partners_route,
+                path: route_path,
                 geodesic: true,
                 strokeColor: '#3281ff',
                 strokeOpacity: 0.8,
@@ -244,13 +260,28 @@ odoo.define('web.MapView', function (require) {
                 fillOpacity: 0.35,
                 map: this.map
             });
-            var distance = this.on_compute_distance(origin, destination);
+            var distance = this.on_compute_distance(route_path[0], route_path[1]);
             // display routes information
-            this.on_add_routes_window(distance);
+            var request_reverse = [];
+            _.each(paths, function (path) {
+                request_reverse.push(self._on_reverse_geocoding(path));
+            });
+            $.when.apply($, request_reverse).done(function () {
+                var route = "";
+                _.each(arguments, function (val) {
+                    if (val.hasOwnProperty('origin') || val.hasOwnProperty('destination')) {
+                        if (val.origin != false || val.destination != false) {
+                            route += val.hasOwnProperty('origin') ? "<strong>" + val.origin + "</strong> &#8594; " : "<strong>" + val.destination + "</strong>";
+                        }
+                    }
+                });
+                route += "<p>" + distance + "</p>";
+                self.on_add_routes_window(route);
+            });
             // resize the map
             google.maps.event.trigger(this.map, 'resize');
             var bounds = new google.maps.LatLngBounds();
-            _.each(partners_route, function (route) {
+            _.each(route_path, function (route) {
                 bounds.extend(route);
             });
             this.map.fitBounds(bounds);
@@ -260,7 +291,7 @@ odoo.define('web.MapView', function (require) {
             var to_km = (distance / 1000).toFixed(2) + " km";
             return to_km;
         },
-        _open_in_google_maps: function (locations) {
+        redirect_to_gmaps_website: function (locations) {
             var self = this;
             var url = "https://www.google.com/maps/dir/?api=1";
             var window_reference = window.open();
@@ -271,15 +302,13 @@ odoo.define('web.MapView', function (require) {
             $.when.apply($, requests).done(function () {
                 var is_success = true;
                 _.each(arguments, function (val) {
-                    if (val['origin'] == false || val['destination'] == false) {
-                        is_success = false;
-                        alert('Reverse geocoding is failed!');
-                        return false;
-                    } else {
-                        if (val.hasOwnProperty('origin')) {
-                            url += val['origin'];
+                    if (val.hasOwnProperty('origin') || val.hasOwnProperty('destination')) {
+                        if (val.origin == false || val.destination == false) {
+                            is_success = false;
+                            window.alert(_t('Reverse geocoding is failed!'));
+                            return false;
                         } else {
-                            url += val['destination'];
+                            url += val.hasOwnProperty('origin') ? "&origin=" + val.origin : "&destination=" + val.destination;
                         }
                     }
                 });
@@ -292,17 +321,16 @@ odoo.define('web.MapView', function (require) {
             var def = $.Deferred();
             var lat_lng = location['lat_lng'];
             var path = location['path'];
-            var res = {}
-            this.geocoder.geocode({'location': lat_lng}, function (results, status) {
-                if (status == google.maps.places.PlacesServiceStatus.OK) {
-                    var address = "&" + path + "=" + results[0].formatted_address;
-                    res[path] = address;
-                    def.resolve(res);
+            var res = {};
+            this.geocoder.geocode({
+                'location': lat_lng
+            }, function (results, status) {
+                if (status === 'OK') {
+                    res[path] = results[0].formatted_address;
                 } else {
                     res[path] = false;
-                    res['message'] = status;
-                    def.resolve(res);
                 }
+                def.resolve(res);
             });
             return def;
         },
@@ -313,7 +341,7 @@ odoo.define('web.MapView', function (require) {
                 this.map.controls[google.maps.ControlPosition.RIGHT_TOP].push(this.$btn_google_redirection[0]);
                 this.$btn_google_redirection.on('click', function (ev) {
                     ev.preventDefault();
-                    self._open_in_google_maps(locations);
+                    self.redirect_to_gmaps_website(locations);
                 });
             }
         }
@@ -329,7 +357,7 @@ odoo.define('web.MapView', function (require) {
         bind_events: function () {
             this.$controls.on('click', '.btn_map_control', this.proxy('on_control_maps'));
             this.$controls.on('click', 'p#map_layer', this.on_change_layer.bind(this));
-            this.$controls.on('click', 'span#travel_mode', this.on_change_mode.bind(this));
+            this.$controls.on('click', 'p#travel_mode', this.on_change_mode.bind(this));
         },
         _init_controls: function () {
             this.parent.map.controls[google.maps.ControlPosition.LEFT_TOP].push(this.$controls[0]);
