@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Wizard Window Options',
-    'version': '1.0',
+    'version': '9.0.1.0.0',
     'author': 'Yopi Angi',
     'maintainer': 'Yopi Angi<yopiangi@gmail.com>',
     'category': 'web',
