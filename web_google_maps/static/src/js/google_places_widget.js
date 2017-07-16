@@ -10,13 +10,14 @@ odoo.define('web_google_maps.GooglePlaces', function (require) {
 
     var FieldCharGooglePlaces = form_widgets.FieldChar.extend({
         template: 'web_google_maps.FieldGooglePlaces',
+        widget_class: 'oe_form_field_char',
         display_name: _t('Google Places'),
         events: {
-            'focus': 'geolocate',
-            'change': 'store_dom_value'
+            'focus input': 'geolocate',
+            'change input': 'store_dom_value'
         },
         init: function (field_manager, node) {
-            this._super.apply(this, arguments);
+            this._super(field_manager, node);
             this.type_relations = ['one2many', 'many2one', 'many2many'];
             this.places_autocomplete = false;
             this.component_form = {
@@ -122,7 +123,7 @@ odoo.define('web_google_maps.GooglePlaces', function (require) {
         },
         gmaps_initialize: function () {
             var self = this;
-            this.places_autocomplete = new google.maps.places.Autocomplete(this.$input[0], {
+            this.places_autocomplete = new google.maps.places.Autocomplete(this.$el.find('input')[0], {
                 types: ['geocode']
             });
             // When the user selects an address from the dropdown, populate the address fields in the form.
@@ -148,7 +149,7 @@ odoo.define('web_google_maps.GooglePlaces', function (require) {
                             });
                         });
                     });
-                    self.$input.val(google_address[self.name]);
+                    self.$el.find('input').val(google_address[self.name]);
                 }
             });
         },
@@ -196,8 +197,14 @@ odoo.define('web_google_maps.GooglePlaces', function (require) {
         },
         render_value: function () {
             this._super();
-            if (this.$input && this.is_fields_valid()) {
-                this.gmaps_initialize();
+            var show_value = this.format_value(this.get('value'), '');
+            if (!this.get('effective_readonly')) {
+                this.$el.find('input').val(show_value);
+                if (this.is_fields_valid()) {
+                    this.gmaps_initialize();
+                }
+            } else {
+                this.$('.oe_form_char_content').text(show_value);
             }
         },
         is_fields_valid: function () {

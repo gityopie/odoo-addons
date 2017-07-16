@@ -14,27 +14,51 @@ odoo.define('web.MapView', function (require) {
         display_name: _lt('Map'),
         icon: 'fa-map-o',
         searchable: true,
-        init: function () {
+        view_type: 'map',
+        init: function (parent, dataset, view_id, options) {
             this._super.apply(this, arguments);
             this.markers = [];
+            this.dataset = dataset;
+            this.view_id = view_id;
+            this.options = options;
             this.map = false;
+            this.marker_cluster = false;
             this.shown = $.Deferred();
-            this.fields = this.fields_view.fields;
-            this.children_field = this.fields_view.field_parent;
+            this.fields_view = {};
         },
-        start: function () {
-            var self = this;
-            this.shown.done(this.proxy('_init_start'));
-            return this._super.apply(this, arguments);
-        },
-        _init_start: function () {
-            this.init_map();
-            this.on_load_markers();
+        init_gmaps: function () {
+            this.map = new google.maps.Map(this.$el[0], {
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+                zoom: 3,
+                minZoom: 3,
+                maxZoom: 20,
+                fullscreenControl: true,
+                mapTypeControl: true,
+                mapTypeControlOptions: {
+                    style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+                    position: google.maps.ControlPosition.TOP_CENTER
+                }
+            });
+            this.marker_cluster = new MarkerClusterer(this.map, null, {
+                imagePath: '/web_google_maps/static/src/img/m'
+            });
+            this.on_maps_add_controls();
             return $.when();
         },
-        willStart: function () {
+        view_loading: function (fields_view) {
+            this._super.apply(this, arguments);
+            this.fields_view = fields_view;
+            this.fields = this.fields_view.fields;
+            this.children_field = this.fields_view.field_parent;
             this.set_geolocation_fields();
-            return this._super.apply(this, arguments);
+            this.shown.done(this._do_show_init.bind(this));
+        },
+        _do_show_init: function () {
+            var self = this;
+            this.init_gmaps().then(function () {
+                self.trigger('map_view_loaded', self.fields_view);
+                self.on_load_markers();
+            });
         },
         set_geolocation_fields: function () {
             if (this.fields_view.arch.attrs.lat && this.fields_view.arch.attrs.lng) {
@@ -68,6 +92,38 @@ odoo.define('web.MapView', function (require) {
                     };
                 });
             }));
+        },
+        map_centered: function () {
+            var self = this;
+            var context = this.dataset.context;
+            if (context.route_direction) {
+                this.on_init_routes();
+            } else {
+                this._map_centered();
+            }
+        },
+        _map_centered: function () {
+            google.maps.event.trigger(this.map, 'resize');
+            if (this.markers.length == 1) {
+                var self = this;
+                google.maps.event.addListenerOnce(this.map, 'idle', function () {
+                    self.map.setCenter(self.markers[0].getPosition());
+                    self.map.setZoom(16);
+                });
+            } else {
+                var bounds = new google.maps.LatLngBounds();
+                _.each(this.markers, function (marker) {
+                    bounds.extend(marker.getPosition());
+                });
+                this.map.fitBounds(bounds);
+            }
+        },
+        fields_list: function () {
+            var fields = _.keys(this.fields);
+            if (!_(fields).contains(this.children_field)) {
+                fields.push(this.children_field);
+            }
+            return _.filter(fields);
         },
         _create_marker: function (lat_lng, record) {
             var record = record || {'name': 'XY'};
@@ -121,60 +177,10 @@ odoo.define('web.MapView', function (require) {
             var res = '<div>' + title + '<dl>' + contents.join('') + '</dl></div>';
             return res;
         },
-        init_map: function () {
-            this.map = new google.maps.Map(this.$el[0], {
-                mapTypeId: google.maps.MapTypeId.ROADMAP,
-                zoom: 3,
-                minZoom: 3,
-                maxZoom: 20,
-                fullscreenControl: true,
-                mapTypeControl: true,
-                mapTypeControlOptions: {
-                    style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-                    position: google.maps.ControlPosition.TOP_CENTER
-                }
-            });
-            this.marker_cluster = new MarkerClusterer(this.map, null, {
-                imagePath: '/web_google_maps/static/src/img/m'
-            });
-            this.on_maps_add_controls();
-        },
-        fields_list: function () {
-            var fields = _.keys(this.fields);
-            if (!_(fields).contains(this.children_field)) {
-                fields.push(this.children_field);
-            }
-            return _.filter(fields);
-        },
-        map_centered: function () {
-            var self = this;
-            var context = this.dataset.context;
-            if (context.route_direction) {
-                this.on_init_routes();
-            } else {
-                this._map_centered();
-            }
-        },
-        _map_centered: function () {
-            google.maps.event.trigger(this.map, 'resize');
-            if (this.markers.length == 1) {
-                var self = this;
-                google.maps.event.addListenerOnce(this.map, 'idle', function () {
-                    self.map.setCenter(self.markers[0].getPosition());
-                    self.map.setZoom(16);
-                });
-            } else {
-                var bounds = new google.maps.LatLngBounds();
-                _.each(this.markers, function (marker) {
-                    bounds.extend(marker.getPosition());
-                });
-                this.map.fitBounds(bounds);
-            }
-        },
         do_show: function () {
             this.do_push_state({});
             this.shown.resolve();
-            return this._super(this, arguments);
+            return this._super.apply(this, arguments);
         },
         do_search: function (domain, context, group_by) {
             var self = this;
@@ -185,16 +191,16 @@ odoo.define('web.MapView', function (require) {
                 self.on_load_markers();
             });
         },
-        on_maps_add_controls: function () {
-            var route_mode = this.dataset.context.route_direction ? true : false;
-            new MapControl(this).open(route_mode);
-        },
         on_init_routes: function () {
             this.geocoder = new google.maps.Geocoder;
             this.directionsDisplay = new google.maps.DirectionsRenderer;
             this.directionsService = new google.maps.DirectionsService;
             this.directionsDisplay.setMap(this.map);
             this.on_calculate_and_display_route();
+        },
+        on_maps_add_controls: function () {
+            var route_mode = this.dataset.context.route_direction ? true : false;
+            new MapControl(this).open(route_mode);
         },
         on_calculate_and_display_route: function (mode) {
             var self = this;

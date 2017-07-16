@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from odoo import fields, models, _
+from openerp import fields, models
 
 
 class IrActionsActWindow(models.Model):
     _inherit = 'ir.actions.act_window'
 
-    view_type = fields.Selection(selection_add=[('map', _('Map'))])
+    view_type = fields.Selection(selection_add=(('map', 'Map'), ))

@@ -22,6 +22,7 @@ form view, it provide autocomplete feature when you typed an address of partner
     'data': [
         'views/google_places_template.xml',
         'views/res_partner.xml',
+        'views/res_config_view.xml'
     ],
     'demo': [],
     'qweb': ['static/src/xml/widget_places.xml'],

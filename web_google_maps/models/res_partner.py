@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from odoo import api, exceptions, models, _
+from openerp import api, exceptions, models, _
 
 
 class ResPartner(models.Model):
