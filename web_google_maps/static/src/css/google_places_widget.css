@@ -5,7 +5,10 @@
 }
 
 .o_map_view {
+    min-height: 400px;
+    min-width: 400px;
     height: 100%;
+    width: 100%;
 }
 
 .o_map_control .sidenav {
