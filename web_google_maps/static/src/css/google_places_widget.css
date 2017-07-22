@@ -5,18 +5,19 @@
 }
 
 .o_map_view {
+    min-height: 400px;
+    min-width: 400px;
     height: 100%;
+    width: 100%;
 }
 
 .o_map_control .sidenav {
     min-height: 100px;
-    width: auto;
-    position: relative;
-    margin-left: 10px;
-    margin-top: -5px;
+    margin: -29px 0 0 26px;
     background-color: #ffffff;
     overflow-x: hidden;
     display: none;
+    border: solid 1px #7c7bad;
 }
 
 .o_map_control .sidenav p,
@@ -41,12 +42,12 @@
 }
 
 .o_map_control .sidenav p:hover {
-    color: #5e9bff;
+    color: #7c7bad;
 }
 
 .o_map_control .sidenav #o_map_travel_mode span.active,
 .o_map_control .sidenav p.active {
-    color: #5e9bff;
+    color: #7c7bad;
     font-weight: bold;
 }
 
@@ -56,14 +57,22 @@
     padding-right: 10px;
 }
 
-.o_map_control .btn_map_control {
+.o_map_control .btn_map_control,
+.o_map_places_control .btn_places_control {
     margin-top: 10px;
     margin-left: 10px;
     cursor: pointer;
     line-height: 20px;
-    padding: 4px 10px 4px 10px;
+    padding: 4.5px 10px;
     background: #ffffff;
     border-radius: 2px;
+    width: 30px;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px -1px;
+}
+
+.o_map_control .btn_map_control.opened,
+.o_map_places_control .btn_places_control.opened {
+    background: #7c7bad;
 }
 
 .o_map_routes_window {
@@ -85,4 +94,68 @@
     background-color: #ffffff;
     border-radius: 2px;
     line-height: 25px;
+}
+
+.o_map_places_control .pac-card {
+    display: none;
+    margin: -29px 0 0 35px;
+    max-width: 450px;
+    border-radius: 2px;
+    background-color: #fff;
+    border: solid 1px #7c7bad;
+}
+
+.o_map_places_control .pac-card #pac-container {
+    padding-bottom: 12px;
+    margin-right: 12px;
+}
+
+.o_map_places_control .pac-card #pac-container #pac-button {
+    padding-top: 10px;
+    margin-left: 10px;
+}
+
+.o_map_places_control .pac-card #pac-container #pac-result {
+    padding: 10px;
+    margin-left: 10px;
+    font-size: 14px;
+    font-weight: 300;
+    border-bottom: 1px solid #ccc;
+}
+
+.o_map_places_control .pac-card #pac-container #pac-result div {
+    display: block;
+}
+
+.o_map_places_control .pac-card .pac-controls {
+    display: inline-block;
+    padding: 5px 11px;
+}
+
+.o_map_places_control .pac-card .pac-controls label {
+    font-size: 13px;
+    font-weight: 300;
+}
+
+.o_map_places_control .pac-card #pac-input {
+    background-color: #fff;
+    font-size: 15px;
+    font-weight: 300;
+    margin-left: 12px;
+    padding: 0 11px 0 13px;
+    text-overflow: ellipsis;
+    width: 400px;
+}
+
+.o_map_places_control .pac-card #pac-input:focus {
+    border-color: #7c7bad;
+}
+
+.o_map_control .sidenav #title,
+.o_map_places_control .pac-card #title {
+    color: #fff;
+    background-color: #7c7bad;
+    font-size: 14px;
+    font-weight: 300;
+    padding: 6px;
 }

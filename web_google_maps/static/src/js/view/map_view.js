@@ -4,6 +4,8 @@ odoo.define('web.MapView', function (require) {
     var core = require('web.core');
     var View = require('web.View');
     var Widget = require('web.Widget');
+    var Model = require('web.Model');
+    var MapViewPlacesAutocomplete = require('web.MapViewPlacesAutocomplete');
     var QWeb = core.qweb;
     var _lt = core._lt;
     var _t = core._t;
@@ -70,7 +72,9 @@ odoo.define('web.MapView', function (require) {
             }));
         },
         _create_marker: function (lat_lng, record) {
-            var record = record || {'name': 'XY'};
+            var record = record || {
+                'name': 'XY'
+            };
             var marker = new google.maps.Marker({
                 position: lat_lng,
                 map: this.map,
@@ -161,7 +165,7 @@ odoo.define('web.MapView', function (require) {
                 var self = this;
                 google.maps.event.addListenerOnce(this.map, 'idle', function () {
                     self.map.setCenter(self.markers[0].getPosition());
-                    self.map.setZoom(16);
+                    self.map.setZoom(17);
                 });
             } else {
                 var bounds = new google.maps.LatLngBounds();
@@ -174,7 +178,7 @@ odoo.define('web.MapView', function (require) {
         do_show: function () {
             this.do_push_state({});
             this.shown.resolve();
-            return this._super(this, arguments);
+            return this._super.apply(this, arguments);
         },
         do_search: function (domain, context, group_by) {
             var self = this;
@@ -188,6 +192,7 @@ odoo.define('web.MapView', function (require) {
         on_maps_add_controls: function () {
             var route_mode = this.dataset.context.route_direction ? true : false;
             new MapControl(this).open(route_mode);
+            new MapViewPlacesAutocomplete.MapPlacesAutocomplete(this).open();
         },
         on_init_routes: function () {
             this.geocoder = new google.maps.Geocoder;
@@ -352,14 +357,14 @@ odoo.define('web.MapView', function (require) {
             this._super.apply(parent, {});
             this.parent = parent;
             this.$controls = $(QWeb.render('MapViewControl', {}));
-            this.bind_events();
         },
         bind_events: function () {
-            this.$controls.on('click', '.btn_map_control', this.proxy('on_control_maps'));
+            this.$controls.on('mouseenter', '.btn_map_control', this.on_control_maps.bind(this));
             this.$controls.on('click', 'p#map_layer', this.on_change_layer.bind(this));
             this.$controls.on('click', 'p#travel_mode', this.on_change_mode.bind(this));
         },
         _init_controls: function () {
+            this.bind_events();
             this.parent.map.controls[google.maps.ControlPosition.LEFT_TOP].push(this.$controls[0]);
         },
         open: function (route_mode) {
@@ -368,7 +373,8 @@ odoo.define('web.MapView', function (require) {
             }
             this.parent.shown.done(this.proxy('_init_controls'));
         },
-        on_control_maps: function () {
+        on_control_maps: function (ev) {
+            $(ev.currentTarget).toggleClass('opened');
             this.$controls.find('#o_map_sidenav').toggleClass('opened');
             if (this.$controls.find('#o_map_sidenav').hasClass('opened')) {
                 this.$controls.find('#o_map_sidenav').css({
@@ -390,7 +396,6 @@ odoo.define('web.MapView', function (require) {
             } else if (layer == 'bicycle') {
                 this._on_bicycle_layer(ev);
             }
-            this.on_control_maps();
         },
         on_change_mode: function (ev) {
             ev.preventDefault();
@@ -398,7 +403,6 @@ odoo.define('web.MapView', function (require) {
             $(ev.currentTarget).toggleClass('active')
             var mode = $(ev.currentTarget).data('mode');
             this.parent.on_calculate_and_display_route(mode);
-            this.on_control_maps();
         },
         _on_traffic_layer: function (ev) {
             $(ev.currentTarget).toggleClass('active');
