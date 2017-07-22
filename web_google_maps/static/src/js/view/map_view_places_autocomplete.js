@@ -69,7 +69,6 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
         on_show_pac_form: function () {
             this.reset_places();
             this.$el.find('.pac-card').show();
-            this.$el.find('.pac-card').show();
             this.$el.find('.fa').removeClass('fa-search').addClass('fa-angle-double-left');
             this.$el.find('input[id="pac-input"]').focus();
         },
@@ -229,7 +228,9 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
                     }
                     new Model('res.partner').call('create_partner_from_map', [partner_values]).done(function (record) {
                         if (record) {
-                            window.alert(_t('Successfully created new partner.'));
+                            window.alert(_t('Successfully created new partner'));
+                        } else {
+                            window.alert(_t('Fail to create new partner!'));
                         }
                     });
                 });
