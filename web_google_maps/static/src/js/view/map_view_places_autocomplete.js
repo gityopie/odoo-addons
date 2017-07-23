@@ -36,23 +36,18 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
     };
 
     var MapPlacesAutocomplete = Widget.extend({
-        init: function (parent) {
+        init: function (parent, options) {
             this._super.apply(this, arguments);
+            this.options = options;
             this.parent = parent;
-            this.place = undefined;
+            this.place_automplete = undefined;
+            this.place_marker = undefined;
+            this.marker_infowindow = undefined;
             this.$el = $(QWeb.render('MapPlacesAutomcomplete', {}));
-            this.model_fields = {
-                'street': ['street_number', 'route'],
-                'street2': ['administrative_area_level_3', 'administrative_area_level_4', 'administrative_area_level_5'],
-                'city': ['locality', 'administrative_area_level_2'],
-                'zip': 'postal_code',
-                'state_id': 'administrative_area_level_1',
-                'country_id': 'country',
-            };
         },
         bind_events: function () {
             this.$el.on('click', '.btn_places_control', this.on_control_places.bind(this));
-            this.$el.on('click', 'button#pac-button-create', this.create_partner.bind(this));
+            this.$el.on('click', 'button#pac-button-create', this.on_create_partner.bind(this));
             this.$el.on('click', 'input[id^="changetype"]', this.on_place_changetype.bind(this));
             this.$el.on('click', 'input[id="use-strict-bounds"]', this.on_place_changetype.bind(this));
         },
@@ -60,29 +55,35 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
             $(ev.currentTarget).toggleClass('opened');
             this.$el.find('.pac-card').toggleClass('opened');
             if (this.$el.find('.pac-card').hasClass('opened')) {
-                this.on_show_pac_form();
+                this.action_pac_form_visibility('show');
             } else {
-                this.$el.find('.pac-card').hide();
-                this.$el.find('.fa').removeClass('fa-angle-double-left').addClass('fa-search');
+                this.action_pac_form_visibility('hide');
             }
         },
-        on_show_pac_form: function () {
+        action_pac_form_visibility: function (action) {
             this.reset_places();
-            this.$el.find('.pac-card').show();
-            this.$el.find('.fa').removeClass('fa-search').addClass('fa-angle-double-left');
-            this.$el.find('input[id="pac-input"]').focus();
+            if (action == 'show') {
+                this.$el.find('.pac-card').show();
+                this.$el.find('.fa').removeClass('fa-search').addClass('fa-angle-double-left');
+                this.$el.find('input[id="pac-input"]').focus();
+            } else {
+                this.$el.find('.btn_places_control').removeClass('opened');
+                this.$el.find('.pac-card').removeClass('opened').hide();
+                this.$el.find('.fa').removeClass('fa-angle-double-left').addClass('fa-search');
+                this.marker_infowindow.close();
+                this.place_marker.setVisible(false);
+            }
         },
         reset_places: function () {
             this.$el.find('input[id="pac-input"]').val('');
-            this.place = undefined;
             this.show_create_partner_button('hide');
         },
         _init_form: function () {
-            this.parent.map.controls[google.maps.ControlPosition.TOP_CENTER].push(this.$el[0]);
+            this.parent.map.controls[google.maps.ControlPosition.TOP_CENTER].push(this.$el.get(0));
         },
         _set_input_controls: function () {
             this.bind_events();
-            this.place_automplete = new google.maps.places.Autocomplete(this.$el.find('input#pac-input')[0]);
+            this.place_automplete = new google.maps.places.Autocomplete(this.$el.find('input#pac-input').get(0));
             this.place_automplete.bindTo('bounds', this.parent.map);
             this.on_place_changed();
         },
@@ -110,19 +111,19 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
         on_place_changed: function () {
             var self = this;
 
-            var infowindow = new google.maps.InfoWindow();
+            this.marker_infowindow = new google.maps.InfoWindow();
             var $infowindow_content = $(QWeb.render('MapPacMarkerContent', {}));
 
-            infowindow.setContent($infowindow_content[0]);
+            this.marker_infowindow.setContent($infowindow_content[0]);
 
-            var marker = new google.maps.Marker({
+            this.place_marker = new google.maps.Marker({
                 map: self.parent.map,
                 animation: google.maps.Animation.DROP
             });
 
             this.place_automplete.addListener('place_changed', function () {
-                infowindow.close();
-                marker.setVisible(false);
+                self.marker_infowindow.close();
+                self.place_marker.setVisible(false);
                 var place = self.place_automplete.getPlace();
                 if (!place.geometry) {
                     // User entered the name of a Place that was not suggested and
@@ -135,7 +136,8 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
                 self.place = place;
                 self.show_create_partner_button('show');
 
-                self.marker_format_content(place);
+                var marker_content = self.format_content(place);
+                self.$el.find('#pac-result').show().html(marker_content);
 
                 // If the place has a geometry, then present it on a map.
                 if (place.geometry.viewport) {
@@ -145,10 +147,10 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
                     self.parent.map.setZoom(17); // Why 17? Because it looks good.
                 }
 
-                marker.setPosition(place.geometry.location);
-                marker.setVisible(true);
+                self.place_marker.setPosition(place.geometry.location);
+                self.place_marker.setVisible(true);
 
-                self.set_marker_content(place, marker, infowindow, $infowindow_content);
+                self.set_marker_content(place, $infowindow_content);
             });
         },
         show_create_partner_button: function (show) {
@@ -160,7 +162,7 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
                 this.$el.find('#pac-result').html('').hide();
             }
         },
-        set_marker_content: function (place, marker, infowindow, $infowindow_content) {
+        set_marker_content: function (place, $infowindow_content) {
             var address = '';
             if (place.address_components) {
                 address = [
@@ -173,9 +175,9 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
             $infowindow_content.find('#place-icon').attr('src', place.icon);
             $infowindow_content.find('#place-name').text(place.name);
             $infowindow_content.find('#place-address').text(address);
-            infowindow.open(self.parent.map, marker);
+            this.marker_infowindow.open(this.parent.map, this.place_marker);
         },
-        marker_format_content: function (place) {
+        format_content: function (place) {
             var contents = '<h3>' + place.name + '</h3>';
             if (place.formatted_address) {
                 contents += '<div id="formatted_address"><strong>Address: </strong>' + place.formatted_address + '</div>';
@@ -186,52 +188,78 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
             if (place.website) {
                 contents += '<div id="website"><strong>Website</strong>: ' + place.website + '</div>';
             }
-            this.$el.find('#pac-result').show().html(contents);
             return contents;
         },
         set_default_values: function (place) {
-            var partner_values = {
-                'name': place.name,
-                'partner_longitude': place.geometry.location.lng(),
-                'partner_latitude': place.geometry.location.lat(),
-            };
-            var $partner_type = this.$el.find('input[name="company_type"]:checked');
-            if ($partner_type.length && $partner_type.val() == 'company') {
-                partner_values['is_company'] = true;
-            }
-            if (place.website) {
-                partner_values['website'] = place.website;
-            }
-            if (place.international_phone_number) {
-                partner_values['phone'] = place.international_phone_number;
-            }
-            return partner_values;
+            var self = this;
+            var values = {};
+            _.each(this.options.fields, function (attrs, type) {
+                if (type === 'general') {
+                    _.each(attrs, function (option, field) {
+                        if (option instanceof Array && !_.has(values, field)) {
+                            var val = _.first(_.map(option, function (opt) {
+                                return place[opt];
+                            }));
+                            if (val) {
+                                values[field] = val;
+                            }
+                        } else if (field == 'is_company') {
+                            var $partner_type = self.$el.find('input[name="company_type"]:checked');
+                            if ($partner_type.length && $partner_type.val() == 'company') {
+                                values[field] = true;
+                            }
+                        } else {
+                            values[field] = place[option];
+                        }
+                    });
+                } else if (type === 'geolocation') {
+                    var geolocation = self.get_geolocation(place, attrs);
+                    _.extend(values, geolocation);
+                }
+            });
+            return values;
         },
-        create_partner: function (ev) {
+        get_geolocation: function (place, options) {
+            var vals = {};
+            _.each(options, function (field, alias) {
+                if (alias === 'latitude') {
+                    vals[field] = place.geometry.location.lat();
+                } else if (alias === 'longitude') {
+                    vals[field] = place.geometry.location.lng();
+                }
+            });
+            return vals;
+        },
+        on_create_partner: function (ev) {
             ev.preventDefault();
             var self = this;
             if (this.place && this.place.hasOwnProperty('address_components')) {
-                var partner_values = self.set_default_values(this.place);
+                var values = self.set_default_values(this.place);
                 var google_address = this.populate_address(this.place);
                 var requests = [];
-                _.each(this.model_fields, function (items, field) {
+                _.each(this.options.fields.address, function (items, field) {
                     requests.push(self.prepare_value(field, google_address[field]));
                 });
                 $.when.apply($, requests).done(function () {
                     _.each(arguments, function (data, idx) {
                         _.each(data, function (val, key) {
-                            partner_values[key] = val;
+                            if (val) {
+                                values[key] = val;
+                            }
                         });
                     });
-                    if (partner_values.street == '' && self.place.vicinity != '') {
-                        partner_values.street = self.place.vicinity;
-                    }
-                    new Model('res.partner').call('create_partner_from_map', [partner_values]).done(function (record) {
+                    new Model(self.options.model).call(self.options.method, [values]).done(function (record) {
                         if (record) {
                             window.alert(_t('Successfully created new partner'));
+                            // empty search results
+                            self.action_pac_form_visibility('hide');
+                            // reload map
+                            self.parent.reload();
                         } else {
                             window.alert(_t('Fail to create new partner!'));
                         }
+                    }).fail(function (err, event) {
+                        window.alert(err);
                     });
                 });
             }
@@ -241,22 +269,49 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
             var fields_to_fill = {}
             var result = {};
             // initialize object key and value
-            _.each(this.model_fields, function (value, key) {
+            _.each(this.options.fields.address, function (value, key) {
                 fields_to_fill[key] = [];
             });
 
-            _.each(this.model_fields, function (options, key) {
-                _.each(place.address_components, function (data) {
-                    if (options instanceof Array && _.contains(options, data.types[0])) {
-                        fields_to_fill[key].push(data[GOOGLE_PLACES_COMPONENT_FORM[data.types[0]]]);
-                    } else if (options == data.types[0]) {
-                        fields_to_fill[key].push(data[GOOGLE_PLACES_COMPONENT_FORM[data.types[0]]]);
+            _.each(this.options.fields.address, function (options, field) {
+                var vals = _.map(place.address_components, function (components) {
+                    if (options instanceof Array) {
+                        var val = _.map(options, function (item) {
+                            if (_.contains(components.types, item)) {
+                                return components[GOOGLE_PLACES_COMPONENT_FORM[item]];
+                            } else {
+                                return false;
+                            }
+                        });
+                        return _.filter(val); // eliminate false
+                    } else {
+                        if (_.contains(components.types, options)) {
+                            return components[GOOGLE_PLACES_COMPONENT_FORM[options]];
+                        } else {
+                            return false;
+                        }
                     }
                 });
+                fields_to_fill[field] = _.flatten(_.filter(vals, function (val) {
+                    return val.length;
+                }));
             });
-
             _.each(fields_to_fill, function (value, key) {
-                result[key] = key == 'city' ? (value.length > 0 ? value[0] : false) : value.join(', ');
+                if (key == 'street' && !value.length) {
+                    var addrs = self.options.fields.address.street;
+                    if (addrs instanceof Array) {
+                        var addr = _.map(addrs, function (item) {
+                            return place[item];
+                        });
+                        result[key] = _.filter(addr).join(', ');
+                    } else {
+                        result[key] = place[addrs] || '';
+                    }
+                } else if (key == 'city') {
+                    result[key] = value.length ? value[0] : '';
+                } else {
+                    result[key] = value.join(', ');
+                }
             });
 
             return result;
@@ -266,18 +321,14 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
             var res = {};
             if (field_name == 'state_id') {
                 new Model('res.country.state').call('search', [
-                    ['|', ['name', '=', value],
-                        ['code', '=', value]
-                    ]
+                    ['|', ['name', '=', value], ['code', '=', value]]
                 ]).done(function (record) {
                     res[field_name] = record.length > 0 ? record[0] : false;
                     def.resolve(res);
                 });
             } else if (field_name == 'country_id') {
                 new Model('res.country').call('search', [
-                    ['|', ['name', '=', value],
-                        ['code', '=', value]
-                    ]
+                    ['|', ['name', '=', value], ['code', '=', value]]
                 ]).done(function (record) {
                     res[field_name] = record.length > 0 ? record[0] : false;
                     def.resolve(res);

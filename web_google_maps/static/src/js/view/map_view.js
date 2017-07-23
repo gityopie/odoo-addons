@@ -192,7 +192,44 @@ odoo.define('web.MapView', function (require) {
         on_maps_add_controls: function () {
             var route_mode = this.dataset.context.route_direction ? true : false;
             new MapControl(this).open(route_mode);
-            new MapViewPlacesAutocomplete.MapPlacesAutocomplete(this).open();
+            /* The three keys('model', 'method', 'fields') in the object assigned to variable 'options' is a mandatory keys.
+             * The idea is to be able to pass any 'object' that can be created within the map
+             * 
+             * The fields options is divided into three parts:
+             * 1) 'general'
+             *     This configuration is for 'general' fields of the object, fields like name, phone, etc..
+             *     On the right side of each field is an attribute(s) from 'Places autocomplete'
+             * 2) 'geolocation'
+             *     This configuration is for geolocation fields (only 'latitude' and 'longitude')
+             * 3) 'address'
+             *     This configuration is similar to configuration used by 'google_places' widget
+             *  
+             */
+            var options = {
+                'model': 'res.partner',
+                'method': 'create_partner_from_map',
+                'fields': {
+                    'general': {
+                        'name': 'name',
+                        'website': 'website',
+                        'phone': ['international_phone_number', 'formatted_phone_number'],
+                        'is_company': '',
+                    },
+                    'geolocation': {
+                        'latitude': 'partner_latitude',
+                        'longitude': 'partner_longitude'
+                    },
+                    'address': {
+                        'street': ['street_number', 'route', 'vicinity'],
+                        'street2': ['administrative_area_level_3', 'administrative_area_level_4', 'administrative_area_level_5'],
+                        'city': ['locality', 'administrative_area_level_2'],
+                        'zip': 'postal_code',
+                        'state_id': 'administrative_area_level_1',
+                        'country_id': 'country',
+                    }
+                }
+            };
+            new MapViewPlacesAutocomplete.MapPlacesAutocomplete(this, options).open();
         },
         on_init_routes: function () {
             this.geocoder = new google.maps.Geocoder;
@@ -349,6 +386,13 @@ odoo.define('web.MapView', function (require) {
                     self.redirect_to_gmaps_website(locations);
                 });
             }
+        },
+        reload: function () {
+            var self = this;
+            setTimeout(function () {
+                self.on_load_markers();
+            }, 1000);
+            return $.when();
         }
     });
 
@@ -359,9 +403,10 @@ odoo.define('web.MapView', function (require) {
             this.$controls = $(QWeb.render('MapViewControl', {}));
         },
         bind_events: function () {
-            this.$controls.on('mouseenter', '.btn_map_control', this.on_control_maps.bind(this));
+            this.$controls.on('click', '.btn_map_control', this.on_control_maps.bind(this));
             this.$controls.on('click', 'p#map_layer', this.on_change_layer.bind(this));
             this.$controls.on('click', 'p#travel_mode', this.on_change_mode.bind(this));
+            this.$controls.on('mouseleave', '#o_map_sidenav', this.on_map_sidenav_mouseleave.bind(this));
         },
         _init_controls: function () {
             this.bind_events();
@@ -377,12 +422,26 @@ odoo.define('web.MapView', function (require) {
             $(ev.currentTarget).toggleClass('opened');
             this.$controls.find('#o_map_sidenav').toggleClass('opened');
             if (this.$controls.find('#o_map_sidenav').hasClass('opened')) {
+                this.action_sidenav_visibility('show');
+            } else {
+                this.action_sidenav_visibility('hide');
+            }
+        },
+        on_map_sidenav_mouseleave: function () {
+            var self = this;
+            setTimeout(function () {
+                self.action_sidenav_visibility('hide');
+            }, 3000);
+        },
+        action_sidenav_visibility: function (action) {
+            if (action == 'show') {
                 this.$controls.find('#o_map_sidenav').css({
                     'width': '150px'
                 }).show();
                 this.$controls.find('.fa').removeClass('fa-bars').addClass('fa-angle-double-left');
             } else {
-                this.$controls.find('#o_map_sidenav').hide();
+                this.$controls.find('.btn_map_control').removeClass('opened');
+                this.$controls.find('#o_map_sidenav').removeClass('opened').hide();
                 this.$controls.find('.fa').removeClass('fa-angle-double-left').addClass('fa-bars');
             }
         },
