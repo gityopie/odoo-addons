@@ -4,16 +4,19 @@
         <template id="assets_backend" name="web_google_maps assets backend" inherit_id="web.assets_backend">
             <xpath expr="//script[1]" position="before">
                 <t t-set="google_maps_api_key" t-value="request.env['ir.config_parameter'].sudo().get_param('google_maps_api_key')"/>
-                    <t t-if="google_maps_api_key">
-                        <script t-att-async="1" t-att-defer="1" t-attf-src="//maps.googleapis.com/maps/api/js?key=#{google_maps_api_key}&amp;libraries=geometry,places"/>
-                    </t>
-                    <t t-if="not google_maps_api_key">
-                        <script t-att-async="1" t-att-defer="1" t-attf-src="//maps.googleapis.com/maps/api/js?libraries=geometry,places"/>
-                    </t>
+                <t t-set="google_maps_lang_localization" t-value="request.env['ir.config_parameter'].sudo().get_param('google_maps_lang_localization')"/>
+                <t t-set="google_maps_region_localization" t-value="request.env['ir.config_parameter'].sudo().get_param('google_maps_region_localization')"/>
+                <t t-if="google_maps_api_key">
+                    <script t-att-async="1" t-att-defer="1" t-attf-src="//maps.googleapis.com/maps/api/js?key=#{google_maps_api_key}&amp;libraries=geometry,places#{google_maps_region_localization}#{google_maps_lang_localization}"/>
+                </t>
+                <t t-if="not google_maps_api_key">
+                    <script t-att-async="1" t-att-defer="1" t-attf-src="//maps.googleapis.com/maps/api/js?libraries=geometry,places#{google_maps_region_localization}#{google_maps_lang_localization}"/>
+                </t>
                 <script type="text/javascript" src="/web_google_maps/static/lib/google/markerclusterer.js"/>
             </xpath>
             <xpath expr="." position="inside">
                 <link rel="stylesheet" href="/web_google_maps/static/src/css/google_places_widget.css"/>
+                <script type="text/javascript" src="/web_google_maps/static/src/js/view/map_view_places_autocomplete.js"/>
                 <script type="text/javascript" src="/web_google_maps/static/src/js/view/map_view.js"/>
                 <script type="text/javascript" src="/web_google_maps/static/src/js/google_places_widget.js"/>
             </xpath>

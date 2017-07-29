@@ -12,10 +12,15 @@ This module contains two new features:
 ## Map view (`map`)
 Basically, this new view(`map`) will integrate Google Maps into Odoo.    
 Enable you to display a partner location or all your partners location around the world on a map.   
-This feature will work seamlessly with Odoo means you can search your partner location using Odoo search feature.
-_[08 July 2017]_    
-_Not just partner(`res.partner`) model but any model contains geolocation fields ._   
+This feature will work seamlessly with Odoo means you can search your partner location using Odoo search feature.    
 
+_[08 July 2017]_    
+- Not just partner(`res.partner`) model but any model contains geolocation fields    
+
+_[22 July 2017]_    
+- Map Localization.   
+- Add places autocomplete to the map.    
+- Create new partner within the map.    
 
 How to create the view?    
 Example
