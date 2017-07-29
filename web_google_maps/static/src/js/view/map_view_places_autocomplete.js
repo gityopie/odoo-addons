@@ -36,6 +36,11 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
     };
 
     var MapPlacesAutocomplete = Widget.extend({
+        events: {
+            'click .btn_places_control': 'on_control_places',
+            'click button#pac-button-create': 'on_create_partner',
+            'click input[id^="changetype"], input[id="use-strict-bounds"]': 'on_place_changetype'
+        },
         init: function (parent, options) {
             this._super.apply(this, arguments);
             this.options = options;
@@ -43,13 +48,6 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
             this.place_automplete = undefined;
             this.place_marker = undefined;
             this.marker_infowindow = undefined;
-            this.$el = $(QWeb.render('MapPlacesAutomcomplete', {}));
-        },
-        bind_events: function () {
-            this.$el.on('click', '.btn_places_control', this.on_control_places.bind(this));
-            this.$el.on('click', 'button#pac-button-create', this.on_create_partner.bind(this));
-            this.$el.on('click', 'input[id^="changetype"]', this.on_place_changetype.bind(this));
-            this.$el.on('click', 'input[id="use-strict-bounds"]', this.on_place_changetype.bind(this));
         },
         on_control_places: function (ev) {
             $(ev.currentTarget).toggleClass('opened');
@@ -82,12 +80,11 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
             this.parent.map.controls[google.maps.ControlPosition.TOP_CENTER].push(this.$el.get(0));
         },
         _set_input_controls: function () {
-            this.bind_events();
             this.place_automplete = new google.maps.places.Autocomplete(this.$el.find('input#pac-input').get(0));
             this.place_automplete.bindTo('bounds', this.parent.map);
             this.on_place_changed();
         },
-        open: function () {
+        start: function () {
             this._set_input_controls();
             this.parent.shown.done(this.proxy('_init_form'));
         },

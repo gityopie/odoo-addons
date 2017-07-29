@@ -191,7 +191,9 @@ odoo.define('web.MapView', function (require) {
         },
         on_maps_add_controls: function () {
             var route_mode = this.dataset.context.route_direction ? true : false;
-            new MapControl(this).open(route_mode);
+            var map_controls = new MapControl(this, route_mode);
+            map_controls.setElement($(QWeb.render('MapViewControl', {})));
+            map_controls.start();
             /* The three keys('model', 'method', 'fields') in the object assigned to variable 'options' is a mandatory keys.
              * The idea is to be able to pass any 'object' that can be created within the map
              * 
@@ -229,7 +231,9 @@ odoo.define('web.MapView', function (require) {
                     }
                 }
             };
-            new MapViewPlacesAutocomplete.MapPlacesAutocomplete(this, options).open();
+            var place_autocomplete = new MapViewPlacesAutocomplete.MapPlacesAutocomplete(this, options);
+            place_autocomplete.setElement($(QWeb.render('MapPlacesAutomcomplete', {})));
+            place_autocomplete.start();
         },
         on_init_routes: function () {
             this.geocoder = new google.maps.Geocoder;
@@ -397,31 +401,30 @@ odoo.define('web.MapView', function (require) {
     });
 
     var MapControl = Widget.extend({
-        init: function (parent) {
-            this._super.apply(parent, {});
+        init: function (parent, route) {
+            this._super.apply(this, arguments);
             this.parent = parent;
-            this.$controls = $(QWeb.render('MapViewControl', {}));
+            this.route = route;
         },
-        bind_events: function () {
-            this.$controls.on('click', '.btn_map_control', this.on_control_maps.bind(this));
-            this.$controls.on('click', 'p#map_layer', this.on_change_layer.bind(this));
-            this.$controls.on('click', 'p#travel_mode', this.on_change_mode.bind(this));
-            this.$controls.on('mouseleave', '#o_map_sidenav', this.on_map_sidenav_mouseleave.bind(this));
+        events: {
+            'click .btn_map_control': 'on_control_maps',
+            'click p#map_layer': 'on_change_layer',
+            'click p#travel_mode': 'on_change_mode',
+            'mouseleave #o_map_sidenav': 'on_map_sidenav_mouseleave'
         },
         _init_controls: function () {
-            this.bind_events();
-            this.parent.map.controls[google.maps.ControlPosition.LEFT_TOP].push(this.$controls[0]);
+            this.parent.map.controls[google.maps.ControlPosition.LEFT_TOP].push(this.$el.get(0));
         },
-        open: function (route_mode) {
-            if (route_mode) {
-                this.$controls.find('#o_map_travel_mode').show();
+        start: function () {
+            if (this.route) {
+                this.$el.find('#o_map_travel_mode').show();
             }
             this.parent.shown.done(this.proxy('_init_controls'));
         },
         on_control_maps: function (ev) {
             $(ev.currentTarget).toggleClass('opened');
-            this.$controls.find('#o_map_sidenav').toggleClass('opened');
-            if (this.$controls.find('#o_map_sidenav').hasClass('opened')) {
+            this.$el.find('#o_map_sidenav').toggleClass('opened');
+            if (this.$el.find('#o_map_sidenav').hasClass('opened')) {
                 this.action_sidenav_visibility('show');
             } else {
                 this.action_sidenav_visibility('hide');
@@ -435,14 +438,12 @@ odoo.define('web.MapView', function (require) {
         },
         action_sidenav_visibility: function (action) {
             if (action == 'show') {
-                this.$controls.find('#o_map_sidenav').css({
-                    'width': '150px'
-                }).show();
-                this.$controls.find('.fa').removeClass('fa-bars').addClass('fa-angle-double-left');
+                this.$el.find('#o_map_sidenav').css({'width': '150px'}).show();
+                this.$el.find('.fa').removeClass('fa-bars').addClass('fa-angle-double-left');
             } else {
-                this.$controls.find('.btn_map_control').removeClass('opened');
-                this.$controls.find('#o_map_sidenav').removeClass('opened').hide();
-                this.$controls.find('.fa').removeClass('fa-angle-double-left').addClass('fa-bars');
+                this.$el.find('.btn_map_control').removeClass('opened');
+                this.$el.find('#o_map_sidenav').removeClass('opened').hide();
+                this.$el.find('.fa').removeClass('fa-angle-double-left').addClass('fa-bars');
             }
         },
         on_change_layer: function (ev) {

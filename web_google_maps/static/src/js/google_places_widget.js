@@ -98,7 +98,7 @@ odoo.define('web_google_maps.GooglePlaces', function (require) {
         },
         gmaps_initialize: function () {
             var self = this;
-            this.places_autocomplete = new google.maps.places.Autocomplete(this.$input[0], {
+            this.places_autocomplete = new google.maps.places.Autocomplete(this.$input.get(0), {
                 types: ['geocode']
             });
             // When the user selects an address from the dropdown, populate the address fields in the form.
