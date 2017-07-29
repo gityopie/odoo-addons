@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 10.0\n"
+"Project-Id-Version: Odoo Server 9.0c\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-17 09:58+0000\n"
-"PO-Revision-Date: 2017-06-17 09:58+0000\n"
+"POT-Creation-Date: 2017-07-29 09:59+0000\n"
+"PO-Revision-Date: 2017-07-29 09:59+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,67 +16,173 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: web_google_maps
+#: model:ir.ui.view,arch_db:web_google_maps.view_website_config_settings_inherit
+msgid "API Key"
+msgstr ""
+
+#. module: web_google_maps
 #. openerp-web
-#: code:addons/web_google_maps/static/src/xml/widget_places.xml:31
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:87
+#, python-format
+msgid "Addresses"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:83
+#, python-format
+msgid "All"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:39
 #, python-format
 msgid "Bicycle"
 msgstr ""
 
 #. module: web_google_maps
 #. openerp-web
-#: code:addons/web_google_maps/static/src/xml/widget_places.xml:42
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:52
 #, python-format
 msgid "Bicycling"
 msgstr ""
 
 #. module: web_google_maps
 #. openerp-web
-#: code:addons/web_google_maps/static/src/xml/widget_places.xml:31
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:39
 #, python-format
 msgid "Bike"
 msgstr ""
 
 #. module: web_google_maps
 #. openerp-web
-#: code:addons/web_google_maps/static/src/js/view/map_view.js:215
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:104
+#, python-format
+msgid "Company"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:105
+#, python-format
+msgid "Create Partner"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/js/view/map_view.js:280
 #, python-format
 msgid "Directions request failed due to "
 msgstr ""
 
 #. module: web_google_maps
 #. openerp-web
-#: code:addons/web_google_maps/static/src/xml/widget_places.xml:36
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:46
 #, python-format
 msgid "Driving"
+msgstr "Driving"
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:97
+#, python-format
+msgid "Enter a location"
 msgstr ""
 
 #. module: web_google_maps
 #. openerp-web
-#: code:addons/web_google_maps/static/src/js/view/map_view.js:45
+#: code:addons/web_google_maps/static/src/js/view/map_view.js:71
 #, python-format
 msgid "Error: cannot display locations"
 msgstr ""
 
 #. module: web_google_maps
 #. openerp-web
-#: code:addons/web_google_maps/static/src/js/google_places_widget.js:13
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:85
+#, python-format
+msgid "Establishments"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/js/view/map_view_places_autocomplete.js:256
+#, python-format
+msgid "Fail to create new partner!"
+msgstr ""
+
+#. module: web_google_maps
+#: model:ir.ui.view,arch_db:web_google_maps.view_website_config_settings_inherit
+msgid "Follow"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:89
+#, python-format
+msgid "Geocodes"
+msgstr ""
+
+#. module: web_google_maps
+#: model:ir.ui.view,arch_db:web_google_maps.view_website_config_settings_inherit
+msgid "Google Maps"
+msgstr ""
+
+#. module: web_google_maps
+#: model:ir.model.fields,field_description:web_google_maps.field_website_config_settings_google_maps_api_key
+msgid "Google Maps API Key"
+msgstr ""
+
+#. module: web_google_maps
+#: model:ir.model.fields,field_description:web_google_maps.field_website_config_settings_google_maps_lang_localization
+msgid "Google Maps Language Localization"
+msgstr ""
+
+#. module: web_google_maps
+#: model:ir.ui.view,arch_db:web_google_maps.view_website_config_settings_inherit
+msgid "Google Maps Localization"
+msgstr ""
+
+#. module: web_google_maps
+#: model:ir.model.fields,field_description:web_google_maps.field_website_config_settings_google_maps_region_localization
+msgid "Google Maps Region Localization"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/js/google_places_widget.js:15
 #, python-format
 msgid "Google Places"
 msgstr ""
 
 #. module: web_google_maps
+#: model:ir.ui.view,arch_db:web_google_maps.view_website_config_settings_inherit
+msgid "If you set the language of the map, it's important to consider setting the region too."
+msgstr ""
+
+#. module: web_google_maps
 #. openerp-web
-#: code:addons/web_google_maps/static/src/xml/widget_places.xml:23
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:102
+#, python-format
+msgid "Individual"
+msgstr ""
+
+#. module: web_google_maps
+#: model:ir.ui.view,arch_db:web_google_maps.view_website_config_settings_inherit
+msgid "Language"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:29
 #, python-format
 msgid "Layers"
 msgstr ""
 
 #. module: web_google_maps
 #. openerp-web
-#: code:addons/web_google_maps/models/ir_actions_act_window.py:8
-#: code:addons/web_google_maps/models/ir_ui_view.py:8
 #: code:addons/web_google_maps/models/res_partner.py:25
-#: code:addons/web_google_maps/static/src/js/view/map_view.js:14
+#: code:addons/web_google_maps/static/src/js/view/map_view.js:16
 #: model:ir.actions.act_window,name:web_google_maps.act_res_partner_map
 #: model:ir.ui.view,arch_db:web_google_maps.view_partner_form
 #: model:ir.ui.view,arch_db:web_google_maps.view_partner_map
@@ -86,37 +192,23 @@ msgstr ""
 
 #. module: web_google_maps
 #. openerp-web
-#: code:addons/web_google_maps/static/src/xml/widget_places.xml:19
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:25
 #, python-format
 msgid "Map Layers"
 msgstr ""
 
 #. module: web_google_maps
 #. openerp-web
-#: code:addons/web_google_maps/static/src/xml/widget_places.xml:34
+#: code:addons/web_google_maps/static/src/js/view/map_view_places_autocomplete.js:128
 #, python-format
-msgid "Mode of Travel"
+msgid "No details available for input: ''"
 msgstr ""
 
 #. module: web_google_maps
 #. openerp-web
-#: code:addons/web_google_maps/static/src/js/view/map_view.js:47
+#: code:addons/web_google_maps/static/src/js/view/map_view.js:87
 #, python-format
 msgid "No geolocation is found!"
-msgstr ""
-
-#. module: web_google_maps
-#. openerp-web
-#: code:addons/web_google_maps/static/src/js/view/map_view.js:45
-#, python-format
-msgid "Please define alias name for geolocations fields for map view!"
-msgstr ""
-
-#. module: web_google_maps
-#. openerp-web
-#: code:addons/web_google_maps/static/src/xml/widget_places.xml:58
-#, python-format
-msgid "Redirect to Google maps website"
 msgstr ""
 
 #. module: web_google_maps
@@ -126,7 +218,34 @@ msgstr ""
 
 #. module: web_google_maps
 #. openerp-web
-#: code:addons/web_google_maps/static/src/js/view/map_view.js:278
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:73
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:78
+#, python-format
+msgid "Places"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/js/view/map_view.js:71
+#, python-format
+msgid "Please define alias name for geolocations fields for map view!"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:68
+#, python-format
+msgid "Redirect to Google maps website"
+msgstr ""
+
+#. module: web_google_maps
+#: model:ir.ui.view,arch_db:web_google_maps.view_website_config_settings_inherit
+msgid "Region"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/js/view/map_view.js:359
 #, python-format
 msgid "Reverse geocoding is failed!"
 msgstr ""
@@ -138,29 +257,60 @@ msgstr ""
 
 #. module: web_google_maps
 #. openerp-web
-#: code:addons/web_google_maps/static/src/js/google_places_widget.js:211
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:93
+#, python-format
+msgid "Strict Bounds"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/js/view/map_view_places_autocomplete.js:250
+#, python-format
+msgid "Successfully created new partner"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/js/google_places_widget.js:194
 #, python-format
 msgid "The following fields are invalid:"
 msgstr ""
 
 #. module: web_google_maps
+#: model:ir.ui.view,arch_db:web_google_maps.view_website_config_settings_inherit
+msgid "This helps ensure that your application complies with local laws."
+msgstr ""
+
+#. module: web_google_maps
 #. openerp-web
-#: code:addons/web_google_maps/static/src/xml/widget_places.xml:25
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:33
 #, python-format
 msgid "Traffic"
 msgstr ""
 
 #. module: web_google_maps
 #. openerp-web
-#: code:addons/web_google_maps/static/src/xml/widget_places.xml:28
-#: code:addons/web_google_maps/static/src/xml/widget_places.xml:45
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:36
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:55
 #, python-format
 msgid "Transit"
 msgstr ""
 
 #. module: web_google_maps
 #. openerp-web
-#: code:addons/web_google_maps/static/src/xml/widget_places.xml:39
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:42
+#, python-format
+msgid "Travel Mode"
+msgstr ""
+
+#. module: web_google_maps
+#: model:ir.ui.view,arch_db:web_google_maps.view_website_config_settings_inherit
+msgid "Visit the"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:49
 #, python-format
 msgid "Walking"
 msgstr ""
@@ -169,4 +319,24 @@ msgstr ""
 #: code:addons/web_google_maps/models/res_partner.py:14
 #, python-format
 msgid "You have not defined your geolocation"
+msgstr ""
+
+#. module: web_google_maps
+#: model:ir.ui.view,arch_db:web_google_maps.view_website_config_settings_inherit
+msgid "about Localizing the Map"
+msgstr ""
+
+#. module: web_google_maps
+#: model:ir.ui.view,arch_db:web_google_maps.view_website_config_settings_inherit
+msgid "page"
+msgstr ""
+
+#. module: web_google_maps
+#: model:ir.ui.view,arch_db:web_google_maps.view_website_config_settings_inherit
+msgid "the instructions"
+msgstr ""
+
+#. module: web_google_maps
+#: model:ir.ui.view,arch_db:web_google_maps.view_website_config_settings_inherit
+msgid "to create your key."
 msgstr ""
