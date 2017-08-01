@@ -22,11 +22,19 @@ odoo.define('web_google_maps.GooglePlaces', function (require) {
             this.places_autocomplete = false;
             this.component_form = MapViewPlacesAutocomplete.GOOGLE_PLACES_COMPONENT_FORM;
             this.fillfields = {
-                street2: ['street_number', 'route', 'administrative_area_level_3', 'administrative_area_level_4', 'administrative_area_level_5'],
+                // `name` is not a part of place.address components, but it's a part of place
+                // * place = values returns by places autocomplete or places autocomplete form address
+                // In case if 'street_number' and 'route' in place.address_components is not exists, `name` will be the last attribute to check
+                street: ['street_number', 'route', 'name'],
+                street2: ['administrative_area_level_3', 'administrative_area_level_4', 'administrative_area_level_5'],
                 city: ['locality', 'administrative_area_level_2'],
                 zip: 'postal_code',
                 state_id: 'administrative_area_level_1',
-                country_id: 'country',
+                country_id: 'country'
+            };
+            this.fillfields_delimiter = {
+                street: " ",
+                street2: ", ",
             };
         },
         initialize_content: function () {
@@ -39,7 +47,10 @@ odoo.define('web_google_maps.GooglePlaces', function (require) {
                         this.fillfields = this.options.fillfields;
                     }
                     if (this.options.hasOwnProperty('component_form')) {
-                        _.extend(this.component_form, this.options.component_form)
+                        _.extend(this.component_form, this.options.component_form);
+                    }
+                    if (this.options.hasOwnProperty('delimeter')) {
+                        this.fillfields_delimiter = this.options.delimeter;
                     }
                 }
                 this.target_fields = this.get_field_type();
@@ -105,7 +116,7 @@ odoo.define('web_google_maps.GooglePlaces', function (require) {
             this.places_autocomplete.addListener('place_changed', function () {
                 var place = this.getPlace();
                 if (place.hasOwnProperty('address_components')) {
-                    var google_address = self.populate_address(place);
+                    var google_address = MapViewPlacesAutocomplete.gmaps_populate_address(place, self.fillfields, self.fillfields_delimiter);
                     var requests = [];
 
                     _.each(self.target_fields, function (field) {
@@ -141,34 +152,6 @@ odoo.define('web_google_maps.GooglePlaces', function (require) {
                 def.resolve(res);
             }
             return def;
-        },
-        populate_address: function (place) {
-            var self = this;
-            var fields_to_fill = {}
-            var result = {};
-
-            // initialize object key and value
-            _.each(self.fillfields, function (value, key) {
-                fields_to_fill[key] = [];
-            });
-
-            _.each(self.fillfields, function (options, key) {
-                _.each(place.address_components, function (data) {
-                    if (options instanceof Array && _.contains(options, data.types[0])) {
-                        fields_to_fill[key].push(data[self.component_form[data.types[0]]]);
-                    } else if (options == data.types[0]) {
-                        fields_to_fill[key].push(data[self.component_form[data.types[0]]]);
-                    }
-                });
-            });
-
-            _.each(fields_to_fill, function (value, key) {
-                result[key] = key == 'city' ? (value.length > 0 ? value[0] : false) : value.join(', ');
-            });
-
-            result[this.name] = place.name;
-
-            return result;
         },
         render_value: function () {
             this._super();

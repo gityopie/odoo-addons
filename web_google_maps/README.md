@@ -124,7 +124,8 @@ A field can contains one or multiple elements of component form
 By default this options are configured like following value:
 >
     'fillfields': {
-        'street2': ['street_number', 'route', 'administrative_area_level_3', 'administrative_area_level_4', 'administrative_area_level_5'],
+        'street': ['street_number', 'route', 'name'],
+        'street2': ['administrative_area_level_3', 'administrative_area_level_4', 'administrative_area_level_5'],
         'city': ['locality', 'administrative_area_level_2'],
         'zip': 'postal_code',
         'state_id': 'administrative_area_level_1',

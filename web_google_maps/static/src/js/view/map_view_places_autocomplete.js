@@ -35,6 +35,65 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
         'point_of_interest': 'long_name'
     };
 
+    function gmaps_populate_address(place, address_options, delimeter) {
+        var address_options = address_options || {};
+        var fields_delimeter = delimeter || {
+            street: " ",
+            street2: ", "
+        };
+        var fields_to_fill = {};
+        var result = {};
+        // initialize object key and value
+        _.each(address_options, function (value, key) {
+            fields_to_fill[key] = [];
+        });
+
+        _.each(address_options, function (options, field) {
+            var vals = _.map(place.address_components, function (components) {
+                if (options instanceof Array) {
+                    var val = _.map(options, function (item) {
+                        if (_.contains(components.types, item)) {
+                            return components[GOOGLE_PLACES_COMPONENT_FORM[item]];
+                        } else {
+                            return false;
+                        }
+                    });
+                    return _.filter(val); // eliminate false
+                } else {
+                    if (_.contains(components.types, options)) {
+                        return components[GOOGLE_PLACES_COMPONENT_FORM[options]];
+                    } else {
+                        return false;
+                    }
+                }
+            });
+            fields_to_fill[field] = _.flatten(_.filter(vals, function (val) {
+                return val.length;
+            }));
+        });
+
+        _.each(fields_to_fill, function (value, key) {
+            var dlmter = fields_delimeter.hasOwnProperty(key) ? fields_delimeter[key] : ' ';
+            if (key == 'street' && !value.length) {
+                var addrs = address_options.street;
+                if (address_options instanceof Array) {
+                    var addr = _.map(addrs, function (item) {
+                        return place[item];
+                    });
+                    result[key] = _.filter(addr).join(dlmter);
+                } else {
+                    result[key] = place[addrs] || '';
+                }
+            } else if (key == 'city') {
+                result[key] = value.length ? value[0] : '';
+            } else {
+                result[key] = value.join(dlmter);
+            }
+        });
+
+        return result;
+    }
+
     var MapPlacesAutocomplete = Widget.extend({
         events: {
             'click .btn_places_control': 'on_control_places',
@@ -232,7 +291,7 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
             var self = this;
             if (this.place && this.place.hasOwnProperty('address_components')) {
                 var values = self.set_default_values(this.place);
-                var google_address = this.populate_address(this.place);
+                var google_address = gmaps_populate_address(this.place, this.options.fields.address);
                 var requests = [];
                 _.each(this.options.fields.address, function (items, field) {
                     requests.push(self.prepare_value(field, google_address[field]));
@@ -261,58 +320,6 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
                 });
             }
         },
-        populate_address: function (place) {
-            var self = this;
-            var fields_to_fill = {}
-            var result = {};
-            // initialize object key and value
-            _.each(this.options.fields.address, function (value, key) {
-                fields_to_fill[key] = [];
-            });
-
-            _.each(this.options.fields.address, function (options, field) {
-                var vals = _.map(place.address_components, function (components) {
-                    if (options instanceof Array) {
-                        var val = _.map(options, function (item) {
-                            if (_.contains(components.types, item)) {
-                                return components[GOOGLE_PLACES_COMPONENT_FORM[item]];
-                            } else {
-                                return false;
-                            }
-                        });
-                        return _.filter(val); // eliminate false
-                    } else {
-                        if (_.contains(components.types, options)) {
-                            return components[GOOGLE_PLACES_COMPONENT_FORM[options]];
-                        } else {
-                            return false;
-                        }
-                    }
-                });
-                fields_to_fill[field] = _.flatten(_.filter(vals, function (val) {
-                    return val.length;
-                }));
-            });
-            _.each(fields_to_fill, function (value, key) {
-                if (key == 'street' && !value.length) {
-                    var addrs = self.options.fields.address.street;
-                    if (addrs instanceof Array) {
-                        var addr = _.map(addrs, function (item) {
-                            return place[item];
-                        });
-                        result[key] = _.filter(addr).join(', ');
-                    } else {
-                        result[key] = place[addrs] || '';
-                    }
-                } else if (key == 'city') {
-                    result[key] = value.length ? value[0] : '';
-                } else {
-                    result[key] = value.join(', ');
-                }
-            });
-
-            return result;
-        },
         prepare_value: function (field_name, value) {
             var def = $.Deferred();
             var res = {};
@@ -340,7 +347,8 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
 
     return {
         'MapPlacesAutocomplete': MapPlacesAutocomplete,
-        'GOOGLE_PLACES_COMPONENT_FORM': GOOGLE_PLACES_COMPONENT_FORM
+        'GOOGLE_PLACES_COMPONENT_FORM': GOOGLE_PLACES_COMPONENT_FORM,
+        'gmaps_populate_address': gmaps_populate_address
     };
 
 });

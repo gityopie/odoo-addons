@@ -222,12 +222,12 @@ odoo.define('web.MapView', function (require) {
                         'longitude': 'partner_longitude'
                     },
                     'address': {
-                        'street': ['street_number', 'route', 'vicinity'],
+                        'street': ['street_number', 'route', 'name'],
                         'street2': ['administrative_area_level_3', 'administrative_area_level_4', 'administrative_area_level_5'],
                         'city': ['locality', 'administrative_area_level_2'],
                         'zip': 'postal_code',
                         'state_id': 'administrative_area_level_1',
-                        'country_id': 'country',
+                        'country_id': 'country'
                     }
                 }
             };
