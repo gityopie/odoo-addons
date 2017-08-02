@@ -49,8 +49,8 @@ odoo.define('web_google_maps.GooglePlaces', function (require) {
                     if (this.options.hasOwnProperty('component_form')) {
                         _.extend(this.component_form, this.options.component_form);
                     }
-                    if (this.options.hasOwnProperty('delimeter')) {
-                        this.fillfields_delimiter = this.options.delimeter;
+                    if (this.options.hasOwnProperty('delimiter')) {
+                        this.fillfields_delimiter = this.options.delimiter;
                     }
                 }
                 this.target_fields = this.get_field_type();

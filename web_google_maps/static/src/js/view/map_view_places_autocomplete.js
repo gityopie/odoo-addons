@@ -35,9 +35,9 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
         'point_of_interest': 'long_name'
     };
 
-    function gmaps_populate_address(place, address_options, delimeter) {
+    function gmaps_populate_address(place, address_options, delimiter) {
         var address_options = address_options || {};
-        var fields_delimeter = delimeter || {
+        var fields_delimiter = delimiter || {
             street: " ",
             street2: ", "
         };
@@ -73,7 +73,7 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
         });
 
         _.each(fields_to_fill, function (value, key) {
-            var dlmter = fields_delimeter.hasOwnProperty(key) ? fields_delimeter[key] : ' ';
+            var dlmter = fields_delimiter.hasOwnProperty(key) ? fields_delimiter[key] : ' ';
             if (key == 'street' && !value.length) {
                 var addrs = address_options.street;
                 if (address_options instanceof Array) {
