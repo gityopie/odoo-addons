@@ -26,5 +26,6 @@ form view, it provide autocomplete feature when you typed an address of partner
     ],
     'demo': [],
     'qweb': ['static/src/xml/widget_places.xml'],
-    'installable': True
+    'installable': True,
+    'uninstall_hook': 'uninstall_hook',
 }
