@@ -4,61 +4,64 @@
     z-index: 1051 !important;
 }
 
-.o_map_view {
-    min-height: 400px;
-    min-width: 400px;
+.o_map {
     height: 100%;
     width: 100%;
 }
 
-.o_map_control .sidenav {
-    min-height: 100px;
-    margin: -29px 0 0 26px;
-    background-color: #ffffff;
+.o_map .o_map_view {
+    height: 100%;
+    width: 100%;
+    margin-left: 0;
+    transition: margin-left .5s;
+}
+
+.o_map .o_map_view.opened {
+    margin-left: 400px;
+}
+
+.o_map .o_map_sidenav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    background-color: #f5f5f5;
     overflow-x: hidden;
-    display: none;
-    border: solid 1px #7c7bad;
+    transition: 0.5s;
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.3);
 }
 
-.o_map_control .sidenav p,
-.o_map_control .sidenav #o_map_travel_mode span {
-    padding: 5px;
-    color: #818181;
-    display: block;
-    cursor: pointer;
+.o_map .o_map_sidenav .sidenav-body .panel {
+    border: none;
+}
+.o_act_window .o_map .o_map_view,
+.o_act_window .o_map .o_map_sidenav {
+    min-height: 400px;
+    height: 400px;
 }
 
-.o_map_control .sidenav b {
-    font-size: 12px;
-    color: #818181;
-    display: block;
-    border-bottom: 1px solid #cccccc;
+.o_map .o_map_sidenav.opened {
+    width: 400px;
+}
+
+.o_map .o_map_sidenav .controls,
+.o_map .o_map_sidenav .layers {
     text-align: center;
-    padding-bottom: 5px;
 }
 
-.o_map_control .sidenav #o_map_travel_mode {
-    display: none;
-}
-
-.o_map_control .sidenav p:hover {
-    color: #7c7bad;
-}
-
-.o_map_control .sidenav #o_map_travel_mode span.active,
-.o_map_control .sidenav p.active {
+.o_map .o_map_sidenav .controls span.active,
+.o_map .o_map_sidenav .layers span.active {
     color: #7c7bad;
     font-weight: bold;
 }
 
-.o_map_control .sidenav p img,
-.o_map_control .sidenav #o_map_travel_mode p img {
+.o_map .o_map_sidenav .controls span img,
+.o_map .o_map_sidenav .layers span img {
     padding-left: 5px;
     padding-right: 10px;
 }
 
-.o_map_control .btn_map_control,
-.o_map_places_control .btn_places_control {
+.o_map_control .btn_map_control {
     margin-top: 10px;
     margin-left: 10px;
     cursor: pointer;
@@ -68,11 +71,6 @@
     border-radius: 2px;
     width: 30px;
     box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px -1px;
-}
-
-.o_map_control .btn_map_control.opened,
-.o_map_places_control .btn_places_control.opened {
-    background: #7c7bad;
 }
 
 .o_map_routes_window {
@@ -96,40 +94,18 @@
     line-height: 25px;
 }
 
-.o_map_places_control .pac-card {
-    display: none;
-    margin: -29px 0 0 35px;
-    max-width: 450px;
-    border-radius: 2px;
-    background-color: #fff;
-    border: solid 1px #7c7bad;
-}
-
-.o_map_places_control .pac-card #pac-container {
-    padding-bottom: 12px;
-    margin-right: 12px;
-}
-
 .o_map_places_control .pac-card #pac-container #pac-button {
-    padding-top: 10px;
-    margin-left: 10px;
+    padding-top: 5px;
+    text-align: right;
 }
 
 .o_map_places_control .pac-card #pac-container #pac-result {
-    padding: 10px;
-    margin-left: 10px;
-    font-size: 14px;
-    font-weight: 300;
     border-bottom: 1px solid #ccc;
 }
 
-.o_map_places_control .pac-card #pac-container #pac-result div {
-    display: block;
-}
-
 .o_map_places_control .pac-card .pac-controls {
-    display: inline-block;
-    padding: 5px 11px;
+    padding: 0 0 10px 0;
+    text-align: center;
 }
 
 .o_map_places_control .pac-card .pac-controls label {
@@ -138,24 +114,29 @@
 }
 
 .o_map_places_control .pac-card #pac-input {
-    background-color: #fff;
     font-size: 15px;
     font-weight: 300;
-    margin-left: 12px;
-    padding: 0 11px 0 13px;
     text-overflow: ellipsis;
-    width: 400px;
+    height: 35px;
 }
 
 .o_map_places_control .pac-card #pac-input:focus {
     border-color: #7c7bad;
 }
 
-.o_map_control .sidenav #title,
-.o_map_places_control .pac-card #title {
-    color: #fff;
-    background-color: #7c7bad;
-    font-size: 14px;
+.o_map_place_result input#place-input-name {
+    background-color: #fff;
+    font-size: 15px;
     font-weight: 300;
-    padding: 6px;
+    text-overflow: ellipsis;
+    height: 35px;
+}
+
+.o_map_place_result ul {
+    list-style-type: none;
+    margin-left: -30px;
+}
+
+.o_map_place_result ul li i {
+    padding-right: 5px;
 }

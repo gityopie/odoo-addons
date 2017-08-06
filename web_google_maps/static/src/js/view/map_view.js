@@ -12,7 +12,7 @@ odoo.define('web.MapView', function (require) {
 
     var MapView = View.extend({
         template: 'MapView',
-        className: 'o_map_view',
+        className: 'o_map',
         display_name: _lt('Map'),
         icon: 'fa-map-o',
         searchable: true,
@@ -23,6 +23,7 @@ odoo.define('web.MapView', function (require) {
             this.shown = $.Deferred();
             this.fields = this.fields_view.fields;
             this.children_field = this.fields_view.field_parent;
+            this.geocoder = new google.maps.Geocoder;
         },
         start: function () {
             var self = this;
@@ -73,12 +74,15 @@ odoo.define('web.MapView', function (require) {
         },
         _create_marker: function (lat_lng, record) {
             var record = _.defaults(record || {}, {name: 'XY'});
-            var marker = new google.maps.Marker({
+            var marker_options = {
                 position: lat_lng,
                 map: this.map,
                 animation: google.maps.Animation.DROP,
-                label: record.name.slice(0, 2)
-            });
+            };
+            if (record.name) {
+                marker_options.label = record.name.slice(0, 2);
+            }
+            var marker = new google.maps.Marker(marker_options);
             this.markers.push(marker);
             this.set_marker(marker, record);
         },
@@ -87,14 +91,10 @@ odoo.define('web.MapView', function (require) {
             this.markers.length = 0;
         },
         set_marker: function (marker, record) {
-            var record = record || false;
             this.marker_cluster.addMarker(marker);
             google.maps.event.addListener(marker, 'click', this.marker_infowindow(marker, record));
         },
         marker_infowindow: function (marker, record) {
-            if (!Object.keys(record).length) {
-                return;
-            }
             var self = this;
             var content = this.marker_infowindow_content(record);
             return function () {
@@ -124,7 +124,7 @@ odoo.define('web.MapView', function (require) {
             return res;
         },
         init_map: function () {
-            this.map = new google.maps.Map(this.$el[0], {
+            this.map = new google.maps.Map(this.$('.o_map_view').get(0), {
                 mapTypeId: google.maps.MapTypeId.ROADMAP,
                 zoom: 3,
                 minZoom: 3,
@@ -234,7 +234,6 @@ odoo.define('web.MapView', function (require) {
             place_autocomplete.start();
         },
         on_init_routes: function () {
-            this.geocoder = new google.maps.Geocoder;
             this.directionsDisplay = new google.maps.DirectionsRenderer;
             this.directionsService = new google.maps.DirectionsService;
             this.directionsDisplay.setMap(this.map);
@@ -366,15 +365,28 @@ odoo.define('web.MapView', function (require) {
             var lat_lng = location['lat_lng'];
             var path = location['path'];
             var res = {};
-            this.geocoder.geocode({
-                'location': lat_lng
-            }, function (results, status) {
-                if (status === 'OK') {
-                    res[path] = results[0].formatted_address;
-                } else {
-                    res[path] = false;
-                }
+            this.on_geocoding(lat_lng, true).done(function(result){
+                res[path] = result;
                 def.resolve(res);
+            }).fail(function() {
+                res[path] = false;
+                def.resolve(res);
+            });
+            return def;
+        },
+        on_geocoding: function (lat_lng, formatted_address) {
+            var is_formatted_address = typeof formatted_address === "boolean" ? formatted_address : false;
+            var def = $.Deferred();
+            this.geocoder.geocode({'location': lat_lng}, function(results, status) {
+                if (status === 'OK') {
+                    if (is_formatted_address) {
+                        def.resolve(results[0].formatted_address);
+                    } else {
+                        def.resolve(results[0]);
+                    }
+                } else {
+                    def.reject();
+                }
             });
             return def;
         },
@@ -388,6 +400,10 @@ odoo.define('web.MapView', function (require) {
                     self.redirect_to_gmaps_website(locations);
                 });
             }
+        },
+        on_toogle_sidenav: function () {
+            this.$('.o_map_sidenav').toggleClass('opened');
+            this.$('.o_map_view').toggleClass('opened');
         },
         reload: function () {
             var self = this;
@@ -405,44 +421,41 @@ odoo.define('web.MapView', function (require) {
             this.route = route;
         },
         events: {
-            'click .btn_map_control': 'on_control_maps',
-            'click p#map_layer': 'on_change_layer',
-            'click p#travel_mode': 'on_change_mode',
-            'mouseleave #o_map_sidenav': 'on_map_sidenav_mouseleave'
+            'click .btn_map_control': 'on_control_maps'
         },
         _init_controls: function () {
             this.parent.map.controls[google.maps.ControlPosition.LEFT_TOP].push(this.$el.get(0));
         },
         start: function () {
-            if (this.route) {
-                this.$el.find('#o_map_travel_mode').show();
-            }
-            this.parent.shown.done(this.proxy('_init_controls'));
-        },
-        on_control_maps: function (ev) {
-            $(ev.currentTarget).toggleClass('opened');
-            this.$el.find('#o_map_sidenav').toggleClass('opened');
-            if (this.$el.find('#o_map_sidenav').hasClass('opened')) {
-                this.action_sidenav_visibility('show');
-            } else {
-                this.action_sidenav_visibility('hide');
-            }
-        },
-        on_map_sidenav_mouseleave: function () {
             var self = this;
-            setTimeout(function () {
-                self.action_sidenav_visibility('hide');
-            }, 3000);
-        },
-        action_sidenav_visibility: function (action) {
-            if (action == 'show') {
-                this.$el.find('#o_map_sidenav').css({'width': '150px'}).show();
-                this.$el.find('.fa').removeClass('fa-bars').addClass('fa-angle-double-left');
-            } else {
-                this.$el.find('.btn_map_control').removeClass('opened');
-                this.$el.find('#o_map_sidenav').removeClass('opened').hide();
-                this.$el.find('.fa').removeClass('fa-angle-double-left').addClass('fa-bars');
+
+            this.parent.shown.done(this.proxy('_init_controls'));
+                
+            var map_layers = new MapControlLayer(this.parent);
+            map_layers.setElement($(QWeb.render('MapControlLayers', {})));
+            map_layers.start();
+
+            if (this.route) {
+                var map_routes = new MapControlTravelMode(this.parent);
+                map_routes.setElement($(QWeb.render('MapControlTravelMode', {})));
+                map_routes.start();
             }
+        },
+        on_control_maps: function () {
+            this.parent.on_toogle_sidenav();
+        }
+    });
+
+    var MapControlLayer = Widget.extend({
+        events: {
+            'click #map_layer': 'on_change_layer',
+        },
+        init: function(parent) {
+            this._super.apply(this, arguments);
+            this.parent = parent;
+        },
+        start: function() {
+            this.parent.$('.sidenav-body > #accordion').append(this.$el);
         },
         on_change_layer: function (ev) {
             ev.preventDefault();
@@ -454,13 +467,6 @@ odoo.define('web.MapView', function (require) {
             } else if (layer == 'bicycle') {
                 this._on_bicycle_layer(ev);
             }
-        },
-        on_change_mode: function (ev) {
-            ev.preventDefault();
-            $(ev.currentTarget).siblings().removeClass('active');
-            $(ev.currentTarget).toggleClass('active')
-            var mode = $(ev.currentTarget).data('mode');
-            this.parent.on_calculate_and_display_route(mode);
         },
         _on_traffic_layer: function (ev) {
             $(ev.currentTarget).toggleClass('active');
@@ -492,6 +498,27 @@ odoo.define('web.MapView', function (require) {
                 this.bikeLayer = undefined;
             }
         }
+
+    });
+
+    var MapControlTravelMode = Widget.extend({
+        events: {
+            'click #travel_mode': 'on_change_mode'
+        },
+        init: function (parent) {
+            this._super.apply(this, arguments);
+            this.parent = parent;
+        },
+        start: function() {
+            this.parent.$('.sidenav-body > #accordion').append(this.$el);
+        },
+        on_change_mode: function (ev) {
+            ev.preventDefault();
+            $(ev.currentTarget).siblings().removeClass('active');
+            $(ev.currentTarget).toggleClass('active')
+            var mode = $(ev.currentTarget).data('mode');
+            this.parent.on_calculate_and_display_route(mode);
+        },
     });
 
     core.view_registry.add('map', MapView);
