@@ -12,12 +12,6 @@
 .o_map .o_map_view {
     height: 100%;
     width: 100%;
-    margin-left: 0;
-    transition: margin-left .5s;
-}
-
-.o_map .o_map_view.opened {
-    margin-left: 400px;
 }
 
 .o_map .o_map_sidenav {
@@ -65,12 +59,16 @@
     margin-top: 10px;
     margin-left: 10px;
     cursor: pointer;
+    transition: margin-left .5s;
     line-height: 20px;
     padding: 4.5px 10px;
     background: #ffffff;
     border-radius: 2px;
-    width: 30px;
     box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px -1px;
+}
+
+.o_map_control .btn_map_control.opened {
+    margin-left: 410px;
 }
 
 .o_map_routes_window {
@@ -125,7 +123,7 @@
 }
 
 .o_map_place_result input#place-input-name {
-    background-color: #fff;
+    background-color: #efefef;
     font-size: 15px;
     font-weight: 300;
     text-overflow: ellipsis;

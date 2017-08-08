@@ -84,16 +84,21 @@
     </t>
     <t t-name="MapPacMarkerContent">
         <div id="infowindow-content">
-            <img src="" width="16" height="16" id="place-icon"/>
-            <span id="place-name" class="title"></span>
+            <img t-if="places.icon" t-att-src="places.icon" width="16" height="16" id="place-icon"/>
+            <span class="title"><t t-esc="places.name"/></span>
             <br/>
-            <span id="place-address"></span>
+            <span><t t-esc="places.formatted_address"/></span>
         </div>
     </t>
     <t t-name="MapPlacesQueryResult">
         <div class="o_map_place_result">
             <h3 if="place.name">
-                <input type="text" id="place-input-name" name="place_name" t-att-value="place.name"/>
+                <t t-if="place.name">
+                    <input type="text" id="place-input-name" name="place_name" t-att-value="place.name"/>
+                </t>
+                <t t-if="! place.name">
+                    <input type="text" id="place-input-name" name="place_name" t-att-value="place.formatted_address"/>
+                </t>
             </h3>
             <ul>
                 <li t-if="place.formatted_address">

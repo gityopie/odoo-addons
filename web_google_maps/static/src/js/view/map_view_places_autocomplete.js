@@ -147,8 +147,9 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
         on_marker_get_position: function (is_by_place) {
             var def = $.Deferred();
             var self = this;
+            var by_place = is_by_place || false;
             var values = {};
-            if (is_by_place) {
+            if (by_place) {
                 var google_address = gmaps_populate_address(this.place, this.options.fields.address);
                 var requests = [];
                 _.each(this.options.fields.address, function (items, field) {
@@ -166,7 +167,8 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
                 });
             } else {
                 this.parent.on_geocoding(this.place_marker.getPosition()).done(function(place) {
-                    // place.formatted_address;
+                    self.on_update_marker_infowindow(place);
+                    self.on_update_pac_result(place);
                     var google_address = gmaps_populate_address(place, self.options.fields.address);
                     var requests = [];
                     _.each(self.options.fields.address, function (items, field) {
@@ -189,21 +191,28 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
             }
             return def;
         },
+        on_update_marker_infowindow: function (place) {
+            if (this.marker_infowindow === undefined) {
+                this.marker_infowindow = new google.maps.InfoWindow();
+            }
+            var $content = $(QWeb.render('MapPacMarkerContent', {'places': place}));
+            this.place_marker.setAnimation(google.maps.Animation.BOUNCE);
+            this.marker_infowindow.setContent($content.get(0));
+            this.marker_infowindow.open(this.parent.map, this.place_marker);
+        },
         on_place_changed: function () {
             var self = this;
 
             this.marker_infowindow = new google.maps.InfoWindow();
-            var $infowindow_content = $(QWeb.render('MapPacMarkerContent', {}));
-
-            this.marker_infowindow.setContent($infowindow_content[0]);
+            this.marker_infowindow.setContent('<div></div>');
 
             this.place_marker = new google.maps.Marker({
                 map: self.parent.map,
-                animation: google.maps.Animation.DROP,
+                animation: google.maps.Animation.BOUNCE,
                 draggable: true
             });
 
-            google.maps.event.addListener(this.place_marker, 'dragend', this.on_marker_get_position.bind(this));
+            google.maps.event.addListener(this.place_marker, 'dragend', this.on_marker_get_position.bind(this, false));
 
             this.place_automplete.addListener('place_changed', function () {
                 self.marker_infowindow.close();
@@ -219,9 +228,7 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
                 }
                 self.place = place;
                 self.show_create_partner_button('show');
-
-                var marker_content = self.format_content(place);
-                self.$el.find('#pac-result').show().html(marker_content);
+                self.on_update_pac_result(place, 'show');
 
                 // If the place has a geometry, then present it on a map.
                 if (place.geometry.viewport) {
@@ -234,8 +241,17 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
                 self.place_marker.setPosition(place.geometry.location);
                 self.place_marker.setVisible(true);
 
-                self.set_marker_content(place, $infowindow_content);
+                self.set_marker_content(place);
             });
+        },
+        on_update_pac_result: function (place, action) {
+            var act = action || false;
+            var pac_result = QWeb.render('MapPlacesQueryResult', {'place': place});
+            if (act === 'show') {
+                this.$('#pac-result').html(pac_result).show();
+            } else {
+                this.$('#pac-result').html(pac_result);
+            }
         },
         show_create_partner_button: function (show) {
             var is_show = show || 'hide';
@@ -246,24 +262,10 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
                 this.$el.find('#pac-result').html('').hide();
             }
         },
-        set_marker_content: function (place, $infowindow_content) {
-            var address = '';
-            if (place.address_components) {
-                address = [
-                    (place.address_components[0] && place.address_components[0].short_name || ''),
-                    (place.address_components[1] && place.address_components[1].short_name || ''),
-                    (place.address_components[2] && place.address_components[2].short_name || '')
-                ].join(' ');
-            }
-
-            $infowindow_content.find('#place-icon').attr('src', place.icon);
-            $infowindow_content.find('#place-name').text(place.name);
-            $infowindow_content.find('#place-address').text(address);
+        set_marker_content: function (place) {
+            var $infowindow_content = $(QWeb.render('MapPacMarkerContent', {'places': place}));
+            this.marker_infowindow.setContent($infowindow_content.get(0));
             this.marker_infowindow.open(this.parent.map, this.place_marker);
-        },
-        format_content: function (place) {
-            var contents = QWeb.render('MapPlacesQueryResult', {'place': place});
-            return contents;
         },
         set_default_values: function (place) {
             var self = this;
@@ -318,6 +320,7 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
             var self = this;
             if (this.place && this.place.hasOwnProperty('address_components')) {
                 var values = self.set_default_values(this.place);
+                // check if the marker position is not equal to initial position, marker has been moved
                 var is_by_place = this.place.geometry.location === this.place_marker.getPosition();
                 this.on_marker_get_position(is_by_place).done(function(result) {
                     if (result) {

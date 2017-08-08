@@ -404,6 +404,7 @@ odoo.define('web.MapView', function (require) {
         on_toogle_sidenav: function () {
             this.$('.o_map_sidenav').toggleClass('opened');
             this.$('.o_map_view').toggleClass('opened');
+            this.$('.btn_map_control').toggleClass('opened');
         },
         reload: function () {
             var self = this;
