@@ -188,11 +188,22 @@ odoo.define('web.MapView', function (require) {
             });
         },
         on_maps_add_controls: function () {
+            this.map_layer_traffic_controls();
+            this.map_layer_places_autocomplete_controls();
+        },
+        map_layer_traffic_controls: function () {
+            /* 
+            * On route mode
+            * We will display travel mode (driving, walking, bicycling, transit) controls
+            */
             var route_mode = this.dataset.context.route_direction ? true : false;
             var map_controls = new MapControl(this, route_mode);
             map_controls.setElement($(QWeb.render('MapViewControl', {})));
             map_controls.start();
-            /* The three keys('model', 'method', 'fields') in the object assigned to variable 'options' is a mandatory keys.
+        },
+        map_layer_places_autocomplete_controls: function () {
+            /* 
+             * The three keys('model', 'method', 'fields') in the object assigned to variable 'options' is a mandatory keys.
              * The idea is to be able to pass any 'object' that can be created within the map
              * 
              * The fields options is divided into three parts:
@@ -201,31 +212,31 @@ odoo.define('web.MapView', function (require) {
              *     On the right side of each field is an attribute(s) from 'Places autocomplete'
              * 2) 'geolocation'
              *     This configuration is for geolocation fields (only 'latitude' and 'longitude')
+             *     latitude and longitude is an alias name from geolocation fields
              * 3) 'address'
              *     This configuration is similar to configuration used by 'google_places' widget
              *  
              */
             var options = {
-                'model': 'res.partner',
-                'method': 'create_partner_from_map',
-                'fields': {
-                    'general': {
-                        'name': 'name',
-                        'website': 'website',
-                        'phone': ['international_phone_number', 'formatted_phone_number'],
-                        'is_company': '',
+                model: 'res.partner',
+                method: 'create_partner_from_map',
+                fields: {
+                    general: {
+                        name: 'name',
+                        website: 'website',
+                        phone: ['international_phone_number', 'formatted_phone_number']
                     },
-                    'geolocation': {
-                        'latitude': 'partner_latitude',
-                        'longitude': 'partner_longitude'
+                    geolocation: {
+                        partner_latitude: 'latitude',
+                        partner_longitude: 'longitude'
                     },
-                    'address': {
-                        'street': ['street_number', 'route', 'name'],
-                        'street2': ['administrative_area_level_3', 'administrative_area_level_4', 'administrative_area_level_5'],
-                        'city': ['locality', 'administrative_area_level_2'],
-                        'zip': 'postal_code',
-                        'state_id': 'administrative_area_level_1',
-                        'country_id': 'country'
+                    address: {
+                        street: ['street_number', 'route', 'name'],
+                        street2: ['administrative_area_level_3', 'administrative_area_level_4', 'administrative_area_level_5'],
+                        city: ['locality', 'administrative_area_level_2'],
+                        zip: 'postal_code',
+                        state_id: 'administrative_area_level_1',
+                        country_id: 'country'
                     }
                 }
             };
@@ -412,17 +423,33 @@ odoo.define('web.MapView', function (require) {
                 self.on_load_markers();
             }, 1000);
             return $.when();
+        },
+        render_buttons($node) {
+            var self = this;
+            this.$buttons = $('<div/>');
+            var $footer = this.$('footer');
+            if (this.options.action_buttons !== false || this.options.footer_to_buttons && $footer.children().length === 0) {
+                this.$buttons.append(QWeb.render("MapView.buttons", {'widget': this}));
+            }
+            if (this.options.footer_to_buttons) {
+                $footer.appendTo(this.$buttons);
+            }
+            this.$buttons.on('click', '.o_map_button_reload', function(ev){
+                ev.preventDefault();
+                self.on_load_markers();
+            });
+            this.$buttons.appendTo($node);
         }
     });
 
     var MapControl = Widget.extend({
+        events: {
+            'click .btn_map_control': 'on_control_maps'
+        },
         init: function (parent, route) {
             this._super.apply(this, arguments);
             this.parent = parent;
             this.route = route;
-        },
-        events: {
-            'click .btn_map_control': 'on_control_maps'
         },
         _init_controls: function () {
             this.parent.map.controls[google.maps.ControlPosition.LEFT_TOP].push(this.$el.get(0));

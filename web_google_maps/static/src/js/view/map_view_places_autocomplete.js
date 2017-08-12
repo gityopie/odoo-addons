@@ -9,31 +9,75 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
     var _t = core._t;
 
     var GOOGLE_PLACES_COMPONENT_FORM = {
-        'street_number': 'long_name',
-        'route': 'long_name',
-        'intersection': 'short_name',
-        'political': 'short_name',
-        'country': 'short_name',
-        'administrative_area_level_1': 'long_name',
-        'administrative_area_level_2': 'short_name',
-        'administrative_area_level_3': 'short_name',
-        'administrative_area_level_4': 'short_name',
-        'administrative_area_level_5': 'short_name',
-        'colloquial_area': 'short_name',
-        'locality': 'short_name',
-        'ward': 'short_name',
-        'sublocality_level_1': 'short_name',
-        'sublocality_level_2': 'short_name',
-        'sublocality_level_3': 'short_name',
-        'sublocality_level_5': 'short_name',
-        'neighborhood': 'short_name',
-        'premise': 'short_name',
-        'postal_code': 'short_name',
-        'natural_feature': 'short_name',
-        'airport': 'short_name',
-        'park': 'short_name',
-        'point_of_interest': 'long_name'
+        street_number: 'long_name',
+        route: 'long_name',
+        intersection: 'short_name',
+        political: 'short_name',
+        country: 'short_name',
+        administrative_area_level_1: 'long_name',
+        administrative_area_level_2: 'short_name',
+        administrative_area_level_3: 'short_name',
+        administrative_area_level_4: 'short_name',
+        administrative_area_level_5: 'short_name',
+        colloquial_area: 'short_name',
+        locality: 'short_name',
+        ward: 'short_name',
+        sublocality_level_1: 'short_name',
+        sublocality_level_2: 'short_name',
+        sublocality_level_3: 'short_name',
+        sublocality_level_5: 'short_name',
+        neighborhood: 'short_name',
+        premise: 'short_name',
+        postal_code: 'short_name',
+        natural_feature: 'short_name',
+        airport: 'short_name',
+        park: 'short_name',
+        point_of_interest: 'long_name'
     };
+
+    function odoo_prepare_values(model, field_name, value) {
+        var def = $.Deferred();
+        var res = {};
+        if (model) {
+            new Model(model).call('search', [['|', ['name', '=', value], ['code', '=', value]]]).done(function (record) {
+                res[field_name] = record.length > 0 ? record[0] : false;
+                def.resolve(res);
+            });
+        } else {
+            res[field_name] = value;
+            def.resolve(res);
+        }
+        return def;
+    }
+
+    function gmaps_get_geolocation(place, options) {
+        var vals = {};
+        _.each(options, function (alias, field) {
+            if (alias === 'latitude') {
+                vals[field] = place.geometry.location.lat();
+            } else if (alias === 'longitude') {
+                vals[field] = place.geometry.location.lng();
+            }
+        });
+        return vals;
+    }
+
+    function gmaps_populate_places(place, place_options) {
+        var values = {};
+        _.each(place_options, function (option, field) {
+            if (option instanceof Array && !_.has(values, field)) {
+                var val = _.first(_.map(option, function (opt) {
+                    return place[opt];
+                }));
+                if (val) {
+                    values[field] = val;
+                }
+            } else {
+                values[field] = place[option];
+            }
+        });
+        return values;
+    }
 
     function gmaps_populate_address(place, address_options, delimiter) {
         var address_options = address_options || {};
@@ -101,7 +145,7 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
         },
         init: function (parent, options) {
             this._super.apply(this, arguments);
-            this.options = options;
+            this.options = _.defaults({}, options);
             this.parent = parent;
             this.place_automplete = undefined;
             this.place_marker = undefined;
@@ -166,7 +210,7 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
                     def.resolve(values);
                 });
             } else {
-                this.parent.on_geocoding(this.place_marker.getPosition()).done(function(place) {
+                this.parent.on_geocoding(this.place_marker.getPosition()).done(function (place) {
                     self.on_update_marker_infowindow(place);
                     self.on_update_pac_result(place);
                     var google_address = gmaps_populate_address(place, self.options.fields.address);
@@ -184,7 +228,7 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
                         });
                         def.resolve(values);
                     });
-                }).fail(function(){
+                }).fail(function () {
                     console.log('failed!');
                     def.reject();
                 });
@@ -195,10 +239,21 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
             if (this.marker_infowindow === undefined) {
                 this.marker_infowindow = new google.maps.InfoWindow();
             }
-            var $content = $(QWeb.render('MapPacMarkerContent', {'places': place}));
-            this.place_marker.setAnimation(google.maps.Animation.BOUNCE);
+            var $content = $(QWeb.render('MapPacMarkerContent', {
+                'places': place
+            }));
+            this.on_set_marker_animation();
             this.marker_infowindow.setContent($content.get(0));
             this.marker_infowindow.open(this.parent.map, this.place_marker);
+        },
+        on_set_marker_animation: function () {
+            /* FIXME: when marker is moved or user enter a new location (search a new location)
+             *  the marker is not animated
+             */
+            var self = this;
+            window.setTimeout(function () {
+                self.place_marker.setAnimation(google.maps.Animation.BOUNCE);
+            }, 500);
         },
         on_place_changed: function () {
             var self = this;
@@ -206,15 +261,17 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
             this.marker_infowindow = new google.maps.InfoWindow();
             this.marker_infowindow.setContent('<div></div>');
 
-            this.place_marker = new google.maps.Marker({
-                map: self.parent.map,
-                animation: google.maps.Animation.BOUNCE,
-                draggable: true
-            });
+            if (this.place_marker === undefined) {
+                this.place_marker = new google.maps.Marker({
+                    map: self.parent.map,
+                    draggable: true
+                });
+            }
 
             google.maps.event.addListener(this.place_marker, 'dragend', this.on_marker_get_position.bind(this, false));
 
             this.place_automplete.addListener('place_changed', function () {
+                self.on_set_marker_animation();
                 self.marker_infowindow.close();
                 self.place_marker.setVisible(false);
                 var place = self.place_automplete.getPlace();
@@ -246,7 +303,9 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
         },
         on_update_pac_result: function (place, action) {
             var act = action || false;
-            var pac_result = QWeb.render('MapPlacesQueryResult', {'place': place});
+            var pac_result = QWeb.render('MapPlacesQueryResult', {
+                'place': place
+            });
             if (act === 'show') {
                 this.$('#pac-result').html(pac_result).show();
             } else {
@@ -263,57 +322,27 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
             }
         },
         set_marker_content: function (place) {
-            var $infowindow_content = $(QWeb.render('MapPacMarkerContent', {'places': place}));
+            var $infowindow_content = $(QWeb.render('MapPacMarkerContent', {
+                'places': place
+            }));
             this.marker_infowindow.setContent($infowindow_content.get(0));
             this.marker_infowindow.open(this.parent.map, this.place_marker);
         },
         set_default_values: function (place) {
-            var self = this;
             var values = {};
-            _.each(this.options.fields, function (attrs, type) {
-                if (type === 'general') {
-                    _.each(attrs, function (option, field) {
-                        if (option instanceof Array && !_.has(values, field)) {
-                            var val = _.first(_.map(option, function (opt) {
-                                return place[opt];
-                            }));
-                            if (val) {
-                                values[field] = val;
-                            }
-                        } else if (field == 'is_company') {
-                            var $partner_type = self.$el.find('input[name="company_type"]:checked');
-                            if ($partner_type.length && $partner_type.val() == 'company') {
-                                values[field] = true;
-                            }
-                        } else {
-                            values[field] = place[option];
-                            if (field === 'name') {
-                                var $place_name = self.$el.find('input[name="place_name"]');
-                                if ($place_name.val()) {
-                                    values[field] = $place_name.val();
-                                }
-                            }
-                            
-                        }
-                    });
-                } else if (type === 'geolocation') {
-                    var geolocation = self.get_geolocation(attrs);
-                    _.extend(values, geolocation);
+            if (this.options.hasOwnProperty('fields')) {
+                if (this.options.fields.hasOwnProperty('general')) {
+                    var places_general = gmaps_populate_places(place, this.options.fields.general);
+                    _.extend(values, places_general);
                 }
-            });
+
+                if (this.options.fields.hasOwnProperty('geolocation')) {
+                    var places_geolocation = gmaps_get_geolocation(place, this.options.fields.geolocation);
+                    _.extend(values, places_geolocation);
+                }
+            }
+
             return values;
-        },
-        get_geolocation: function (options) {
-            var self = this;
-            var vals = {};
-            _.each(options, function (field, alias) {
-                if (alias === 'latitude') {
-                    vals[field] = self.place_marker.getPosition().lat();
-                } else if (alias === 'longitude') {
-                    vals[field] = self.place_marker.getPosition().lng();
-                }
-            });
-            return vals;
         },
         on_create_partner: function (ev) {
             ev.preventDefault();
@@ -322,7 +351,7 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
                 var values = self.set_default_values(this.place);
                 // check if the marker position is not equal to initial position, marker has been moved
                 var is_by_place = this.place.geometry.location === this.place_marker.getPosition();
-                this.on_marker_get_position(is_by_place).done(function(result) {
+                this.on_marker_get_position(is_by_place).done(function (result) {
                     if (result) {
                         _.extend(values, result);
                         new Model(self.options.model).call(self.options.method, [values]).done(function (record) {
@@ -341,7 +370,7 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
                     } else {
                         self.do_notify(_t('Fail to create new partner!'));
                     }
-                }).fail(function(err, event){
+                }).fail(function (err, event) {
                     self.do_notify(_t('Fail to create new partner!'));
                 });
             }
@@ -350,9 +379,7 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
             var def = $.Deferred();
             var res = {};
             if (field_name == 'state_id') {
-                new Model('res.country.state').call('search', [
-                    ['|', ['name', '=', value], ['code', '=', value]]
-                ]).done(function (record) {
+                new Model('res.country.state').call('search', [['|', ['name', '=', value],['code', '=', value]]]).done(function (record) {
                     res[field_name] = record.length > 0 ? record[0] : false;
                     def.resolve(res);
                 });
@@ -374,7 +401,10 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
     return {
         'MapPlacesAutocomplete': MapPlacesAutocomplete,
         'GOOGLE_PLACES_COMPONENT_FORM': GOOGLE_PLACES_COMPONENT_FORM,
-        'gmaps_populate_address': gmaps_populate_address
+        'gmaps_populate_address': gmaps_populate_address,
+        'gmaps_populate_places': gmaps_populate_places,
+        'gmaps_get_geolocation': gmaps_get_geolocation,
+        'odoo_prepare_values': odoo_prepare_values
     };
 
 });

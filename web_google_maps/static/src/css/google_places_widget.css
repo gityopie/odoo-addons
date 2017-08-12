@@ -138,3 +138,8 @@
 .o_map_place_result ul li i {
     padding-right: 5px;
 }
+
+.o_control_panel .o_map_buttons_view > button:first-child {
+    float: left;
+    margin-right: 4px;
+}

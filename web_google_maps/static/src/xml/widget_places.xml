@@ -11,6 +11,17 @@
             t-att-maxlength="widget.field.size"/>
         <span t-if="widget.get('effective_readonly')"/>
     </t>
+    <t t-name="web_google_maps.FieldGooglePlacesAutocomplete">
+        <input t-if="!widget.get('effective_readonly')" class="o_form_input"
+            t-att-type="widget.password ? 'password' : 'text'"
+            t-att-barcode_events="widget.options.barcode_events"
+            t-att-id="widget.id_for_label"
+            t-att-tabindex="widget.node.attrs.tabindex"
+            t-att-autofocus="widget.node.attrs.autofocus"
+            t-att-placeholder="widget.node.attrs.placeholder"
+            t-att-maxlength="widget.field.size"/>
+        <span t-if="widget.get('effective_readonly')"/>
+    </t>
     <t t-name="MapView">
         <div class="o_map">
             <div class="o_map_sidenav">
@@ -69,10 +80,6 @@
                                 <div id="pac-result" style="display:none;">
                                 </div>
                                 <div id="pac-button" style="display: none;">
-                                    <input type="radio" name="company_type" checked="checked" value="person"/>
-                                    <label for="radio_company_person">Individual</label>
-                                    <input type="radio" name="company_type" value="company"/>
-                                    <label for="radio_company_company">Company</label>
                                     <button type="button" class="btn btn-sm btn-primary" id="pac-button-create">Create Partner</button>
                                 </div>
                             </div>
@@ -169,6 +176,13 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </t>
+    <t t-name="MapView.buttons">
+        <div class="o_map_buttons_view">
+            <button type="button" class="btn btn-primary btn-sm o_map_button_reload">
+                Reload
+            </button>
         </div>
     </t>
 </templates>
