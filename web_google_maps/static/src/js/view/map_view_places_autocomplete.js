@@ -158,7 +158,7 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
             this.parent.on_toogle_sidenav();
         },
         on_reset_places: function () {
-            this.$el.find('input[id="pac-input"]').val('');
+            this.$('input[id="pac-input"]').val('');
             this.show_create_partner_button('hide');
         },
         _set_input_controls: function () {
@@ -279,8 +279,8 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
                     // User entered the name of a Place that was not suggested and
                     // pressed the Enter key, or the Place Details request failed.
                     self.do_notify(_t("No details available for input: '" + place.name + "'"));
-                    self.$el.find('#pac-button').hide();
-                    self.$el.find('#pac-result').html('').hide();
+                    self.$('#pac-button').hide();
+                    self.$('#pac-result').html('').hide();
                     return;
                 }
                 self.place = place;
@@ -315,10 +315,10 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
         show_create_partner_button: function (show) {
             var is_show = show || 'hide';
             if (is_show == 'show') {
-                this.$el.find('#pac-button').show();
+                this.$('#pac-button').show();
             } else {
-                this.$el.find('#pac-button').hide();
-                this.$el.find('#pac-result').html('').hide();
+                this.$('#pac-button').hide();
+                this.$('#pac-result').html('').hide();
             }
         },
         set_marker_content: function (place) {
@@ -334,6 +334,13 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
                 if (this.options.fields.hasOwnProperty('general')) {
                     var places_general = gmaps_populate_places(place, this.options.fields.general);
                     _.extend(values, places_general);
+
+                    if (values.hasOwnProperty('name')) {
+                        var $input_place_name = this.$('input#place-input-name');
+                        if ($input_place_name.val()) {
+                            values.name = $input_place_name.val();
+                        }
+                    }
                 }
 
                 if (this.options.fields.hasOwnProperty('geolocation')) {

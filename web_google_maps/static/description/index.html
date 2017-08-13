@@ -2,32 +2,26 @@
     <div class="oe_row oe_spaced">
         <h2 class="oe_slogan" style="color:#875A7B;">Brings Google Maps features into Odoo Web</h2>
         <h4 class="oe_slogan">Show all your partners location on google maps</h4>
-        <div>
-            <p><strong>[Update 08 July 2017]</strong></p>
-            <ul>
-                <li>Not just partner(res.partner) model but any model contains geolocation fields</li>
-            </ul>
-            <p><strong>[Update 22 July 2017]</strong></p>
-            <ul>
-                <li>Map localization</li>
-                <li>Create new partner within the map</li>
-            </ul>
-        </div>
         <div class="oe_span12">
-            <img class="oe_picture oe_screenshot" src="map_view.png">
+            <img class="oe_picture oe_screenshot" src="maps_view.png">
             <div class="text-center">
-                <a href="https://youtu.be/YmM-8VCNRzE" class="btn btn-primary" target="_blank">Demo Video</a>
+                <a href="https://youtu.be/2UdG5ILDtiY" class="btn btn-primary" target="_blank">Demo Video</a>
             </div>
         </div>
         <div class="oe_span12">
-            <p>This module brings three features:</p>
+            <p>This module brings five new features:</p>
             <ul>
-                <li>Allows user to view all partners addresses on google maps.</li>
+                <li>New view 'map' allows user to view all partners addresses on google maps.</li>
                 <li>
-                    Enabled <a target="_blank" href="https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete-addressform">Google places autocomplete address form</a> into partner form view,<br/>
-                    provide autocomplete feature when you typed an address of partner
+                    New widget 'gplaces_address_form', enabled <a target="_blank" href="https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete-addressform">Google places autocomplete address form</a> into partner form view,<br/>
+                    provide autocomplete feature when you typed an address of partner (or any field using this widget)
+                </li>
+                <li>
+                    New widget 'gplace_autocomplete', enabled <a target="_blank" href="https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete">Google places autocomplete</a> into partner form view,<br/>
+                    provide autocomplete feature when you typed partner name (or any field using this widget)
                 </li>
                 <li>Routes information</li>
+                <li>Map Localization</li>
             </ul>
         </div>
     </div>
@@ -35,7 +29,7 @@
 <section class="oe_container oe_separator"></section>
 <section class="oe_container">
     <div class="oe_row oe_spaced oe_mb64">
-        <h4 class="oe_slogan">New Widget for Google Place Autocomplete Address Form</h4>
+        <h4 class="oe_slogan">New Widget Google Place Autocomplete Address Form</h4>
         <div class="oe_span12">
             <img class="oe_picture oe_screenshot" src="widget_google_places.png">
         </div>
@@ -47,9 +41,21 @@
 <section class="oe_container oe_separator"></section>
 <section class="oe_container">
     <div class="oe_row oe_spaced oe_mb64">
+        <h4 class="oe_slogan">New Widget Google Place Autocomplete</h4>
+        <div class="oe_span12">
+            <img class="oe_picture oe_screenshot" src="widget_gplaces_autocomplete.png">
+        </div>
+        <div class="oe_span12 oe_mb32">
+            <p>Provide autocomplete feature when typing partner's name</p>
+        </div>
+    </div>
+</section>
+<section class="oe_container oe_separator"></section>
+<section class="oe_container">
+    <div class="oe_row oe_spaced oe_mb64">
         <h4 class="oe_slogan">Routes</h4>
         <div class="oe_span12">
-            <img class="oe_picture oe_screenshot" src="map_view_routes.png">
+            <img class="oe_picture oe_screenshot" src="route_info.png">
         </div>
         <div class="oe_span12 oe_mb32">
             <p>Distance information between two partners locations</p>
@@ -65,31 +71,9 @@
 <section class="oe_container oe_separator"></section>
 <section class="oe_container">
     <div class="oe_row oe_spaced oe_mb64">
-        <h4 class="oe_slogan">Map localization</h4>
-        <div class="oe_span12">
-            <img class="oe_picture oe_screenshot" src="map_localization_arab.png">
-        </div>
-        <div class="oe_span12">
-            <img class="oe_picture oe_screenshot" src="map_localization_japan.png">
-        </div>
-        <div class="oe_span12 oe_mb32">
-            <p>You can customize the map for a specific country or region in the following ways:</p>
-            <ul>
-                <li>Change the default language settings.</li>
-                <li>Specify a region code, which alters the map's behavior based on a given country or territory.</li>
-            </ul>
-        </div>
-        <div class="text-center">
-            <a href="https://youtu.be/857lphWD9t0" class="btn btn-primary" target="_blank">Demo Video</a>
-        </div>
-    </div>
-</section>
-<section class="oe_container oe_separator"></section>
-<section class="oe_container">
-    <div class="oe_row oe_spaced oe_mb64">
         <h4 class="oe_slogan">Create new partner within the map</h4>
         <div class="oe_span12">
-            <img class="oe_picture oe_screenshot" src="map_create_new_partner.png">
+            <img class="oe_picture oe_screenshot" src="create_new_partner_in_map.png">
         </div>
         <div class="oe_span12 oe_mb32">
             <p>Using google places autocomplete, you can search any company, hotel, restaurant or any places recognized by Google</p>

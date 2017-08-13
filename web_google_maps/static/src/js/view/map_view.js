@@ -424,7 +424,7 @@ odoo.define('web.MapView', function (require) {
             }, 1000);
             return $.when();
         },
-        render_buttons($node) {
+        render_buttons: function($node) {
             var self = this;
             this.$buttons = $('<div/>');
             var $footer = this.$('footer');

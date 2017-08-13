@@ -1,4 +1,4 @@
-odoo.define('web_google_maps.GooglePlaces', function (require) {
+odoo.define('web_google_maps.GooglePlacesFormAddress', function (require) {
     "use strict";
 
     var core = require('web.core');
