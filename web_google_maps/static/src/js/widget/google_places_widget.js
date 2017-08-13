@@ -1,4 +1,4 @@
-odoo.define('web_google_maps.GooglePlaces', function (require) {
+odoo.define('web_google_maps.GooglePlacesFormAddress', function (require) {
     "use strict";
 
     var core = require('web.core');
@@ -11,7 +11,7 @@ odoo.define('web_google_maps.GooglePlaces', function (require) {
 
     var FieldCharGooglePlaces = form_widgets.FieldChar.extend({
         template: 'web_google_maps.FieldGooglePlaces',
-        display_name: _t('Google Places'),
+        display_name: _t('Google Places Form Address'),
         events: {
             'focus': 'geolocate',
             'change': 'store_dom_value'
@@ -21,10 +21,10 @@ odoo.define('web_google_maps.GooglePlaces', function (require) {
             this.type_relations = ['one2many', 'many2one', 'many2many'];
             this.places_autocomplete = false;
             this.component_form = MapViewPlacesAutocomplete.GOOGLE_PLACES_COMPONENT_FORM;
+            // `name` is not a part of place.address components, but it's a part of place
+            // * place = values returns by places autocomplete or places autocomplete form address
+            // In case if 'street_number' and 'route' in place.address_components is not exists, `name` will be the last attribute to check
             this.fillfields = {
-                // `name` is not a part of place.address components, but it's a part of place
-                // * place = values returns by places autocomplete or places autocomplete form address
-                // In case if 'street_number' and 'route' in place.address_components is not exists, `name` will be the last attribute to check
                 street: ['street_number', 'route', 'name'],
                 street2: ['administrative_area_level_3', 'administrative_area_level_4', 'administrative_area_level_5'],
                 city: ['locality', 'administrative_area_level_2'],
@@ -140,21 +140,10 @@ odoo.define('web_google_maps.GooglePlaces', function (require) {
             });
         },
         prepare_value: function (model, field_name, value) {
-            var def = $.Deferred();
-            var res = {};
-            if (model) {
-                new Model(model).call('search', [['|', ['name', '=', value], ['code', '=', value]]]).done(function (record) {
-                    res[field_name] = record.length > 0 ? record[0] : false;
-                    def.resolve(res);
-                });
-            } else {
-                res[field_name] = value;
-                def.resolve(res);
-            }
-            return def;
+            return MapViewPlacesAutocomplete.odoo_prepare_values(model, field_name, value);
         },
         render_value: function () {
-            this._super();
+            this._super.apply(this, arguments);
             if (this.$input && this.is_fields_valid()) {
                 this.gmaps_initialize();
             }
@@ -173,7 +162,7 @@ odoo.define('web_google_maps.GooglePlaces', function (require) {
         }
     });
 
-    core.form_widget_registry.add('google_places', FieldCharGooglePlaces);
+    core.form_widget_registry.add('gplaces_address_form', FieldCharGooglePlaces);
 
     return FieldCharGooglePlaces;
 

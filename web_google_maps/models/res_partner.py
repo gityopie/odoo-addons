@@ -36,8 +36,7 @@ class ResPartner(models.Model):
     def create_partner_from_map(self, values):
         default_fields = ['name', 'street', 'street2', 'website', 'phone',
                           'city', 'zip', 'country_id', 'state_id',
-                          'is_company', 'partner_latitude',
-                          'partner_longitude']
+                          'partner_latitude', 'partner_longitude']
         if isinstance(values, dict) and any(
                 val in default_fields for val in values.keys()):
             partner_id = self.env['res.partner'].create(values)

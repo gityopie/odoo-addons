@@ -7,8 +7,11 @@
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
+                <field name="name" position="attributes">
+                    <attribute name="widget">gplaces_autocomplete</attribute>
+                </field>
                 <field name="street" position="attributes">
-                    <attribute name="widget">google_places</attribute>
+                    <attribute name="widget">gplaces_address_form</attribute>
                 </field>
                 <div name="button_box" position="inside">
                     <button name="%(web_google_maps.act_res_partner_map)d" type="action"
@@ -26,7 +29,7 @@
             <field name="inherit_id" ref="base.view_partner_address_form"/>
             <field name="arch" type="xml">
                 <field name="street" position="attributes">
-                    <attribute name="widget">google_places</attribute>
+                    <attribute name="widget">gplaces_address_form</attribute>
                 </field>
             </field>
         </record>
