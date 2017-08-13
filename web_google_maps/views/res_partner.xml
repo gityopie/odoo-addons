@@ -29,7 +29,7 @@
             <field name="inherit_id" ref="base.view_partner_address_form"/>
             <field name="arch" type="xml">
                 <field name="street" position="attributes">
-                    <attribute name="widget">google_places_form_address</attribute>
+                    <attribute name="widget">gplaces_address_form</attribute>
                 </field>
             </field>
         </record>

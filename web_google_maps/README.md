@@ -159,19 +159,19 @@ Same configuration of `gplaces_address_form` component form
 This configuration works similar to `gplace_address_form`.
 
 By default this options are configured like following value:
-> 
-	{
-    	general: {
-        	name: 'name',
+>
+    {
+        general: {
+            name: 'name',
             website: 'website',
             phone: ['international_phone_number', 'formatted_phone_number']
         },
         geolocation: {
-        	partner_latitude: 'latitude',
+            partner_latitude: 'latitude',
             partner_longitude: 'longitude'
         },
         address: {
-        	street: ['street_number', 'route', 'name'],
+            street: ['street_number', 'route', 'name'],
             street2: ['administrative_area_level_3', 'administrative_area_level_4', 'administrative_area_level_5'],
             city: ['locality', 'administrative_area_level_2'],
             zip: 'postal_code',
