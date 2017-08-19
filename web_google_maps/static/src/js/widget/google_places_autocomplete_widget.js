@@ -5,7 +5,6 @@ odoo.define('web_google_maps.GooglePlacesAutocomplete', function (require) {
     var form_widgets = require('web.form_widgets');
     var ajax = require('web.ajax');
     var MapViewPlacesAutocomplete = require('web.MapViewPlacesAutocomplete');
-    var Model = require('web.Model');
     var _t = core._t;
 
 
@@ -154,6 +153,10 @@ odoo.define('web_google_maps.GooglePlacesAutocomplete', function (require) {
                 }
             }
             return true;
+        },
+        destroy_content: function () {
+            google.maps.event.clearInstanceListeners(this.places_autocomplete);
+            this._super.apply(this, arguments);
         }
     });
 
