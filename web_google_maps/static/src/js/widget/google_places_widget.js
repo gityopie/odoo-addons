@@ -159,6 +159,10 @@ odoo.define('web_google_maps.GooglePlacesFormAddress', function (require) {
                 self.do_warn(_t('The following fields are invalid:'), _t('<ul><li>' + unknown_fields.join('</li><li>') + '</li></ul>'));
                 return false;
             }
+        },
+        destroy_content: function() {
+            google.maps.event.clearInstanceListeners(this.places_autocomplete);
+            this._super.apply(this, arguments);
         }
     });
 
