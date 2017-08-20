@@ -15,27 +15,37 @@
 }
 
 .o_map .o_map_sidenav {
-    height: 100%;
-    width: 0;
-    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    max-width: 400px;
+    width: 400px;
+    position: absolute;
     z-index: 1;
     background-color: #f5f5f5;
     overflow-x: hidden;
     transition: 0.5s;
-    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.3);
+    transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
+}
+
+.o_map .o_map_sidenav.whiteframe {
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, .2), 0 4px 5px 0 rgba(0, 0, 0, .14), 0 1px 10px 0 rgba(0, 0, 0, .12);
+}
+
+.o_map .o_map_sidenav.closed {
+    transform: translate3d(-100%, 0, 0);
+    -webkit-transform: translate3d(-100%, 0, 0);
 }
 
 .o_map .o_map_sidenav .sidenav-body .panel {
     border: none;
 }
+
 .o_act_window .o_map .o_map_view,
 .o_act_window .o_map .o_map_sidenav {
     min-height: 400px;
     height: 400px;
-}
-
-.o_map .o_map_sidenav.opened {
-    width: 400px;
 }
 
 .o_map .o_map_sidenav .controls,
@@ -139,7 +149,7 @@
     padding-right: 5px;
 }
 
-.o_control_panel .o_map_buttons_view > button:first-child {
+.o_control_panel .o_map_buttons_view>button:first-child {
     float: left;
     margin-right: 4px;
 }
