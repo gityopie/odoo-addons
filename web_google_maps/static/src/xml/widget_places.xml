@@ -24,7 +24,7 @@
     </t>
     <t t-name="MapView">
         <div class="o_map">
-            <div class="o_map_sidenav">
+            <div class="o_map_sidenav closed">
                 <div class="sidenav-body">
                     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     </div>
