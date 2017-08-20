@@ -66,12 +66,10 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
         var values = {};
         _.each(place_options, function (option, field) {
             if (option instanceof Array && !_.has(values, field)) {
-                var val = _.first(_.map(option, function (opt) {
-                    return place[opt];
+                var vals = _.filter(_.map(option, function (opt) {
+                    return place[opt] || false;
                 }));
-                if (val) {
-                    values[field] = val;
-                }
+                values[field] = vals.length > 0 ? vals[0] : "";
             } else {
                 values[field] = place[option] || "";
             }
