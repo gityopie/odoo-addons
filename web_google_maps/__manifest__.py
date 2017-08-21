@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Web Google Maps',
-    'version': '1.1',
+    'version': '1.2',
     'author': "Yopi Angi",
     'maintainer': 'Yopi Angi<yopiangi@gmail.com>',
     'category': 'web',
@@ -22,8 +22,10 @@ form view, it provide autocomplete feature when you typed an address of partner
     'data': [
         'views/google_places_template.xml',
         'views/res_partner.xml',
+        'views/res_config.xml'
     ],
     'demo': [],
     'qweb': ['static/src/xml/widget_places.xml'],
-    'installable': True
+    'installable': True,
+    'uninstall_hook': 'uninstall_hook',
 }
