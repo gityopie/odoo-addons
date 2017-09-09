@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data>
-        <template id="web.assets_gmaps">
+        <template id="web_google_maps.assets_gmaps">
             <t t-set="google_maps_api_key" t-value="request.env['ir.config_parameter'].sudo().get_param('google_maps_api_key')"/>
             <t t-set="google_maps_lang_localization" t-value="request.env['ir.config_parameter'].sudo().get_param('google_maps_lang_localization')"/>
             <t t-set="google_maps_region_localization" t-value="request.env['ir.config_parameter'].sudo().get_param('google_maps_region_localization')"/>
@@ -18,7 +18,7 @@
         <!-- the reason is we don't have the actual file and it will be downloaded when the page is loaded -->
         <template id="webclient_bootstrap" name="webclient_bootstrap gmaps" inherit_id="web.webclient_bootstrap">
             <xpath expr="//t[@t-call-assets='web.assets_common']" position="before">
-                <t t-call="web.assets_gmaps"/>
+                <t t-call="web_google_maps.assets_gmaps"/>
             </xpath>
         </template>
         <template id="assets_backend" name="web_google_maps assets backend" inherit_id="web.assets_backend">
