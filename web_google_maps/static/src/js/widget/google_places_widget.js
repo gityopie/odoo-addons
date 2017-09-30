@@ -36,6 +36,8 @@ odoo.define('web_google_maps.GooglePlacesFormAddress', function (require) {
                 street: " ",
                 street2: ", ",
             };
+            this.lng = false;
+            this.lat = false;
         },
         initialize_content: function () {
             var self = this;
@@ -51,6 +53,12 @@ odoo.define('web_google_maps.GooglePlacesFormAddress', function (require) {
                     }
                     if (this.options.hasOwnProperty('delimiter')) {
                         this.fillfields_delimiter = this.options.delimiter;
+                    }
+                    if (this.options.hasOwnProperty('lat')) {
+                        this.lat = this.options.lat;
+                    }
+                    if (this.options.hasOwnProperty('lng')) {
+                        this.lng = this.options.lng;
                     }
                 }
                 this.target_fields = this.get_field_type();
@@ -81,11 +89,11 @@ odoo.define('web_google_maps.GooglePlacesFormAddress', function (require) {
             return fields;
         },
         set_partner_lat_lng: function (latitude, longitude) {
-            var partner = ['partner_latitude', 'partner_longitude'];
+            var partner = [this.lat, this.lng];
             var res = {};
             if (_.intersection(_.keys(this.field_manager.fields), partner).length == 2) {
-                res.partner_latitude = latitude;
-                res.partner_longitude = longitude;
+                res[this.lat] = latitude;
+                res[this.lng] = longitude;
             }
             return res;
         },

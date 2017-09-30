@@ -24,6 +24,7 @@ odoo.define('web.MapView', function (require) {
             this.fields = this.fields_view.fields;
             this.children_field = this.fields_view.field_parent;
             this.geocoder = new google.maps.Geocoder;
+            this.marker_title = 'name';
         },
         start: function () {
             var self = this;
@@ -37,6 +38,7 @@ odoo.define('web.MapView', function (require) {
         },
         willStart: function () {
             this.set_geolocation_fields();
+            this.set_marker_title();
             return this._super.apply(this, arguments);
         },
         set_geolocation_fields: function () {
@@ -47,6 +49,15 @@ odoo.define('web.MapView', function (require) {
             } else {
                 this.do_warn(_t('Error: cannot display locations'), _t('Please define alias name for geolocations fields for map view!'));
                 return false;
+            }
+        },
+        set_marker_title: function() {
+            if (this.fields_view.arch.attrs.title) {
+                var title = this.fields_view.arch.attrs.title;
+                if (!this.fields.hasOwnProperty(title)) {
+                    this.do_warn(_t('Map View Attributes'), _t('The fields for marker title needs to be loaded into view!'));
+                }
+                this.marker_title = title;
             }
         },
         on_load_markers: function () {
@@ -79,8 +90,8 @@ odoo.define('web.MapView', function (require) {
                 map: this.map,
                 animation: google.maps.Animation.DROP,
             };
-            if (record.name) {
-                marker_options.label = record.name.slice(0, 2);
+            if (record.hasOwnProperty(this.marker_title)) {
+                marker_options.label = record[this.marker_title].slice(0, 2);
             }
             var marker = new google.maps.Marker(marker_options);
             this.markers.push(marker);

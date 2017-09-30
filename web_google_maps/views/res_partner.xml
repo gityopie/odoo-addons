@@ -12,6 +12,7 @@
                 </field>
                 <field name="street" position="attributes">
                     <attribute name="widget">gplaces_address_form</attribute>
+                    <attribute name="options">{'lat': 'partner_latitude', 'lng': 'partner_longitude'}</attribute>
                 </field>
                 <div name="button_box" position="inside">
                     <button name="%(web_google_maps.act_res_partner_map)d" type="action"
