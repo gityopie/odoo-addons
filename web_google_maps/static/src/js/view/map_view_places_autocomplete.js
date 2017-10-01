@@ -246,7 +246,7 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
         },
         on_set_marker_animation: function () {
             /* FIXME: when marker is moved or user enter a new location (search a new location)
-             *  the marker is not animated
+             *  the marker is stop animated
              */
             var self = this;
             window.setTimeout(function () {

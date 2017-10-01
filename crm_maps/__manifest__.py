@@ -12,11 +12,13 @@ CRM Maps
 See your leads and pipelines on map
 """,
     'depends': [
-        'crm'
+        'crm',
+        'web_google_maps'
     ],
     'data': [
         'views/crm_lead.xml'
     ],
     'demo': [],
-    'installable': True
+    'installable': True,
+    'uninstall_hook': 'uninstall_hook',
 }

@@ -15,7 +15,14 @@ odoo.define('web.MapView', function (require) {
         className: 'o_map',
         display_name: _lt('Map'),
         icon: 'fa-map-o',
-        searchable: true,
+        defaults: _.extend({}, View.prototype.defaults, {
+            // records can be selected one by one
+            selectable: true,
+            // whether the column headers should be displayed
+            header: true,
+            action_buttons: true,
+            searchable: true,
+        }),
         init: function () {
             this._super.apply(this, arguments);
             this.markers = [];
@@ -51,11 +58,11 @@ odoo.define('web.MapView', function (require) {
                 return false;
             }
         },
-        set_marker_title: function() {
+        set_marker_title: function () {
             if (this.fields_view.arch.attrs.title) {
                 var title = this.fields_view.arch.attrs.title;
                 if (!this.fields.hasOwnProperty(title)) {
-                    this.do_warn(_t('Map View Attributes'), _t('The fields for marker title needs to be loaded into view!'));
+                    this.do_warn(_t('Map View Attributes'), _t('The field for marker title needs to be loaded into view!'));
                 }
                 this.marker_title = title;
             }
@@ -84,18 +91,24 @@ odoo.define('web.MapView', function (require) {
             }));
         },
         _create_marker: function (lat_lng, record) {
-            var record = _.defaults(record || {}, {name: 'XY'});
-            var marker_options = {
+            var options = {
                 position: lat_lng,
                 map: this.map,
-                animation: google.maps.Animation.DROP,
+                animation: google.maps.Animation.DROP
             };
-            if (record.hasOwnProperty(this.marker_title)) {
-                marker_options.label = record[this.marker_title].slice(0, 2);
+            if (record[this.marker_title] instanceof Array && record[this.marker_title].length > 0) {
+                options.label = record[this.marker_title][1].slice(0, 2);
+            } else {
+                options.label = record[this.marker_title].slice(0, 2);
             }
+            var marker_options = this.set_marker_style(options);
             var marker = new google.maps.Marker(marker_options);
             this.markers.push(marker);
             this.set_marker(marker, record);
+        },
+        set_marker_style: function (marker_options) {
+            // set your own marker
+            return marker_options;
         },
         clear_marker_clusterer: function () {
             this.marker_cluster.clearMarkers();
@@ -116,22 +129,30 @@ odoo.define('web.MapView', function (require) {
         marker_infowindow_content: function (record) {
             var self = this;
             var ignored_fields = ['id', this.latitude, this.longitude];
-            var contents = [];
-            var title = "";
+            var content = {
+                id: record.id,
+                title: '',
+                items: []
+            };
             _.each(record, function (val, key) {
                 if (val && ignored_fields.indexOf(key) === -1) {
-                    if (key == 'name') {
-                        title += '<h3>' + val + '</h3>';
+                    if (key === self.marker_title) {
+                        content.title = (val instanceof Array && val.length > 0) ? val[1] : val;
                     } else {
                         if (val instanceof Array && val.length > 0) {
-                            contents.push('<p><strong>' + self.fields[key].string + '</strong> : <span>' + val[1] + '</span></p>');
+                            content.items.push('<strong>' + self.fields[key].string + '</strong> : <span>' + val[1] + '</span>');
                         } else {
-                            contents.push('<p><strong>' + self.fields[key].string + '</strong> : <span>' + val + '</span></p>');
+                            content.items.push('<strong>' + self.fields[key].string + '</strong> : <span>' + val + '</span>');
                         }
                     }
                 }
             });
-            var res = '<div>' + title + '<dl>' + contents.join('') + '</dl></div>';
+
+            var marker_iw = new MapMarkerInfoWindow(this);
+            marker_iw.setElement($(QWeb.render('MapView.infoWindow', {
+                'content': content
+            })));
+            var res = marker_iw.$el.get(0);
             return res;
         },
         init_map: function () {
@@ -202,32 +223,31 @@ odoo.define('web.MapView', function (require) {
             this.map_layer_traffic_controls();
             this.map_layer_places_autocomplete_controls();
         },
+        /**
+         * On route mode
+         * We will display travel mode (driving, walking, bicycling, transit) controls
+         */
         map_layer_traffic_controls: function () {
-            /* 
-            * On route mode
-            * We will display travel mode (driving, walking, bicycling, transit) controls
-            */
             var route_mode = this.dataset.context.route_direction ? true : false;
             var map_controls = new MapControl(this, route_mode);
             map_controls.setElement($(QWeb.render('MapViewControl', {})));
             map_controls.start();
         },
+        /**
+         * The three keys('model', 'method', 'fields') in the object assigned to variable 'options' is a mandatory keys.
+         * The idea is to be able to pass any 'object' that can be created within the map
+         *  
+         * The fields options is divided into three parts:
+         * 1) 'general'
+         *     This configuration is for 'general' fields of the object, fields like name, phone, etc..
+         *     On the right side of each field is an attribute(s) from 'Places autocomplete'
+         * 2) 'geolocation'
+         *     This configuration is for geolocation fields (only 'latitude' and 'longitude')
+         *     latitude and longitude is an alias name from geolocation fields
+         * 3) 'address'
+         *     This configuration is similar to configuration used by 'google_places' widget
+         */
         map_layer_places_autocomplete_controls: function () {
-            /* 
-             * The three keys('model', 'method', 'fields') in the object assigned to variable 'options' is a mandatory keys.
-             * The idea is to be able to pass any 'object' that can be created within the map
-             * 
-             * The fields options is divided into three parts:
-             * 1) 'general'
-             *     This configuration is for 'general' fields of the object, fields like name, phone, etc..
-             *     On the right side of each field is an attribute(s) from 'Places autocomplete'
-             * 2) 'geolocation'
-             *     This configuration is for geolocation fields (only 'latitude' and 'longitude')
-             *     latitude and longitude is an alias name from geolocation fields
-             * 3) 'address'
-             *     This configuration is similar to configuration used by 'google_places' widget
-             *  
-             */
             var options = {
                 model: 'res.partner',
                 method: 'create_partner_from_map',
@@ -387,10 +407,10 @@ odoo.define('web.MapView', function (require) {
             var lat_lng = location['lat_lng'];
             var path = location['path'];
             var res = {};
-            this.on_geocoding(lat_lng, true).done(function(result){
+            this.on_geocoding(lat_lng, true).done(function (result) {
                 res[path] = result;
                 def.resolve(res);
-            }).fail(function() {
+            }).fail(function () {
                 res[path] = false;
                 def.resolve(res);
             });
@@ -399,7 +419,9 @@ odoo.define('web.MapView', function (require) {
         on_geocoding: function (lat_lng, formatted_address) {
             var is_formatted_address = typeof formatted_address === "boolean" ? formatted_address : false;
             var def = $.Deferred();
-            this.geocoder.geocode({'location': lat_lng}, function(results, status) {
+            this.geocoder.geocode({
+                'location': lat_lng
+            }, function (results, status) {
                 if (status === 'OK') {
                     if (is_formatted_address) {
                         def.resolve(results[0].formatted_address);
@@ -434,21 +456,44 @@ odoo.define('web.MapView', function (require) {
             }, 1000);
             return $.when();
         },
-        render_buttons: function($node) {
+        render_buttons: function ($node) {
             var self = this;
             this.$buttons = $('<div/>');
             var $footer = this.$('footer');
             if (this.options.action_buttons !== false || this.options.footer_to_buttons && $footer.children().length === 0) {
-                this.$buttons.append(QWeb.render("MapView.buttons", {'widget': this}));
+                this.$buttons.append(QWeb.render("MapView.buttons", {
+                    'widget': this
+                }));
             }
             if (this.options.footer_to_buttons) {
                 $footer.appendTo(this.$buttons);
             }
-            this.$buttons.on('click', '.o_map_button_reload', function(ev){
+            this.$buttons.on('click', '.o_map_button_reload', function (ev) {
                 ev.preventDefault();
                 self.on_load_markers();
             });
             this.$buttons.appendTo($node);
+        },
+        switch_form_view: function (index) {
+            if (this.dataset.select_id(index)) {
+                this.do_switch_view('form');
+            } else {
+                this.do_warn("Map: could not find id#" + index);
+            }
+        }
+    });
+
+    var MapMarkerInfoWindow = Widget.extend({
+        events: {
+            'click': 'switch_mode'
+        },
+        init: function (parent) {
+            this._super.apply(this, arguments);
+            this.parent = parent;
+        },
+        switch_mode: function (ev) {
+            var index = $(ev.currentTarget).data('id');
+            this.parent.switch_form_view(index);
         }
     });
 
@@ -468,7 +513,7 @@ odoo.define('web.MapView', function (require) {
             var self = this;
 
             this.parent.shown.done(this.proxy('_init_controls'));
-                
+
             var map_layers = new MapControlLayer(this.parent);
             map_layers.setElement($(QWeb.render('MapControlLayers', {})));
             map_layers.start();
@@ -488,11 +533,11 @@ odoo.define('web.MapView', function (require) {
         events: {
             'click #map_layer': 'on_change_layer',
         },
-        init: function(parent) {
+        init: function (parent) {
             this._super.apply(this, arguments);
             this.parent = parent;
         },
-        start: function() {
+        start: function () {
             this.parent.$('.sidenav-body > #accordion').append(this.$el);
         },
         on_change_layer: function (ev) {
@@ -547,13 +592,13 @@ odoo.define('web.MapView', function (require) {
             this._super.apply(this, arguments);
             this.parent = parent;
         },
-        start: function() {
+        start: function () {
             this.parent.$('.sidenav-body > #accordion').append(this.$el);
         },
         on_change_mode: function (ev) {
             ev.preventDefault();
             $(ev.currentTarget).siblings().removeClass('active');
-            $(ev.currentTarget).toggleClass('active')
+            $(ev.currentTarget).toggleClass('active');
             var mode = $(ev.currentTarget).data('mode');
             this.parent.on_calculate_and_display_route(mode);
         },
