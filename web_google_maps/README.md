@@ -24,7 +24,7 @@ Example
         <field name="model">res.partner</field>
         <field name="arch" type="xml">
             <!-- Define aliase name for geolocation fields into view attributes -->
-            <map string="Map" lat="partner_latitude" lng="partner_longitude">
+            <map string="Map" lat="partner_latitude" title="name" lng="partner_longitude">
                 <field name="name"/>
                 <field name="street"/>
                 <field name="street2"/>
@@ -61,8 +61,10 @@ You have to set alias name for fields geolocation into `map` attributes
 Basically this new widget will integrate another cool feature of Google Maps which is "Place Autocomplete Address Form" (go and visit this [site](https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete-addressform) if you don't know yet how this cool feature work) 
 
 The widget (`google_places`) has two options that can be modify:
- - `component_form`   
+ - `component_form`
  - `fillfields`
+ - `lat`
+ - `lng`
 
 ### Component form (`component_form`)
 Is an option used to modify which value you want to take from an objects returned by the geocoder.    
@@ -137,6 +139,9 @@ Example:
             ...
         </field>
     </record>
+
+### Latitude (`lat`) and Longitude (`lng`)
+This option tell the widget the fields geolocation, in order to have this fields filled automatically.
 
 
 Note: this widget will set partner geolocation automatically whenever user pick or select an address from google autocomplete.

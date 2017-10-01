@@ -113,7 +113,8 @@
         <field name="name">view.crm.leads.map</field>
         <field name="model">crm.lead</field>
         <field name="arch" type="xml">
-            <map string="Maps" lat="customer_latitude" lng="customer_longitude">
+            <map string="Maps" lat="customer_latitude" lng="customer_longitude" colors="green:stage_id=='New';blue:stage_id=='Qualified';red:stage_id=='Proposition';yellow:stage_id=='Won';">
+            <!-- <map string="Maps" lat="customer_latitude" lng="customer_longitude" color="blue"> -->
                 <field name="customer_latitude"/>
                 <field name="customer_longitude"/>
                 <field name="name"/>
@@ -123,6 +124,7 @@
                 <field name="state_id"/>
                 <field name="zip"/>
                 <field name="country_id"/>
+                <field name="stage_id"/>
             </map>
         </field>
     </record>

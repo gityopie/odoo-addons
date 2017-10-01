@@ -3,6 +3,8 @@ odoo.define('web.MapView', function (require) {
 
     var core = require('web.core');
     var View = require('web.View');
+    var pyeval = require('web.pyeval');
+    var session = require('web.session');
     var Widget = require('web.Widget');
     var Model = require('web.Model');
     var MapViewPlacesAutocomplete = require('web.MapViewPlacesAutocomplete');
@@ -46,6 +48,7 @@ odoo.define('web.MapView', function (require) {
         willStart: function () {
             this.set_geolocation_fields();
             this.set_marker_title();
+            this.set_marker_colors();
             return this._super.apply(this, arguments);
         },
         set_geolocation_fields: function () {
@@ -66,6 +69,42 @@ odoo.define('web.MapView', function (require) {
                 }
                 this.marker_title = title;
             }
+        },
+        set_marker_colors: function () {
+            if (this.fields_view.arch.attrs.colors) {
+                this.colors = _(this.fields_view.arch.attrs.colors.split(';')).chain()
+                    .compact()
+                    .map(function (color_pair) {
+                        var pair = color_pair.split(':'),
+                            color = pair[0],
+                            expr = pair[1];
+                        return [color, py.parse(py.tokenize(expr)), expr];
+                    }).value();
+            }
+            if (this.fields_view.arch.attrs.color) {
+                this.color = this.fields_view.arch.attrs.color;
+            }
+        },
+        color_for: function (record) {
+            if (!this.colors) {
+                return '';
+            }
+            var context = _.mapObject(_.extend({}, record, {
+                uid: session.uid,
+                current_date: moment().format('YYYY-MM-DD') // TODO: time, datetime, relativedelta
+            }), function (val, key) {
+                return (val instanceof Array) ? (_.last(val) || '') : val;
+            });
+            for (var i = 0, len = this.colors.length; i < len; ++i) {
+                var pair = this.colors[i],
+                    color = pair[0],
+                    expression = pair[1];
+                if (py.PY_isTrue(py.evaluate(expression, context))) {
+                    return color;
+                }
+                // TODO: handle evaluation errors
+            }
+            return '';
         },
         on_load_markers: function () {
             var self = this;
@@ -90,25 +129,30 @@ odoo.define('web.MapView', function (require) {
                 });
             }));
         },
+        _get_icon_color: function (record) {
+            if (this.color) {
+                return this.color;
+            }
+            return this.color_for(record);
+        },
         _create_marker: function (lat_lng, record) {
-            var options = {
+            var options = '',
+                icon_url = '//maps.google.com/mapfiles/ms/icons/',
+                icon_color = '',
+                marker = '';
+            
+            options = {
                 position: lat_lng,
                 map: this.map,
                 animation: google.maps.Animation.DROP
-            };
-            if (record[this.marker_title] instanceof Array && record[this.marker_title].length > 0) {
-                options.label = record[this.marker_title][1].slice(0, 2);
-            } else {
-                options.label = record[this.marker_title].slice(0, 2);
             }
-            var marker_options = this.set_marker_style(options);
-            var marker = new google.maps.Marker(marker_options);
+            icon_color = this._get_icon_color(record);
+            if (icon_color) {
+                options.icon = icon_url + icon_color + '-dot.png';
+            }
+            marker = new google.maps.Marker(options);
             this.markers.push(marker);
             this.set_marker(marker, record);
-        },
-        set_marker_style: function (marker_options) {
-            // set your own marker
-            return marker_options;
         },
         clear_marker_clusterer: function () {
             this.marker_cluster.clearMarkers();
@@ -137,10 +181,10 @@ odoo.define('web.MapView', function (require) {
             _.each(record, function (val, key) {
                 if (val && ignored_fields.indexOf(key) === -1) {
                     if (key === self.marker_title) {
-                        content.title = (val instanceof Array && val.length > 0) ? val[1] : val;
+                        content.title = (val instanceof Array && val.length > 0) ? _.last(val) : val;
                     } else {
                         if (val instanceof Array && val.length > 0) {
-                            content.items.push('<strong>' + self.fields[key].string + '</strong> : <span>' + val[1] + '</span>');
+                            content.items.push('<strong>' + self.fields[key].string + '</strong> : <span>' + _.last(val) + '</span>');
                         } else {
                             content.items.push('<strong>' + self.fields[key].string + '</strong> : <span>' + val + '</span>');
                         }
