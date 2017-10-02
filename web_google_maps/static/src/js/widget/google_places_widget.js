@@ -25,7 +25,7 @@ odoo.define('web_google_maps.GooglePlacesFormAddress', function (require) {
             // * place = values returns by places autocomplete or places autocomplete form address
             // In case if 'street_number' and 'route' in place.address_components is not exists, `name` will be the last attribute to check
             this.fillfields = {
-                street: ['street_number', 'route', 'name'],
+                street: 'name',
                 street2: ['administrative_area_level_3', 'administrative_area_level_4', 'administrative_area_level_5'],
                 city: ['locality', 'administrative_area_level_2'],
                 zip: 'postal_code',
@@ -46,13 +46,13 @@ odoo.define('web_google_maps.GooglePlacesFormAddress', function (require) {
                 // update 'fillfields' and 'component_form' if exists
                 if (this.options) {
                     if (this.options.hasOwnProperty('fillfields')) {
-                        this.fillfields = this.options.fillfields;
+                        this.fillfields = _.defaults({}, this.options.fillfields, this.fillfields);
                     }
                     if (this.options.hasOwnProperty('component_form')) {
-                        _.extend(this.component_form, this.options.component_form);
+                        this.component_form = _.defaults({}, this.options.component_form, this.component_form);
                     }
                     if (this.options.hasOwnProperty('delimiter')) {
-                        this.fillfields_delimiter = this.options.delimiter;
+                        this.fillfields_delimiter = _.defaults({}, this.options.delimiter, this.fillfields_delimiter);
                     }
                     if (this.options.hasOwnProperty('lat')) {
                         this.lat = this.options.lat;
@@ -65,8 +65,7 @@ odoo.define('web_google_maps.GooglePlacesFormAddress', function (require) {
             }
         },
         get_field_type: function () {
-            var self = this;
-            var fields = [];
+            var self = this, fields = [];
             if (this.is_fields_valid()) {
                 _.each(this.fillfields, function (val, name) {
                     if (_.contains(self.type_relations, self.field_manager.fields[name].field.type)) {
@@ -89,8 +88,7 @@ odoo.define('web_google_maps.GooglePlacesFormAddress', function (require) {
             return fields;
         },
         set_partner_lat_lng: function (latitude, longitude) {
-            var partner = [this.lat, this.lng];
-            var res = {};
+            var partner = [this.lat, this.lng], res = {};
             if (_.intersection(_.keys(this.field_manager.fields), partner).length == 2) {
                 res[this.lat] = latitude;
                 res[this.lng] = longitude;
@@ -98,15 +96,15 @@ odoo.define('web_google_maps.GooglePlacesFormAddress', function (require) {
             return res;
         },
         geolocate: function () {
-            var self = this;
+            var self = this, geolocation, circle;
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function (position) {
-                    var geolocation = {
+                    geolocation = {
                         lat: position.coords.latitude,
                         lng: position.coords.longitude
                     };
 
-                    var circle = new google.maps.Circle({
+                    circle = new google.maps.Circle({
                         center: geolocation,
                         radius: position.coords.accuracy
                     });
@@ -116,22 +114,21 @@ odoo.define('web_google_maps.GooglePlacesFormAddress', function (require) {
             }
         },
         gmaps_initialize: function () {
-            var self = this;
+            var self = this, place, google_address, requests = [], partner_geometry;
             this.places_autocomplete = new google.maps.places.Autocomplete(this.$input.get(0), {
                 types: ['geocode']
             });
             // When the user selects an address from the dropdown, populate the address fields in the form.
             this.places_autocomplete.addListener('place_changed', function () {
-                var place = this.getPlace();
+                place = this.getPlace();
                 if (place.hasOwnProperty('address_components')) {
-                    var google_address = MapViewPlacesAutocomplete.gmaps_populate_address(place, self.fillfields, self.fillfields_delimiter);
-                    var requests = [];
+                    google_address = MapViewPlacesAutocomplete.gmaps_populate_address(place, self.fillfields, self.fillfields_delimiter);
 
                     _.each(self.target_fields, function (field) {
                         requests.push(self.prepare_value(field.relation, field.name, google_address[field.name]));
                     });
 
-                    var partner_geometry = self.set_partner_lat_lng(place.geometry.location.lat(), place.geometry.location.lng());
+                    partner_geometry = self.set_partner_lat_lng(place.geometry.location.lat(), place.geometry.location.lng());
                     _.each(partner_geometry, function (val, field) {
                         requests.push(self.prepare_value(false, field, val));
                     });

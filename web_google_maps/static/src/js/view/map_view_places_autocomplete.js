@@ -36,11 +36,11 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
     };
 
     function odoo_prepare_values(model, field_name, value) {
-        var def = $.Deferred();
-        var res = {};
+        var def = $.Deferred(), res = {};
+
         if (model && value) {
             new Model(model).call('search', [['|', ['name', '=', value], ['code', '=', value]]]).done(function (record) {
-                res[field_name] = record.length > 0 ? record[0] : false;
+                res[field_name] = _.first(record) || false;
                 def.resolve(res);
             });
         } else {
@@ -63,13 +63,13 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
     }
 
     function gmaps_populate_places(place, place_options) {
-        var values = {};
+        var values = {}, vals;
         _.each(place_options, function (option, field) {
             if (option instanceof Array && !_.has(values, field)) {
-                var vals = _.filter(_.map(option, function (opt) {
+                vals = _.filter(_.map(option, function (opt) {
                     return place[opt] || false;
                 }));
-                values[field] = vals.length > 0 ? vals[0] : "";
+                values[field] = _.first(vals) || "";
             } else {
                 values[field] = place[option] || "";
             }
@@ -78,13 +78,13 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
     }
 
     function gmaps_populate_address(place, address_options, delimiter) {
-        var address_options = address_options || {};
-        var fields_delimiter = delimiter || {
+        var address_options = address_options || {},
+        fields_delimiter = delimiter || {
             street: " ",
             street2: ", "
-        };
-        var fields_to_fill = {};
-        var result = {};
+        },
+        fields_to_fill = {},
+        result = {};
         // initialize object key and value
         _.each(address_options, function (value, key) {
             fields_to_fill[key] = [];
@@ -127,7 +127,7 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
                     result[key] = place[addrs] || '';
                 }
             } else if (key == 'city') {
-                result[key] = value.length ? value[0] : '';
+                result[key] = _.first(value) || '';
             } else {
                 result[key] = value.join(dlmter);
             }
@@ -384,17 +384,19 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
             var def = $.Deferred();
             var res = {};
             if (field_name == 'state_id') {
-                new Model('res.country.state').call('search', [['|', ['name', '=', value],['code', '=', value]]]).done(function (record) {
-                    res[field_name] = record.length > 0 ? record[0] : false;
-                    def.resolve(res);
-                });
+                new Model('res.country.state')
+                    .call('search', [['|', ['name', '=', value],['code', '=', value]]])
+                    .done(function (record) {
+                        res[field_name] = _.first(record) || false;
+                        def.resolve(res);
+                    });
             } else if (field_name == 'country_id') {
-                new Model('res.country').call('search', [
-                    ['|', ['name', '=', value], ['code', '=', value]]
-                ]).done(function (record) {
-                    res[field_name] = record.length > 0 ? record[0] : false;
-                    def.resolve(res);
-                });
+                new Model('res.country')
+                    .call('search', [['|', ['name', '=', value], ['code', '=', value]]])
+                    .done(function (record) {
+                        res[field_name] = _.first(record) || false;
+                        def.resolve(res);
+                    });
             } else {
                 res[field_name] = value;
                 def.resolve(res);
