@@ -59,8 +59,8 @@ You have to set alias name for fields geolocation into `map` attributes
 ##  How to setup color for each marker on map?
 
 There are two options:
- - colors (setup different color for each marker on map)
- - color (all markers on map will have the given color)
+ - __colors__ (setup different color for each marker on map)
+ - __color__ (all markers on map will have the given color)
 
 Example:
 >
@@ -74,13 +74,14 @@ Example:
         ...
     </map>
 
- *** Available color options: green, blue, red, yellow, purple, orange, and pink ***
+***Available color options***     
+*green*, *blue*, *red*, *yellow*, *purple*, *orange*, and *pink*
 
 ## New widget (`gplaces_address_form`)
 
 Basically this new widget will integrate another cool feature of Google Maps which is "Place Autocomplete Address Form" (go and visit this [site](https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete-addressform) if you don't know yet how this cool feature work) 
 
-The widget (`google_places`) has two options that can be modify:
+The widget has four options that can be modify:
  - `component_form`
  - `fillfields`
  - `lat`
@@ -169,10 +170,6 @@ This options tell the widget the fields geolocation, in order to have this field
 Basically this new widget will integrate another cool feature of Google Maps which is "Place Autocomplete" (go and visit this [site](https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete) if you don't know yet how this cool feature work) 
 
 This widget have similar configuration to `gplaces_address_form`.
-
-The widget (`google_places`) has two options that can be modify:
- - `component_form`   
- - `fillfields`
 
 ### Component form (`component_form`)
 Same configuration of `gplaces_address_form` component form
