@@ -44,7 +44,7 @@
                         'customer_longitude': 'longitude'
                     },
                     'address': {
-                        'street': ['street_number', 'route', 'name'],
+                        'street': ['street_number', 'route'],
                         'street2': ['administrative_area_level_3', 'administrative_area_level_4', 'administrative_area_level_5'],
                         'city': ['locality', 'administrative_area_level_2'],
                         'zip': 'postal_code',
@@ -98,7 +98,7 @@
                         'customer_longitude': 'longitude'
                     },
                     'address': {
-                        'street': ['street_number', 'route', 'name'],
+                        'street': ['street_number', 'route'],
                         'street2': ['administrative_area_level_3', 'administrative_area_level_4', 'administrative_area_level_5'],
                         'city': ['locality', 'administrative_area_level_2'],
                         'zip': 'postal_code',

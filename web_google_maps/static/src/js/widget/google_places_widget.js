@@ -21,11 +21,8 @@ odoo.define('web_google_maps.GooglePlacesFormAddress', function (require) {
             this.type_relations = ['one2many', 'many2one', 'many2many'];
             this.places_autocomplete = false;
             this.component_form = MapViewPlacesAutocomplete.GOOGLE_PLACES_COMPONENT_FORM;
-            // `name` is not a part of place.address components, but it's a part of place
-            // * place = values returns by places autocomplete or places autocomplete form address
-            // In case if 'street_number' and 'route' in place.address_components is not exists, `name` will be the last attribute to check
             this.fillfields = {
-                street: 'name',
+                street: ['street_number', 'route'],
                 street2: ['administrative_area_level_3', 'administrative_area_level_4', 'administrative_area_level_5'],
                 city: ['locality', 'administrative_area_level_2'],
                 zip: 'postal_code',

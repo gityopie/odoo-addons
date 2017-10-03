@@ -30,7 +30,7 @@ odoo.define('web_google_maps.GooglePlacesAutocomplete', function (require) {
                     partner_longitude: 'longitude'
                 },
                 address: {
-                    street: 'name',
+                    street: ['street_number', 'route'],
                     street2: ['administrative_area_level_3', 'administrative_area_level_4', 'administrative_area_level_5'],
                     city: ['locality', 'administrative_area_level_2'],
                     zip: 'postal_code',

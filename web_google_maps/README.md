@@ -24,7 +24,7 @@ Example
         <field name="model">res.partner</field>
         <field name="arch" type="xml">
             <!-- Define aliase name for geolocation fields into view attributes -->
-            <map string="Map" lat="partner_latitude" title="name" lng="partner_longitude">
+            <map string="Map" lat="partner_latitude" lng="partner_longitude">
                 <field name="name"/>
                 <field name="street"/>
                 <field name="street2"/>
@@ -48,13 +48,33 @@ Example
     </record>
 
  #### Note:
- This view required `fields` contains geolocation information (`partner_latitude` and `partner_longitude`) and other fields will be use for marker infowindow.    
- 
- ***IMPORTANT!*** (Update: 08 July 2017)   
+ This view required `fields` contains geolocation information (`partner_latitude` and `partner_longitude`) and other fields will be use for marker infowindow.   
+
+ ***IMPORTANT!***   
 You have to set alias name for fields geolocation into `map` attributes  
 - __lat__ : latitude
 - __lng__: longitude 
 
+
+##  How to setup color for each marker on map?
+
+There are two options:
+ - colors (setup different color for each marker on map)
+ - color (all markers on map will have the given color)
+
+Example:
+>
+    <!-- colors -->
+    <map string="Map" lat="partner_latitude" lng="partner_longitude" colors="green:state=='draft';red:state=='cancel';blue:state=='done';">
+        ...
+    </map>
+
+    <!-- color -->
+    <map string="Map" lat="partner_latitude" lng="partner_longitude" color="orange">
+        ...
+    </map>
+
+ *** Available color options: green, blue, red, yellow, purple, orange, and pink ***
 
 ## New widget (`gplaces_address_form`)
 
@@ -119,7 +139,7 @@ A field can contains one or multiple elements of component form
 By default this options are configured like following value:
 >
     {
-        'street': ['street_number', 'route', 'name'],
+        'street': ['street_number', 'route'],
         'street2': ['administrative_area_level_3', 'administrative_area_level_4', 'administrative_area_level_5'],
         'city': ['locality', 'administrative_area_level_2'],
         'zip': 'postal_code',
@@ -135,16 +155,13 @@ Example:
         ...
         <field name="arch" type="xml">
             ...
-            <field name="street" widget="google_places" options="{'fillfields': {'street2': ['street_number']}}"/>
+            <field name="street" widget="google_places" options="{'fillfields': {'street2': ['route', 'street_number']}}"/>
             ...
         </field>
     </record>
 
 ### Latitude (`lat`) and Longitude (`lng`)
-This option tell the widget the fields geolocation, in order to have this fields filled automatically.
-
-
-Note: this widget will set partner geolocation automatically whenever user pick or select an address from google autocomplete.
+This options tell the widget the fields geolocation, in order to have this fields filled automatically.
 
 
 ## New widget (`gplaces_autocomplete`)
@@ -176,7 +193,7 @@ By default this options are configured like following value:
             partner_longitude: 'longitude'
         },
         address: {
-            street: ['street_number', 'route', 'name'],
+            street: ['street_number', 'route'],
             street2: ['administrative_area_level_3', 'administrative_area_level_4', 'administrative_area_level_5'],
             city: ['locality', 'administrative_area_level_2'],
             zip: 'postal_code',
