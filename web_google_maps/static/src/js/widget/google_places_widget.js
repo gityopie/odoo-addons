@@ -62,7 +62,8 @@ odoo.define('web_google_maps.GooglePlacesFormAddress', function (require) {
             }
         },
         get_field_type: function () {
-            var self = this, fields = [];
+            var self = this,
+                fields = [];
             if (this.is_fields_valid()) {
                 _.each(this.fillfields, function (val, name) {
                     if (_.contains(self.type_relations, self.field_manager.fields[name].field.type)) {
@@ -85,7 +86,8 @@ odoo.define('web_google_maps.GooglePlacesFormAddress', function (require) {
             return fields;
         },
         set_partner_lat_lng: function (latitude, longitude) {
-            var partner = [this.lat, this.lng], res = {};
+            var partner = [this.lat, this.lng],
+                res = {};
             if (_.intersection(_.keys(this.field_manager.fields), partner).length == 2) {
                 res[this.lat] = latitude;
                 res[this.lng] = longitude;
@@ -93,7 +95,8 @@ odoo.define('web_google_maps.GooglePlacesFormAddress', function (require) {
             return res;
         },
         geolocate: function () {
-            var self = this, geolocation, circle;
+            var self = this,
+                geolocation, circle;
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function (position) {
                     geolocation = {
@@ -111,7 +114,9 @@ odoo.define('web_google_maps.GooglePlacesFormAddress', function (require) {
             }
         },
         gmaps_initialize: function () {
-            var self = this, place, google_address, requests = [], partner_geometry;
+            var self = this,
+                place, google_address, requests = [],
+                partner_geometry;
             this.places_autocomplete = new google.maps.places.Autocomplete(this.$input.get(0), {
                 types: ['geocode']
             });
@@ -162,7 +167,7 @@ odoo.define('web_google_maps.GooglePlacesFormAddress', function (require) {
                 return false;
             }
         },
-        destroy_content: function() {
+        destroy_content: function () {
             google.maps.event.clearInstanceListeners(this.places_autocomplete);
             this._super.apply(this, arguments);
         }
