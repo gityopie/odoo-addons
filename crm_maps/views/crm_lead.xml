@@ -114,7 +114,6 @@
         <field name="model">crm.lead</field>
         <field name="arch" type="xml">
             <map string="Maps" lat="customer_latitude" lng="customer_longitude" colors="green:stage_id=='New';blue:stage_id=='Qualified';red:stage_id=='Proposition';yellow:stage_id=='Won';">
-            <!-- <map string="Maps" lat="customer_latitude" lng="customer_longitude" color="blue"> -->
                 <field name="customer_latitude"/>
                 <field name="customer_longitude"/>
                 <field name="name"/>
@@ -130,5 +129,12 @@
     </record>
     <record id="crm.crm_lead_all_leads" model="ir.actions.act_window">
         <field name="view_mode">tree,graph,pivot,calendar,form,map</field>
+    </record>
+    <record id="action_your_maps" model="ir.actions.act_window">
+        <field name="name">My Maps</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">map,form</field>
+        <field name="view_type">map</field>
+        <field name="context">{'default_user_id': uid}</field>
     </record>
 </odoo>

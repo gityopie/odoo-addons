@@ -13,10 +13,14 @@ See your leads and pipelines on map
 """,
     'depends': [
         'crm',
+        'sales_team',
         'web_google_maps'
     ],
     'data': [
         'views/crm_lead.xml'
+    ],
+    'qweb': [
+        'static/src/xml/dashboard.xml'
     ],
     'demo': [],
     'installable': True,
