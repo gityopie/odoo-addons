@@ -15,6 +15,13 @@ Basically, this new view(`map`) will integrate Google Maps into Odoo.
 Enable you to display a partner location or all your partners location around the world on a map.   
 This feature will work seamlessly with Odoo means you can search your partner location using Odoo search feature.     
 
+There are five available attributes that you can customize:
+ - `lat` : an attritube to tell the map the latitude field on the object (mandatory)
+ - `lng` : an attritute to tell the map the longitude field on the object (mandatory)
+ - `title` : an attribute to tell the map the title that will be printed on marker info window (optional, by default 'name')
+ - `color` : an attribute to modify marker color (optional) any given color will set all markers color.
+ - `colors` : work like attribute `color` but more configurable (you can set marker color depends on it's value) this attribute works similar to `colors` of tree view on Odoo 9.0
+ 
 How to create the view?    
 Example
 >
@@ -47,25 +54,17 @@ Example
         ...
     </record>
 
- #### Note:
- This view required `fields` contains geolocation information (`partner_latitude` and `partner_longitude`) and other fields will be use for marker infowindow.   
 
- ***IMPORTANT!***   
-You have to set alias name for fields geolocation into `map` attributes  
-- __lat__ : latitude
-- __lng__: longitude 
+##  How to setup color for marker on map?
 
-
-##  How to setup color for each marker on map?
-
-There are two options:
- - __colors__ (setup different color for each marker on map)
- - __color__ (all markers on map will have the given color)
+There are two attributes:
+ - `colors` 
+ - `color` 
 
 Example:
->
-    <!-- colors -->
-    <map string="Map" lat="partner_latitude" lng="partner_longitude" colors="green:state=='draft';red:state=='cancel';blue:state=='done';">
+> 
+	<!-- colors -->
+    <map string="Map" lat="partner_latitude" lng="partner_longitude" colors="green:company_type=='person';blue:company_type=='company';">
         ...
     </map>
 
@@ -74,8 +73,15 @@ Example:
         ...
     </map>
 
-***Available color options***     
-*green*, *blue*, *red*, *yellow*, *purple*, *orange*, and *pink*
+### Available color options     
+ - ![alt text](https://maps.google.com/mapfiles/ms/icons/green-dot.png) **green**    
+ - ![alt text](https://maps.google.com/mapfiles/ms/icons/blue-dot.png) **blue**    
+ - ![alt text](https://maps.google.com/mapfiles/ms/icons/red-dot.png) **red**    
+ - ![alt text](https://maps.google.com/mapfiles/ms/icons/yellow-dot.png) **yellow**    
+ - ![alt text](https://maps.google.com/mapfiles/ms/icons/purple-dot.png) **purple**    
+ - ![alt text](https://maps.google.com/mapfiles/ms/icons/orange-dot.png) **orange**    
+ - ![alt text](https://maps.google.com/mapfiles/ms/icons/pink-dot.png) **pink**    
+
 
 ## New widget (`gplaces_address_form`)
 

@@ -9,7 +9,7 @@
 CRM Maps
 ========
 
-See your leads and pipelines on map
+Show your leads and pipelines on map
 """,
     'depends': [
         'crm',
