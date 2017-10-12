@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+    <t t-extend="sales_team.SalesDashboard">
+        <t t-jquery="table:eq(0) tr:eq(2) td:eq(1)" t-operation="replace">
+            <td class="o_main" title="My Maps">
+                <a href="#" class="o_dashboard_action" name="crm_maps.action_your_maps">
+                    <span class="fa fa-globe fa-2x"/><br/>My Maps
+                </a>
+            </td>
+        </t>
+    </t>
+</templates>

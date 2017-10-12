@@ -153,3 +153,29 @@
     float: left;
     margin-right: 4px;
 }
+
+.gm-iw-container {
+    cursor: pointer;
+}
+
+.gm-iw-container .gm-iw-title{
+	font-size: 22px;
+	font-weight: bold;
+	padding: 10px 10px 10px 0;
+	margin: 0;
+}
+
+.gm-iw-container .gm-iw-title span:nth-of-type(1) {
+    color: #7c7bad;
+}
+
+.gm-iw-container .gm-iw-content {
+    font-weight: 400;
+    font-size: 14px;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+.gm-iw-container .gm-iw-content p {
+	line-height: 12px;
+}

@@ -36,13 +36,15 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
     };
 
     function odoo_prepare_values(model, field_name, value) {
-        var def = $.Deferred();
-        var res = {};
+        var def = $.Deferred(),
+            res = {};
+
         if (model && value) {
-            new Model(model).call('search', [['|', ['name', '=', value], ['code', '=', value]]]).done(function (record) {
-                res[field_name] = record.length > 0 ? record[0] : false;
-                def.resolve(res);
-            });
+            new Model(model).call('search', [['|', ['name', '=', value],['code', '=', value]]])
+                .done(function (record) {
+                    res[field_name] = _.first(record) || false;
+                    def.resolve(res);
+                });
         } else {
             res[field_name] = value;
             def.resolve(res);
@@ -63,13 +65,15 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
     }
 
     function gmaps_populate_places(place, place_options) {
-        var values = {};
+        var values = {},
+            vals;
+            
         _.each(place_options, function (option, field) {
             if (option instanceof Array && !_.has(values, field)) {
-                var vals = _.filter(_.map(option, function (opt) {
+                vals = _.filter(_.map(option, function (opt) {
                     return place[opt] || false;
                 }));
-                values[field] = vals.length > 0 ? vals[0] : "";
+                values[field] = _.first(vals) || "";
             } else {
                 values[field] = place[option] || "";
             }
@@ -78,58 +82,37 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
     }
 
     function gmaps_populate_address(place, address_options, delimiter) {
-        var address_options = address_options || {};
-        var fields_delimiter = delimiter || {
-            street: " ",
-            street2: ", "
-        };
-        var fields_to_fill = {};
-        var result = {};
+        var address_options = address_options || {},
+            fields_delimiter = delimiter || {
+                street: " ",
+                street2: ", "
+            },
+            fields_to_fill = {},
+            options, temp, result = {};
+
         // initialize object key and value
         _.each(address_options, function (value, key) {
             fields_to_fill[key] = [];
         });
 
         _.each(address_options, function (options, field) {
-            var vals = _.map(place.address_components, function (components) {
-                if (options instanceof Array) {
-                    var val = _.map(options, function (item) {
-                        if (_.contains(components.types, item)) {
-                            return components[GOOGLE_PLACES_COMPONENT_FORM[item]];
-                        } else {
-                            return false;
-                        }
-                    });
-                    return _.filter(val); // eliminate false
-                } else {
-                    if (_.contains(components.types, options)) {
-                        return components[GOOGLE_PLACES_COMPONENT_FORM[options]];
-                    } else {
-                        return false;
-                    }
-                }
+            // turn all fields options into an Array
+            options = _.flatten([options]);
+            temp = {};
+            _.each(place.address_components, function (component) {
+                _.each(_.intersection(options, component.types), function (match) {
+                    temp[match] = component[GOOGLE_PLACES_COMPONENT_FORM[match]] || false;
+                });
             });
-            fields_to_fill[field] = _.flatten(_.filter(vals, function (val) {
-                return val.length;
-            }));
+            fields_to_fill[field] = _.map(options, function (item) { return temp[item]; });
         });
 
         _.each(fields_to_fill, function (value, key) {
-            var dlmter = fields_delimiter.hasOwnProperty(key) ? fields_delimiter[key] : ' ';
-            if (key == 'street' && !value.length) {
-                var addrs = address_options.street;
-                if (address_options instanceof Array) {
-                    var addr = _.map(addrs, function (item) {
-                        return place[item];
-                    });
-                    result[key] = _.filter(addr).join(dlmter);
-                } else {
-                    result[key] = place[addrs] || '';
-                }
-            } else if (key == 'city') {
-                result[key] = value.length ? value[0] : '';
+            var dlmter = fields_delimiter[key] || ' ';
+            if (key == 'city') {
+                result[key] = _.first(_.filter(value)) || '';
             } else {
-                result[key] = value.join(dlmter);
+                result[key] = _.filter(value).join(dlmter);
             }
         });
 
@@ -246,7 +229,7 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
         },
         on_set_marker_animation: function () {
             /* FIXME: when marker is moved or user enter a new location (search a new location)
-             *  the marker is not animated
+             *  the marker is stop animated
              */
             var self = this;
             window.setTimeout(function () {
@@ -384,24 +367,26 @@ odoo.define('web.MapViewPlacesAutocomplete', function (require) {
             var def = $.Deferred();
             var res = {};
             if (field_name == 'state_id') {
-                new Model('res.country.state').call('search', [['|', ['name', '=', value],['code', '=', value]]]).done(function (record) {
-                    res[field_name] = record.length > 0 ? record[0] : false;
-                    def.resolve(res);
-                });
+                new Model('res.country.state')
+                    .call('search', [['|', ['name', '=', value],['code', '=', value]]])
+                    .done(function (record) {
+                        res[field_name] = _.first(record) || false;
+                        def.resolve(res);
+                    });
             } else if (field_name == 'country_id') {
-                new Model('res.country').call('search', [
-                    ['|', ['name', '=', value], ['code', '=', value]]
-                ]).done(function (record) {
-                    res[field_name] = record.length > 0 ? record[0] : false;
-                    def.resolve(res);
-                });
+                new Model('res.country')
+                    .call('search', [['|', ['name', '=', value], ['code', '=', value]]])
+                    .done(function (record) {
+                        res[field_name] = _.first(record) || false;
+                        def.resolve(res);
+                    });
             } else {
                 res[field_name] = value;
                 def.resolve(res);
             }
             return def;
         },
-        destroy: function() {
+        destroy: function () {
             google.maps.event.clearInstanceListeners(this.place_automplete);
             this._super.apply(this, arguments);
         }

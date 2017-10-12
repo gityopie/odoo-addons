@@ -12,6 +12,7 @@
                 </field>
                 <field name="street" position="attributes">
                     <attribute name="widget">gplaces_address_form</attribute>
+                    <attribute name="options">{'lat': 'partner_latitude', 'lng': 'partner_longitude'}</attribute>
                 </field>
                 <div name="button_box" position="inside">
                     <button name="%(web_google_maps.act_res_partner_map)d" type="action"
@@ -30,6 +31,7 @@
             <field name="arch" type="xml">
                 <field name="street" position="attributes">
                     <attribute name="widget">gplaces_address_form</attribute>
+                    <attribute name="options">{'lat': 'partner_latitude', 'lng': 'partner_longitude'}</attribute>
                 </field>
             </field>
         </record>
@@ -37,7 +39,7 @@
             <field name="name">view.partner.map</field>
             <field name="model">res.partner</field>
             <field name="arch" type="xml">
-                <map string="Map" lat="partner_latitude" lng="partner_longitude">
+                <map string="Map" lat="partner_latitude" lng="partner_longitude" colors="blue:company_type=='person';green:company_type=='company';">
                     <field name="name"/>
                     <field name="street"/>
                     <field name="street2"/>
@@ -48,6 +50,7 @@
                     <field name="country_id"/>
                     <field name="partner_latitude"/>
                     <field name="partner_longitude"/>
+                    <field name="company_type"/>
                 </map>
             </field>
         </record>

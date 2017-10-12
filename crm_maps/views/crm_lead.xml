@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <act_window id="act_crm_lead_map" name="Map" res_model="crm.lead" view_type="map" view_mode="map" />
+    <record id="view_crm_leads_form" model="ir.ui.view">
+        <field name="name">view.crm.leads.form</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_form_view_leads"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page name="geolocalize" string="Geolocalize">
+                    <group colspan="2" col="2">
+                        <separator string="Geolocation" colspan="2"/>
+                        <button string="Geolocalize" name="geo_localize" type="object" icon="fa-check" colspan="2"/>
+                        <div>
+                            <span class="oe_inline"> ( </span>
+                            <span> Lat : </span>
+                            <field name="customer_latitude" class="oe_inline" no_label="1"/>
+                            <span> : Long : </span>
+                            <field name="customer_longitude" class="oe_inline" nolabel="1"/>
+                            <span>) </span>
+                        </div>
+                    </group>
+                </page>
+            </xpath>
+            <div name="button_box" position="inside">
+                <button name="%(crm_maps.act_crm_lead_map)d" type="action" class="oe_stat_button" 
+                context="{'search_default_name': name}" icon="fa-map-marker" 
+                string="Map" 
+                attrs="{'invisible': ['|',('customer_latitude', '=', 0.0), ('customer_longitude', '=', 0.0)]}"/>
+            </div>
+            <field name="street" position="attributes">
+                <attribute name="widget">gplaces_address_form</attribute>
+                <attribute name="options">{'lat': 'customer_latitude', 'lng': 'customer_longitude'}</attribute>
+            </field>
+            <field name="partner_name" position="attributes">
+                <attribute name="widget">gplaces_autocomplete</attribute>
+                <attribute name="options">{
+                'fillfields': {
+                    'general': {
+                        'phone': ['international_phone_number', 'formatted_phone_number']
+                    },
+                    'geolocation': {
+                        'customer_latitude': 'latitude', 
+                        'customer_longitude': 'longitude'
+                    },
+                    'address': {
+                        'street': ['street_number', 'route'],
+                        'street2': ['administrative_area_level_3', 'administrative_area_level_4', 'administrative_area_level_5'],
+                        'city': ['locality', 'administrative_area_level_2'],
+                        'zip': 'postal_code',
+                        'state_id': 'administrative_area_level_1',
+                        'country_id': 'country'
+                    }
+                }}</attribute>
+            </field>
+        </field>
+    </record>
+    <record id="view_crm_opportunity_form" model="ir.ui.view">
+        <field name="name">view.crm.opportunity.form</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_form_view_oppor"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page name="geolocalize" string="Geolocalize">
+                    <group colspan="2" col="2">
+                        <separator string="Geolocation" colspan="2"/>
+                        <button string="Geolocalize" name="geo_localize" type="object" icon="fa-check" colspan="2"/>
+                        <div>
+                            <span class="oe_inline"> ( </span>
+                            <span> Lat : </span>
+                            <field name="customer_latitude" class="oe_inline" no_label="1"/>
+                            <span> : Long : </span>
+                            <field name="customer_longitude" class="oe_inline" nolabel="1"/>
+                            <span>) </span>
+                        </div>
+                    </group>
+                </page>
+            </xpath>
+            <div name="button_box" position="inside">
+                <button name="%(crm_maps.act_crm_lead_map)d" type="action" class="oe_stat_button" 
+                context="{'search_default_name': name}" icon="fa-map-marker" 
+                string="Map" 
+                attrs="{'invisible': ['|',('customer_latitude', '=', 0.0), ('customer_longitude', '=', 0.0)]}"/>
+            </div>
+            <field name="street" position="attributes">
+                <attribute name="widget">gplaces_address_form</attribute>
+                <attribute name="options">{'lat': 'customer_latitude', 'lng': 'customer_longitude'}</attribute>
+            </field>
+            <field name="partner_name" position="attributes">
+                <attribute name="widget">gplaces_autocomplete</attribute>
+                <attribute name="options">{
+                'fillfields': {
+                    'general': {
+                        'phone': ['international_phone_number', 'formatted_phone_number']
+                    },
+                    'geolocation': {
+                        'customer_latitude': 'latitude', 
+                        'customer_longitude': 'longitude'
+                    },
+                    'address': {
+                        'street': ['street_number', 'route'],
+                        'street2': ['administrative_area_level_3', 'administrative_area_level_4', 'administrative_area_level_5'],
+                        'city': ['locality', 'administrative_area_level_2'],
+                        'zip': 'postal_code',
+                        'state_id': 'administrative_area_level_1',
+                        'country_id': 'country'
+                    }
+                }}</attribute>
+            </field>
+        </field>
+    </record>
+    <record id="view_crm_leads_map" model="ir.ui.view">
+        <field name="name">view.crm.leads.map</field>
+        <field name="model">crm.lead</field>
+        <field name="arch" type="xml">
+            <map string="Maps" lat="customer_latitude" lng="customer_longitude">
+                <field name="customer_latitude"/>
+                <field name="customer_longitude"/>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="street"/>
+                <field name="city"/>
+                <field name="state_id"/>
+                <field name="zip"/>
+                <field name="country_id"/>
+                <field name="stage_id"/>
+            </map>
+        </field>
+    </record>
+    <record id="crm.crm_lead_all_leads" model="ir.actions.act_window">
+        <field name="view_mode">tree,graph,pivot,calendar,form,map</field>
+    </record>
+    <record id="action_your_maps" model="ir.actions.act_window">
+        <field name="name">My Maps</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">map,form</field>
+        <field name="view_type">map</field>
+        <field name="context">{'default_user_id': uid}</field>
+    </record>
+</odoo>

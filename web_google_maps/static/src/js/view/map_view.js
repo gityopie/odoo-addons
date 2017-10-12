@@ -3,6 +3,8 @@ odoo.define('web.MapView', function (require) {
 
     var core = require('web.core');
     var View = require('web.View');
+    var pyeval = require('web.pyeval');
+    var session = require('web.session');
     var Widget = require('web.Widget');
     var Model = require('web.Model');
     var MapViewPlacesAutocomplete = require('web.MapViewPlacesAutocomplete');
@@ -10,12 +12,21 @@ odoo.define('web.MapView', function (require) {
     var _lt = core._lt;
     var _t = core._t;
 
+    var MARKER_ICON_COLORS = ['green', 'blue', 'red', 'yellow', 'purple', 'orange', 'pink'];
+
     var MapView = View.extend({
         template: 'MapView',
         className: 'o_map',
         display_name: _lt('Map'),
         icon: 'fa-map-o',
-        searchable: true,
+        defaults: _.extend({}, View.prototype.defaults, {
+            // records can be selected one by one
+            selectable: true,
+            // whether the column headers should be displayed
+            header: true,
+            action_buttons: true,
+            searchable: true,
+        }),
         init: function () {
             this._super.apply(this, arguments);
             this.markers = [];
@@ -24,6 +35,7 @@ odoo.define('web.MapView', function (require) {
             this.fields = this.fields_view.fields;
             this.children_field = this.fields_view.field_parent;
             this.geocoder = new google.maps.Geocoder;
+            this.marker_title = 'name';
         },
         start: function () {
             var self = this;
@@ -37,6 +49,8 @@ odoo.define('web.MapView', function (require) {
         },
         willStart: function () {
             this.set_geolocation_fields();
+            this.set_marker_title();
+            this.set_marker_colors();
             return this._super.apply(this, arguments);
         },
         set_geolocation_fields: function () {
@@ -49,6 +63,53 @@ odoo.define('web.MapView', function (require) {
                 return false;
             }
         },
+        set_marker_title: function () {
+            if (this.fields_view.arch.attrs.title) {
+                var title = this.fields_view.arch.attrs.title;
+                if (!this.fields.hasOwnProperty(title)) {
+                    this.do_warn(_t('Map View Attributes'), _t('The field for marker title needs to be loaded into view!'));
+                }
+                this.marker_title = title;
+            }
+        },
+        set_marker_colors: function () {
+            if (this.fields_view.arch.attrs.colors) {
+                this.colors = _(this.fields_view.arch.attrs.colors.split(';')).chain()
+                    .compact()
+                    .map(function (color_pair) {
+                        var pair = color_pair.split(':'),
+                            color = pair[0],
+                            expr = pair[1];
+                        return [color, py.parse(py.tokenize(expr)), expr];
+                    }).value();
+            }
+            if (this.fields_view.arch.attrs.color) {
+                this.color = this.fields_view.arch.attrs.color;
+            }
+        },
+        get_marker_color: function (record) {
+            if (!this.colors) {
+                return '';
+            }
+
+            var context, pair, color, expression, i, len;
+            context = _.mapObject(_.extend({}, record, {
+                uid: session.uid,
+                current_date: moment().format('YYYY-MM-DD') // TODO: time, datetime, relativedelta
+            }), function (val, key) {
+                return (val instanceof Array) ? (_.last(val) || '') : val;
+            });
+            for (i = 0, len = this.colors.length; i < len; ++i) {
+                pair = this.colors[i];
+                color = pair[0];
+                expression = pair[1];
+                if (py.PY_isTrue(py.evaluate(expression, context))) {
+                    return color;
+                }
+                // TODO: handle evaluation errors
+            }
+            return '';
+        },
         on_load_markers: function () {
             var self = this;
             this.load_markers().done(function () {
@@ -56,7 +117,9 @@ odoo.define('web.MapView', function (require) {
             });
         },
         load_markers: function () {
-            var self = this;
+            var self = this,
+                latLng;
+
             this.infowindow = new google.maps.InfoWindow();
             return $.when(this.dataset.read_slice(this.fields_list()).done(function (records) {
                 self.clear_marker_clusterer();
@@ -66,23 +129,34 @@ odoo.define('web.MapView', function (require) {
                 }
                 _.each(records, function (record) {
                     if (record[self.latitude] && record[self.longitude]) {
-                        var latLng = new google.maps.LatLng(record[self.latitude], record[self.longitude]);
+                        latLng = new google.maps.LatLng(record[self.latitude], record[self.longitude]);
                         self._create_marker(latLng, record);
                     };
                 });
             }));
         },
+        _get_icon_color: function (record) {
+            if (this.color) {
+                return this.color;
+            }
+            return this.get_marker_color(record);
+        },
         _create_marker: function (lat_lng, record) {
-            var record = _.defaults(record || {}, {name: 'XY'});
-            var marker_options = {
+            var options = '',
+                icon_url = '//maps.google.com/mapfiles/ms/icons/',
+                icon_color = '',
+                marker = '';
+
+            options = {
                 position: lat_lng,
                 map: this.map,
-                animation: google.maps.Animation.DROP,
-            };
-            if (record.name) {
-                marker_options.label = record.name.slice(0, 2);
+                animation: google.maps.Animation.DROP
             }
-            var marker = new google.maps.Marker(marker_options);
+            icon_color = this._get_icon_color(record);
+            if (icon_color && MARKER_ICON_COLORS.indexOf(icon_color) !== -1) {
+                options.icon = icon_url + icon_color + '-dot.png';
+            }
+            marker = new google.maps.Marker(options);
             this.markers.push(marker);
             this.set_marker(marker, record);
         },
@@ -103,24 +177,34 @@ odoo.define('web.MapView', function (require) {
             }
         },
         marker_infowindow_content: function (record) {
-            var self = this;
-            var ignored_fields = ['id', this.latitude, this.longitude];
-            var contents = [];
-            var title = "";
+            var self = this,
+                ignored_fields, content, marker_iw, res;
+
+            ignored_fields = ['id', this.latitude, this.longitude];
+            content = {
+                id: record.id,
+                title: '',
+                items: []
+            };
             _.each(record, function (val, key) {
                 if (val && ignored_fields.indexOf(key) === -1) {
-                    if (key == 'name') {
-                        title += '<h3>' + val + '</h3>';
+                    if (key === self.marker_title) {
+                        content.title = (val instanceof Array && val.length > 0) ? _.last(val) : val;
                     } else {
                         if (val instanceof Array && val.length > 0) {
-                            contents.push('<p><strong>' + self.fields[key].string + '</strong> : <span>' + val[1] + '</span></p>');
+                            content.items.push('<strong>' + self.fields[key].string + '</strong> : <span>' + _.last(val) + '</span>');
                         } else {
-                            contents.push('<p><strong>' + self.fields[key].string + '</strong> : <span>' + val + '</span></p>');
+                            content.items.push('<strong>' + self.fields[key].string + '</strong> : <span>' + val + '</span>');
                         }
                     }
                 }
             });
-            var res = '<div>' + title + '<dl>' + contents.join('') + '</dl></div>';
+
+            marker_iw = new MapMarkerInfoWindow(this);
+            marker_iw.setElement($(QWeb.render('MapView.infoWindow', {
+                'content': content
+            })));
+            res = marker_iw.$el.get(0);
             return res;
         },
         init_map: function () {
@@ -149,8 +233,9 @@ odoo.define('web.MapView', function (require) {
             return _.filter(fields);
         },
         map_centered: function () {
-            var self = this;
-            var context = this.dataset.context;
+            var self = this,
+                context = this.dataset.context;
+
             if (context.route_direction) {
                 this.on_init_routes();
             } else {
@@ -179,9 +264,10 @@ odoo.define('web.MapView', function (require) {
             return this._super.apply(this, arguments);
         },
         do_search: function (domain, context, group_by) {
-            var self = this;
-            var _super = this._super;
-            var _args = arguments;
+            var self = this,
+                _super = this._super,
+                _args = arguments;
+
             this.shown.done(function () {
                 _super.apply(self, _args);
                 self.on_load_markers();
@@ -191,32 +277,31 @@ odoo.define('web.MapView', function (require) {
             this.map_layer_traffic_controls();
             this.map_layer_places_autocomplete_controls();
         },
+        /**
+         * On route mode
+         * We will display travel mode (driving, walking, bicycling, transit) controls
+         */
         map_layer_traffic_controls: function () {
-            /* 
-            * On route mode
-            * We will display travel mode (driving, walking, bicycling, transit) controls
-            */
             var route_mode = this.dataset.context.route_direction ? true : false;
             var map_controls = new MapControl(this, route_mode);
             map_controls.setElement($(QWeb.render('MapViewControl', {})));
             map_controls.start();
         },
+        /**
+         * The three keys('model', 'method', 'fields') in the object assigned to variable 'options' is a mandatory keys.
+         * The idea is to be able to pass any 'object' that can be created within the map
+         *  
+         * The fields options is divided into three parts:
+         * 1) 'general'
+         *     This configuration is for 'general' fields of the object, fields like name, phone, etc..
+         *     On the right side of each field is an attribute(s) from 'Places autocomplete'
+         * 2) 'geolocation'
+         *     This configuration is for geolocation fields (only 'latitude' and 'longitude')
+         *     latitude and longitude is an alias name from geolocation fields
+         * 3) 'address'
+         *     This configuration is similar to configuration used by 'google_places' widget
+         */
         map_layer_places_autocomplete_controls: function () {
-            /* 
-             * The three keys('model', 'method', 'fields') in the object assigned to variable 'options' is a mandatory keys.
-             * The idea is to be able to pass any 'object' that can be created within the map
-             * 
-             * The fields options is divided into three parts:
-             * 1) 'general'
-             *     This configuration is for 'general' fields of the object, fields like name, phone, etc..
-             *     On the right side of each field is an attribute(s) from 'Places autocomplete'
-             * 2) 'geolocation'
-             *     This configuration is for geolocation fields (only 'latitude' and 'longitude')
-             *     latitude and longitude is an alias name from geolocation fields
-             * 3) 'address'
-             *     This configuration is similar to configuration used by 'google_places' widget
-             *  
-             */
             var options = {
                 model: 'res.partner',
                 method: 'create_partner_from_map',
@@ -231,7 +316,7 @@ odoo.define('web.MapView', function (require) {
                         partner_longitude: 'longitude'
                     },
                     address: {
-                        street: ['street_number', 'route', 'name'],
+                        street: ['route', 'street_number', 'name'],
                         street2: ['administrative_area_level_3', 'administrative_area_level_4', 'administrative_area_level_5'],
                         city: ['locality', 'administrative_area_level_2'],
                         zip: 'postal_code',
@@ -251,18 +336,19 @@ odoo.define('web.MapView', function (require) {
             this.on_calculate_and_display_route();
         },
         on_calculate_and_display_route: function (mode) {
-            var self = this;
-            var context = this.dataset.context;
-            var mode = mode || 'DRIVING';
-            var origin = new google.maps.LatLng(context.origin_latitude, context.origin_longitude);
-            var destination = new google.maps.LatLng(context.destination_latitude, context.destination_longitude);
-            var paths = [{
-                'path': 'origin',
-                'lat_lng': origin
-            }, {
-                'path': 'destination',
-                'lat_lng': destination
-            }];
+            var self = this,
+                context = this.dataset.context,
+                mode = mode || 'DRIVING',
+                origin = new google.maps.LatLng(context.origin_latitude, context.origin_longitude),
+                destination = new google.maps.LatLng(context.destination_latitude, context.destination_longitude),
+                paths = [{
+                    'path': 'origin',
+                    'lat_lng': origin
+                }, {
+                    'path': 'destination',
+                    'lat_lng': destination
+                }];
+
             // Append new control button to the map, a control to open the route in a new tab
             this.add_btn_redirection(paths);
 
@@ -285,8 +371,8 @@ odoo.define('web.MapView', function (require) {
             });
         },
         get_routes_distance: function (route) {
-            var content = "";
-            for (var i = 0; i < route.legs.length; i++) {
+            var content = "", i;
+            for (i = 0; i < route.legs.length; i++) {
                 content += '<strong>' + route.legs[i].start_address + '</strong> &#8594;';
                 content += ' <strong>' + route.legs[i].end_address + '</strong>';
                 content += '<p>' + route.legs[i].distance.text + '</p>';
@@ -301,27 +387,28 @@ odoo.define('web.MapView', function (require) {
             this.$route_window.find('span').html(content);
         },
         on_add_polyline: function (paths) {
-            var self = this;
-            var context = this.dataset.context;
-            var route_path = _.pluck(paths, 'lat_lng');
-            var polyline = new google.maps.Polyline({
-                path: route_path,
-                geodesic: true,
-                strokeColor: '#3281ff',
-                strokeOpacity: 0.8,
-                strokeWeight: 5,
-                fillColor: '#FF0000',
-                fillOpacity: 0.35,
-                map: this.map
-            });
-            var distance = this.on_compute_distance(route_path[0], route_path[1]);
+            var self = this,
+                context, route_path, polyline, distance, request_reverse = [],
+                route = '',
+                bounds;
+            context = this.dataset.context,
+                route_path = _.pluck(paths, 'lat_lng'),
+                polyline = new google.maps.Polyline({
+                    path: route_path,
+                    geodesic: true,
+                    strokeColor: '#3281ff',
+                    strokeOpacity: 0.8,
+                    strokeWeight: 5,
+                    fillColor: '#FF0000',
+                    fillOpacity: 0.35,
+                    map: this.map
+                });
+            distance = this.on_compute_distance(route_path[0], route_path[1]);
             // display routes information
-            var request_reverse = [];
             _.each(paths, function (path) {
                 request_reverse.push(self._on_reverse_geocoding(path));
             });
             $.when.apply($, request_reverse).done(function () {
-                var route = "";
                 _.each(arguments, function (val) {
                     if (val.hasOwnProperty('origin') || val.hasOwnProperty('destination')) {
                         if (val.origin != false || val.destination != false) {
@@ -334,7 +421,7 @@ odoo.define('web.MapView', function (require) {
             });
             // resize the map
             google.maps.event.trigger(this.map, 'resize');
-            var bounds = new google.maps.LatLngBounds();
+            bounds = new google.maps.LatLngBounds();
             _.each(route_path, function (route) {
                 bounds.extend(route);
             });
@@ -346,15 +433,17 @@ odoo.define('web.MapView', function (require) {
             return to_km;
         },
         redirect_to_gmaps_website: function (locations) {
-            var self = this;
-            var url = "https://www.google.com/maps/dir/?api=1";
-            var window_reference = window.open();
-            var requests = [];
+            var self = this,
+                url = "//www.google.com/maps/dir/?api=1",
+                window_reference = window.open(),
+                requests = [],
+                is_success;
+
             _.each(locations, function (path) {
                 requests.push(self._on_reverse_geocoding(path));
             });
             $.when.apply($, requests).done(function () {
-                var is_success = true;
+                is_success = true;
                 _.each(arguments, function (val) {
                     if (val.hasOwnProperty('origin') || val.hasOwnProperty('destination')) {
                         if (val.origin == false || val.destination == false) {
@@ -372,23 +461,26 @@ odoo.define('web.MapView', function (require) {
             });
         },
         _on_reverse_geocoding: function (location) {
-            var def = $.Deferred();
-            var lat_lng = location['lat_lng'];
-            var path = location['path'];
-            var res = {};
-            this.on_geocoding(lat_lng, true).done(function(result){
+            var def = $.Deferred(), lat_lng, path, res = {};
+            
+            lat_lng = location['lat_lng'];
+            path = location['path'];
+            this.on_geocoding(lat_lng, true).done(function (result) {
                 res[path] = result;
                 def.resolve(res);
-            }).fail(function() {
+            }).fail(function () {
                 res[path] = false;
                 def.resolve(res);
             });
             return def;
         },
         on_geocoding: function (lat_lng, formatted_address) {
-            var is_formatted_address = typeof formatted_address === "boolean" ? formatted_address : false;
-            var def = $.Deferred();
-            this.geocoder.geocode({'location': lat_lng}, function(results, status) {
+            var def = $.Deferred(), is_formatted_address;
+            
+            is_formatted_address= typeof formatted_address === "boolean" ? formatted_address : false;
+            this.geocoder.geocode({
+                'location': lat_lng
+            }, function (results, status) {
                 if (status === 'OK') {
                     if (is_formatted_address) {
                         def.resolve(results[0].formatted_address);
@@ -423,21 +515,44 @@ odoo.define('web.MapView', function (require) {
             }, 1000);
             return $.when();
         },
-        render_buttons: function($node) {
+        render_buttons: function ($node) {
             var self = this;
             this.$buttons = $('<div/>');
             var $footer = this.$('footer');
             if (this.options.action_buttons !== false || this.options.footer_to_buttons && $footer.children().length === 0) {
-                this.$buttons.append(QWeb.render("MapView.buttons", {'widget': this}));
+                this.$buttons.append(QWeb.render("MapView.buttons", {
+                    'widget': this
+                }));
             }
             if (this.options.footer_to_buttons) {
                 $footer.appendTo(this.$buttons);
             }
-            this.$buttons.on('click', '.o_map_button_reload', function(ev){
+            this.$buttons.on('click', '.o_map_button_reload', function (ev) {
                 ev.preventDefault();
                 self.on_load_markers();
             });
             this.$buttons.appendTo($node);
+        },
+        switch_form_view: function (index) {
+            if (this.dataset.select_id(index)) {
+                this.do_switch_view('form');
+            } else {
+                this.do_warn("Map: could not find id#" + index);
+            }
+        }
+    });
+
+    var MapMarkerInfoWindow = Widget.extend({
+        events: {
+            'click': 'switch_mode'
+        },
+        init: function (parent) {
+            this._super.apply(this, arguments);
+            this.parent = parent;
+        },
+        switch_mode: function (ev) {
+            var index = $(ev.currentTarget).data('id');
+            this.parent.switch_form_view(index);
         }
     });
 
@@ -457,7 +572,7 @@ odoo.define('web.MapView', function (require) {
             var self = this;
 
             this.parent.shown.done(this.proxy('_init_controls'));
-                
+
             var map_layers = new MapControlLayer(this.parent);
             map_layers.setElement($(QWeb.render('MapControlLayers', {})));
             map_layers.start();
@@ -477,11 +592,11 @@ odoo.define('web.MapView', function (require) {
         events: {
             'click #map_layer': 'on_change_layer',
         },
-        init: function(parent) {
+        init: function (parent) {
             this._super.apply(this, arguments);
             this.parent = parent;
         },
-        start: function() {
+        start: function () {
             this.parent.$('.sidenav-body > #accordion').append(this.$el);
         },
         on_change_layer: function (ev) {
@@ -536,13 +651,13 @@ odoo.define('web.MapView', function (require) {
             this._super.apply(this, arguments);
             this.parent = parent;
         },
-        start: function() {
+        start: function () {
             this.parent.$('.sidenav-body > #accordion').append(this.$el);
         },
         on_change_mode: function (ev) {
             ev.preventDefault();
             $(ev.currentTarget).siblings().removeClass('active');
-            $(ev.currentTarget).toggleClass('active')
+            $(ev.currentTarget).toggleClass('active');
             var mode = $(ev.currentTarget).data('mode');
             this.parent.on_calculate_and_display_route(mode);
         },

@@ -30,7 +30,7 @@ odoo.define('web_google_maps.GooglePlacesAutocomplete', function (require) {
                     partner_longitude: 'longitude'
                 },
                 address: {
-                    street: ['street_number', 'route', 'name'],
+                    street: ['street_number', 'route'],
                     street2: ['administrative_area_level_3', 'administrative_area_level_4', 'administrative_area_level_5'],
                     city: ['locality', 'administrative_area_level_2'],
                     zip: 'postal_code',
@@ -50,13 +50,13 @@ odoo.define('web_google_maps.GooglePlacesAutocomplete', function (require) {
                 // update 'fillfields' and 'component_form' if exists
                 if (this.options) {
                     if (this.options.hasOwnProperty('fillfields')) {
-                        this.fillfields = this.options.fillfields;
+                        this.fillfields = _.defaults({}, this.options.fillfields, this.fillfields);
                     }
                     if (this.options.hasOwnProperty('component_form')) {
-                        _.extend(this.component_form, this.options.component_form);
+                        this.component_form = _.defaults({}, this.options.component_form, this.component_form);
                     }
                     if (this.options.hasOwnProperty('delimiter')) {
-                        this.fillfields_delimiter = this.options.delimiter;
+                        this.fillfields_delimiter = _.defaults({}, this.options.delimiter, this.fillfields_delimiter);
                     }
                 }
                 this.target_fields = this.get_field_type();
@@ -89,11 +89,15 @@ odoo.define('web_google_maps.GooglePlacesAutocomplete', function (require) {
             return fields;
         },
         set_partner_lat_lng: function (latitude, longitude) {
-            var partner = ['partner_latitude', 'partner_longitude'];
-            var res = {};
+            var partner = _.keys(this.fillfields.geolocation), res = {};
             if (_.intersection(_.keys(this.field_manager.fields), partner).length == 2) {
-                res.partner_latitude = latitude;
-                res.partner_longitude = longitude;
+                _.each(this.fillfields.geolocation, function(val, key) {
+                    if (val === 'latitude') {
+                        res[key] = latitude
+                    } else {
+                        res[key] = longitude
+                    }
+                });
             }
             return res;
         },
