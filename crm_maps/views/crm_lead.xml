@@ -113,19 +113,50 @@
         <field name="name">view.crm.leads.map</field>
         <field name="model">crm.lead</field>
         <field name="arch" type="xml">
-            <map string="Maps" lat="customer_latitude" lng="customer_longitude">
+            <map string="Maps" lat="customer_latitude" lng="customer_longitude" color="orange">
                 <field name="customer_latitude"/>
                 <field name="customer_longitude"/>
                 <field name="name"/>
                 <field name="partner_id"/>
                 <field name="street"/>
+                <field name="street2"/>
                 <field name="city"/>
                 <field name="state_id"/>
                 <field name="zip"/>
                 <field name="country_id"/>
-                <field name="stage_id"/>
+                <templates>
+                    <t t-name="map-marker-iw">
+                        <div class="gm-iw-container o_map_global_click">
+                            <div class="gm-iw-title">
+                                <span><t t-esc="record.name.value"/></span>
+                            </div>
+                            <div class="gm-iw-content">
+                                <p>
+                                    <span t-esc="record.street.value"/>&#032;<span t-esc="record.street2.value"/> 
+                                </p>
+                                <p>
+                                    <span t-esc="record.city.value"/>&#032;<span t-esc="record.zip.value"/>
+                                </p>
+                                <p>
+                                    <span t-esc="record.state_id.value"/>&#032;<span t-esc="record.country_id.value"/>
+                                </p>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
             </map>
         </field>
+    </record>
+    <record id="crm.crm_lead_action_activities" model="ir.actions.act_window">
+        <field name="view_mode">tree,form,kanban,calendar,pivot,graph</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('crm.crm_lead_view_tree_activity')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('crm.crm_case_form_view_oppor')}),
+            (0, 0, {'view_mode': 'kanban'}), 
+            (0, 0, {'view_mode': 'calendar'}), 
+            (0, 0, {'view_mode': 'pivot'}), 
+            (0, 0, {'view_mode': 'graph'}),
+            (0, 0, {'view_mode': 'map'})]"/>
     </record>
     <record id="crm.crm_lead_all_leads" model="ir.actions.act_window">
         <field name="view_mode">tree,graph,pivot,calendar,form,map</field>
