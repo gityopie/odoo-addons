@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 from odoo import api, fields, models
 from odoo.addons.base_geolocalize.models.res_partner import (
     geo_find, geo_query_address)

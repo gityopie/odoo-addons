@@ -7,7 +7,6 @@ odoo.define('web.MapView', function (require) {
     var session = require('web.session');
     var Widget = require('web.Widget');
     var Model = require('web.Model');
-    var Pager = require('web.Pager');
     var QWeb = require('web.QWeb');
     var utils = require('web.utils');
 
@@ -47,20 +46,15 @@ odoo.define('web.MapView', function (require) {
             this.fields = this.fields_view.fields;
             this.children_field = this.fields_view.field_parent;
             this.geocoder = new google.maps.Geocoder;
-            this.marker_title = 'name';
-            this.pager = null;
             // Retrieve many2manys stored in the fields_view if it has already been processed
             this.many2manys = this.fields_view.many2manys || [];
             this.m2m_context = {};
-            this.widgets = [];
         },
         start: function () {
             var self = this;
-            _.invoke(this.widgets, 'destroy');
-            this.widgets = [];
             this.record_options = {
-                editable: this.is_action_enabled('edit'),
-                deletable: this.is_action_enabled('delete'),
+                editable: false,
+                deletable: false,
                 fields: this.fields_view.fields,
                 qweb: this.qweb,
                 model: this.model,
@@ -564,12 +558,6 @@ odoo.define('web.MapView', function (require) {
             } else {
                 this.do_warn("Map: could not find id#" + event.data.id);
             }
-        },
-        render_pager: function ($node, options) {
-            if (!this.pager && this.options.pager) {
-                this.pager = new Pager(this, this.dataset.size(), 1, 0, options);
-                this.pager.appendTo($node || this.options.$pager);
-            }
         }
     });
 
@@ -614,7 +602,7 @@ odoo.define('web.MapView', function (require) {
             this.parent = parent;
         },
         start: function () {
-            this.parent.$('.sidenav-body > #accordion').append(this.$el);
+            this.parent.$('.sidenav-body>#accordion').append(this.$el);
         },
         on_change_layer: function (ev) {
             ev.preventDefault();
@@ -634,7 +622,6 @@ odoo.define('web.MapView', function (require) {
                 this.trafficLayer.setMap(this.parent.map);
             } else {
                 this.trafficLayer.setMap(null);
-                this.trafficLayer = undefined;
             }
         },
         _on_transit_layer: function (ev) {
@@ -644,7 +631,6 @@ odoo.define('web.MapView', function (require) {
                 this.transitLayer.setMap(this.parent.map);
             } else {
                 this.transitLayer.setMap(null);
-                this.transitLayer = undefined;
             }
         },
         _on_bicycle_layer: function (ev) {
@@ -654,8 +640,16 @@ odoo.define('web.MapView', function (require) {
                 this.bikeLayer.setMap(this.parent.map);
             } else {
                 this.bikeLayer.setMap(null);
-                this.bikeLayer = undefined;
             }
+        },
+        destroy: function () {
+            if (this.transitLayer) { this.transitLayer.setMap(null); }
+
+            if (this.bikeLayer) { this.bikeLayer.setMap(null); }
+
+            if (this.trafficLayer) { this.trafficLayer.setMap(null); }
+
+            this._super.apply(this, arguments);
         }
 
     });
