@@ -42,6 +42,27 @@ Example
                 <field name="country_id"/>
                 <field name="partner_latitude"/>
                 <field name="partner_longitude"/>
+                <templates> <!-- qweb template used for marker infowindow -->
+                    <t t-name="map-marker-iw">
+                        <div class="gm-iw-container o_map_global_click">
+                            <div class="gm-iw-title">
+                                <img t-att-src="map_image('res.partner', 'image_small', record.id.value)"/>
+                                <span><t t-esc="record.name.value"/></span>
+                            </div>
+                            <div class="gm-iw-content">
+                                <p>
+                                    <span t-esc="record.street.value"/>&#032;<span t-esc="record.street2.value"/> 
+                                </p>
+                                <p>
+                                    <span t-esc="record.city.value"/>,&#032;<span t-esc="record.zip.value"/>
+                                </p>
+                                <p>
+                                    <span t-esc="record.state_id.value"/>,&#032;<span t-esc="record.country_id.value"/>
+                                </p>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
             </map>
         </field>
     </record>

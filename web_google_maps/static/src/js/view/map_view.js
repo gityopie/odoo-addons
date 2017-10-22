@@ -7,8 +7,13 @@ odoo.define('web.MapView', function (require) {
     var session = require('web.session');
     var Widget = require('web.Widget');
     var Model = require('web.Model');
+    var QWeb = require('web.QWeb');
+    var utils = require('web.utils');
+
     var MapViewPlacesAutocomplete = require('web.MapViewPlacesAutocomplete');
-    var QWeb = core.qweb;
+    var MapRecord = require('web_google_maps.Record');
+
+    var qweb = core.qweb;
     var _lt = core._lt;
     var _t = core._t;
 
@@ -16,10 +21,10 @@ odoo.define('web.MapView', function (require) {
 
     var MapView = View.extend({
         template: 'MapView',
+        accesskey: "m",
         className: 'o_map',
         display_name: _lt('Map'),
-        icon: 'fa-map-o',
-        defaults: _.extend({}, View.prototype.defaults, {
+        defaults: _.extend(View.prototype.defaults, {
             // records can be selected one by one
             selectable: true,
             // whether the column headers should be displayed
@@ -27,20 +32,36 @@ odoo.define('web.MapView', function (require) {
             action_buttons: true,
             searchable: true,
         }),
+        icon: 'fa-map-o',
+        mobile_friendly: true,
+        custom_events: {
+            'map_record_open': 'switch_form_view'
+        },
         init: function () {
             this._super.apply(this, arguments);
+            this.qweb = new QWeb(session.debug, {_s: session.origin});
             this.markers = [];
             this.map = false;
             this.shown = $.Deferred();
             this.fields = this.fields_view.fields;
             this.children_field = this.fields_view.field_parent;
             this.geocoder = new google.maps.Geocoder;
-            this.marker_title = 'name';
+            // Retrieve many2manys stored in the fields_view if it has already been processed
+            this.many2manys = this.fields_view.many2manys || [];
+            this.m2m_context = {};
         },
         start: function () {
             var self = this;
+            this.record_options = {
+                editable: false,
+                deletable: false,
+                fields: this.fields_view.fields,
+                qweb: this.qweb,
+                model: this.model,
+                read_only_mode: this.options.read_only_mode,
+            };
             this.shown.done(this.proxy('_init_start'));
-            return this._super.apply(this, arguments);
+            return this._super();
         },
         _init_start: function () {
             this.init_map();
@@ -51,7 +72,28 @@ odoo.define('web.MapView', function (require) {
             this.set_geolocation_fields();
             this.set_marker_title();
             this.set_marker_colors();
-            return this._super.apply(this, arguments);
+            this.get_marker_iw_template();
+            return this._super();
+        },
+        /**
+         * This method is adopted from kanban view
+         */
+        get_marker_iw_template: function () {
+            var child;
+            for (var i=0, ii=this.fields_view.arch.children.length; i < ii; i++) {
+                child = this.fields_view.arch.children[i];
+                if (child.tag === "templates") {
+                    transform_qweb_template(child, this.fields_view, this.many2manys);
+                    this.fields_view.many2manys = this.many2manys;
+                    this.qweb.add_template(utils.json_node_to_xml(child));
+                    break;
+                } else if (child.tag === 'field') {
+                    var ftype = child.attrs.widget || this.fields[child.attrs.name].type;
+                    if(ftype === "many2many" && "context" in child.attrs) {
+                        this.m2m_context[child.attrs.name] = child.attrs.context;
+                    }
+                }
+            }
         },
         set_geolocation_fields: function () {
             if (this.fields_view.arch.attrs.lat && this.fields_view.arch.attrs.lng) {
@@ -177,35 +219,12 @@ odoo.define('web.MapView', function (require) {
             }
         },
         marker_infowindow_content: function (record) {
-            var self = this,
-                ignored_fields, content, marker_iw, res;
-
-            ignored_fields = ['id', this.latitude, this.longitude];
-            content = {
-                id: record.id,
-                title: '',
-                items: []
-            };
-            _.each(record, function (val, key) {
-                if (val && ignored_fields.indexOf(key) === -1) {
-                    if (key === self.marker_title) {
-                        content.title = (val instanceof Array && val.length > 0) ? _.last(val) : val;
-                    } else {
-                        if (val instanceof Array && val.length > 0) {
-                            content.items.push('<strong>' + self.fields[key].string + '</strong> : <span>' + _.last(val) + '</span>');
-                        } else {
-                            content.items.push('<strong>' + self.fields[key].string + '</strong> : <span>' + val + '</span>');
-                        }
-                    }
-                }
-            });
-
-            marker_iw = new MapMarkerInfoWindow(this);
-            marker_iw.setElement($(QWeb.render('MapView.infoWindow', {
-                'content': content
-            })));
-            res = marker_iw.$el.get(0);
-            return res;
+            var element, options, marker_record;
+            element = document.createElement('div');
+            options = _.clone(this.record_options);
+            marker_record = new MapRecord(this, record, options);
+            marker_record.appendTo(element);
+            return element;
         },
         init_map: function () {
             this.map = new google.maps.Map(this.$('.o_map_view').get(0), {
@@ -284,7 +303,7 @@ odoo.define('web.MapView', function (require) {
         map_layer_traffic_controls: function () {
             var route_mode = this.dataset.context.route_direction ? true : false;
             var map_controls = new MapControl(this, route_mode);
-            map_controls.setElement($(QWeb.render('MapViewControl', {})));
+            map_controls.setElement($(qweb.render('MapViewControl', {})));
             map_controls.start();
         },
         /**
@@ -326,7 +345,7 @@ odoo.define('web.MapView', function (require) {
                 }
             };
             var place_autocomplete = new MapViewPlacesAutocomplete.MapPlacesAutocomplete(this, options);
-            place_autocomplete.setElement($(QWeb.render('MapPlacesAutomcomplete', {})));
+            place_autocomplete.setElement($(qweb.render('MapPlacesAutomcomplete', {})));
             place_autocomplete.start();
         },
         on_init_routes: function () {
@@ -381,7 +400,7 @@ odoo.define('web.MapView', function (require) {
         },
         on_add_routes_window: function (content) {
             if (this.$route_window == undefined) {
-                this.$route_window = $(QWeb.render('MapViewRoutes', {}));
+                this.$route_window = $(qweb.render('MapViewRoutes', {}));
                 this.map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(this.$route_window[0]);
             }
             this.$route_window.find('span').html(content);
@@ -496,7 +515,7 @@ odoo.define('web.MapView', function (require) {
         add_btn_redirection: function (locations) {
             var self = this;
             if (this.$btn_google_redirection === undefined) {
-                this.$btn_google_redirection = $(QWeb.render('MapRedirectToGoogle', {}));
+                this.$btn_google_redirection = $(qweb.render('MapRedirectToGoogle', {}));
                 this.map.controls[google.maps.ControlPosition.RIGHT_TOP].push(this.$btn_google_redirection[0]);
                 this.$btn_google_redirection.on('click', function (ev) {
                     ev.preventDefault();
@@ -520,7 +539,7 @@ odoo.define('web.MapView', function (require) {
             this.$buttons = $('<div/>');
             var $footer = this.$('footer');
             if (this.options.action_buttons !== false || this.options.footer_to_buttons && $footer.children().length === 0) {
-                this.$buttons.append(QWeb.render("MapView.buttons", {
+                this.$buttons.append(qweb.render("MapView.buttons", {
                     'widget': this
                 }));
             }
@@ -533,26 +552,12 @@ odoo.define('web.MapView', function (require) {
             });
             this.$buttons.appendTo($node);
         },
-        switch_form_view: function (index) {
-            if (this.dataset.select_id(index)) {
-                this.do_switch_view('form');
+        switch_form_view: function (event, options) {
+            if (this.dataset.select_id(event.data.id)) {
+                this.do_switch_view('form', options);
             } else {
-                this.do_warn("Map: could not find id#" + index);
+                this.do_warn("Map: could not find id#" + event.data.id);
             }
-        }
-    });
-
-    var MapMarkerInfoWindow = Widget.extend({
-        events: {
-            'click': 'switch_mode'
-        },
-        init: function (parent) {
-            this._super.apply(this, arguments);
-            this.parent = parent;
-        },
-        switch_mode: function (ev) {
-            var index = $(ev.currentTarget).data('id');
-            this.parent.switch_form_view(index);
         }
     });
 
@@ -574,12 +579,12 @@ odoo.define('web.MapView', function (require) {
             this.parent.shown.done(this.proxy('_init_controls'));
 
             var map_layers = new MapControlLayer(this.parent);
-            map_layers.setElement($(QWeb.render('MapControlLayers', {})));
+            map_layers.setElement($(qweb.render('MapControlLayers', {})));
             map_layers.start();
 
             if (this.route) {
                 var map_routes = new MapControlTravelMode(this.parent);
-                map_routes.setElement($(QWeb.render('MapControlTravelMode', {})));
+                map_routes.setElement($(qweb.render('MapControlTravelMode', {})));
                 map_routes.start();
             }
         },
@@ -597,7 +602,7 @@ odoo.define('web.MapView', function (require) {
             this.parent = parent;
         },
         start: function () {
-            this.parent.$('.sidenav-body > #accordion').append(this.$el);
+            this.parent.$('.sidenav-body>#accordion').append(this.$el);
         },
         on_change_layer: function (ev) {
             ev.preventDefault();
@@ -617,7 +622,6 @@ odoo.define('web.MapView', function (require) {
                 this.trafficLayer.setMap(this.parent.map);
             } else {
                 this.trafficLayer.setMap(null);
-                this.trafficLayer = undefined;
             }
         },
         _on_transit_layer: function (ev) {
@@ -627,7 +631,6 @@ odoo.define('web.MapView', function (require) {
                 this.transitLayer.setMap(this.parent.map);
             } else {
                 this.transitLayer.setMap(null);
-                this.transitLayer = undefined;
             }
         },
         _on_bicycle_layer: function (ev) {
@@ -637,8 +640,16 @@ odoo.define('web.MapView', function (require) {
                 this.bikeLayer.setMap(this.parent.map);
             } else {
                 this.bikeLayer.setMap(null);
-                this.bikeLayer = undefined;
             }
+        },
+        destroy: function () {
+            if (this.transitLayer) { this.transitLayer.setMap(null); }
+
+            if (this.bikeLayer) { this.bikeLayer.setMap(null); }
+
+            if (this.trafficLayer) { this.trafficLayer.setMap(null); }
+
+            this._super.apply(this, arguments);
         }
 
     });
@@ -662,6 +673,77 @@ odoo.define('web.MapView', function (require) {
             this.parent.on_calculate_and_display_route(mode);
         },
     });
+
+    // The two functions below are adopted from kanban view
+
+    function qweb_add_if(node, condition) {
+        if (node.attrs[qweb.prefix + '-if']) {
+            condition = _.str.sprintf("(%s) and (%s)", node.attrs[qweb.prefix + '-if'], condition);
+        }
+        node.attrs[qweb.prefix + '-if'] = condition;
+    }
+
+    function transform_qweb_template (node, fvg, many2manys) {
+        // Process modifiers
+        if (node.tag && node.attrs.modifiers) {
+            var modifiers = JSON.parse(node.attrs.modifiers || '{}');
+            if (modifiers.invisible) {
+                qweb_add_if(node, _.str.sprintf("!map_compute_domain(%s)", JSON.stringify(modifiers.invisible)));
+            }
+        }
+        switch (node.tag) {
+            case 'field':
+                var ftype = fvg.fields[node.attrs.name].type;
+                ftype = node.attrs.widget ? node.attrs.widget : ftype;
+                if (ftype === 'many2many') {
+                    if (_.indexOf(many2manys, node.attrs.name) < 0) {
+                        many2manys.push(node.attrs.name);
+                    }
+                    node.tag = 'div';
+                    node.attrs['class'] = (node.attrs['class'] || '') + ' oe_form_field o_form_field_many2manytags o_map_tags';
+                } else if (fields_registry.contains(ftype)) {
+                    // do nothing, the kanban record will handle it
+                } else {
+                    node.tag = qweb.prefix;
+                    node.attrs[qweb.prefix + '-esc'] = 'record.' + node.attrs.name + '.value';
+                }
+                break;
+            case 'button':
+            case 'a':
+                var type = node.attrs.type || '';
+                if (_.indexOf('action,object,edit,open,delete,url'.split(','), type) !== -1) {
+                    _.each(node.attrs, function(v, k) {
+                        if (_.indexOf('icon,type,name,args,string,context,states'.split(','), k) != -1) {
+                            node.attrs['data-' + k] = v;
+                            delete(node.attrs[k]);
+                        }
+                    });
+                    if (node.attrs['data-string']) {
+                        node.attrs.title = node.attrs['data-string'];
+                    }
+                    if (node.tag == 'a' && node.attrs['data-type'] != "url") {
+                        node.attrs.href = '#';
+                    } else {
+                        node.attrs.type = 'button';
+                    }
+
+                    var action_classes = " oe_map_action oe_map_action_" + node.tag;
+                    if (node.attrs['t-attf-class']) {
+                        node.attrs['t-attf-class'] += action_classes;
+                    } else if (node.attrs['t-att-class']) {
+                        node.attrs['t-att-class'] += " + '" + action_classes + "'";
+                    } else {
+                        node.attrs['class'] = (node.attrs['class'] || '') + action_classes;
+                    }
+                }
+                break;
+        }
+        if (node.children) {
+            for (var i = 0, ii = node.children.length; i < ii; i++) {
+                transform_qweb_template(node.children[i], fvg, many2manys);
+            }
+        }
+    }
 
     core.view_registry.add('map', MapView);
 

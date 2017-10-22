@@ -25,6 +25,7 @@
             <xpath expr="." position="inside">
                 <link rel="stylesheet" href="/web_google_maps/static/src/css/google_places_widget.css"/>
                 <script type="text/javascript" src="/web_google_maps/static/src/js/view/map_view_places_autocomplete.js"/>
+                <script type="text/javascript" src="/web_google_maps/static/src/js/view/map_record.js"/>
                 <script type="text/javascript" src="/web_google_maps/static/src/js/view/map_view.js"/>
                 <script type="text/javascript" src="/web_google_maps/static/src/js/widget/google_places_widget.js"/>
                 <script type="text/javascript" src="/web_google_maps/static/src/js/widget/google_places_autocomplete_widget.js"/>

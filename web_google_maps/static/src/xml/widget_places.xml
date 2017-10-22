@@ -185,16 +185,7 @@
             </button>
         </div>
     </t>
-    <t t-name="MapView.infoWindow">
-        <div class="gm-iw-container" t-attf-data-id="#{content.id}">
-            <div class="gm-iw-title">
-                <span><t t-esc="content.title"></t></span>
-            </div>
-            <div class="gm-iw-content">
-                <t t-foreach="content.items" t-as="item">
-                    <p><t t-raw="item"></t></p>
-                </t>
-            </div>
-        </div>
+    <t t-name="MapView.record">
+        <t t-raw="widget.content"/>
     </t>
 </templates>
