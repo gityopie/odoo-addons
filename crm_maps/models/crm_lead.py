@@ -21,26 +21,24 @@ class CrmLead(models.Model):
             self.customer_latitude = self.partner_id.partner_latitude
             self.customer_longitude = self.partner_id.partner_longitude
 
-    def _geo_localize(self):
-        result = geo_find(geo_query_address(
-            street=self.street,
-            zip=self.zip,
-            city=self.city,
-            state=self.state_id.name,
-            country=self.country_id.name
-        ))
-        if result is None:
-            result = geo_find(geo_query_address(
-                city=self.city,
-                state=self.state_id.name,
-                country=self.country_id.name
-            ))
-        return result
-
     @api.multi
     def geo_localize(self):
         for lead in self.with_context(lang='en_US'):
-            result = self._geo_localize()
+            result = geo_find(geo_query_address(
+                street=lead.street,
+                zip=lead.zip,
+                city=lead.city,
+                state=lead.state_id.name,
+                country=lead.country_id.name
+            ))
+
+            if result is None:
+                result = geo_find(geo_query_address(
+                    city=lead.city,
+                    state=lead.state_id.name,
+                    country=lead.country_id.name
+                ))
+
             if result:
                 lead.write({
                     'customer_latitude': result[0],

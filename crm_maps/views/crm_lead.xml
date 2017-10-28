@@ -148,7 +148,7 @@
         </field>
     </record>
     <record id="crm.crm_lead_action_activities" model="ir.actions.act_window">
-        <field name="view_mode">tree,form,kanban,calendar,pivot,graph</field>
+        <field name="view_mode">tree,form,kanban,calendar,pivot,graph,map</field>
         <field name="view_ids" eval="[(5, 0, 0),
             (0, 0, {'view_mode': 'tree', 'view_id': ref('crm.crm_lead_view_tree_activity')}),
             (0, 0, {'view_mode': 'form', 'view_id': ref('crm.crm_case_form_view_oppor')}),
