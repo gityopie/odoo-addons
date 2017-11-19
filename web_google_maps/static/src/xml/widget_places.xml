@@ -1,38 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<templates id="template" xml:space="preserve">
-    <t t-name="web_google_maps.FieldGooglePlaces">
-        <input t-if="!widget.get('effective_readonly')" class="o_form_input"
-            t-att-type="widget.password ? 'password' : 'text'"
-            t-att-barcode_events="widget.options.barcode_events"
-            t-att-id="widget.id_for_label"
-            t-att-tabindex="widget.node.attrs.tabindex"
-            t-att-autofocus="widget.node.attrs.autofocus"
-            t-att-placeholder="widget.node.attrs.placeholder"
-            t-att-maxlength="widget.field.size"/>
-        <span t-if="widget.get('effective_readonly')"/>
-    </t>
-    <t t-name="web_google_maps.FieldGooglePlacesAutocomplete">
-        <input t-if="!widget.get('effective_readonly')" class="o_form_input"
-            t-att-type="widget.password ? 'password' : 'text'"
-            t-att-barcode_events="widget.options.barcode_events"
-            t-att-id="widget.id_for_label"
-            t-att-tabindex="widget.node.attrs.tabindex"
-            t-att-autofocus="widget.node.attrs.autofocus"
-            t-att-placeholder="widget.node.attrs.placeholder"
-            t-att-maxlength="widget.field.size"/>
-        <span t-if="widget.get('effective_readonly')"/>
-    </t>
-    <t t-name="MapView">
-        <div class="o_map">
-            <div class="o_map_sidenav closed">
-                <div class="sidenav-body">
-                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                    </div>
+<template>
+    <div t-name="MapView" class="o_map_container">
+        <div class="o_map_sidenav closed">
+            <div class="sidenav-body">
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                 </div>
             </div>
-            <div class="o_map_view"></div>
         </div>
-    </t>
+        <div class="o_map_view"></div>
+    </div>
     <t t-name="MapViewControl">
         <div class="o_map_control">
             <div class="btn_map_control" title="Map Layers">
@@ -134,7 +109,7 @@
             </div>
             <div id="collapseControlLayers" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingControlLayer">
                 <div class="panel-body">
-                    <div class="layers">      
+                    <div class="layers">
                         <span id="map_layer" data-layer="traffic">
                             <img src="/web_google_maps/static/src/img/layer_traffic.png" alt="Traffic"/> Traffic
                         </span>
@@ -160,7 +135,7 @@
             </div>
             <div id="collapseTravelMode" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTravelMode">
                 <div class="panel-body">
-                    <div class="controls">      
+                    <div class="controls">
                         <span id="travel_mode" class="active" data-mode="DRIVING">
                             <img src="/web_google_maps/static/src/img/mode_driving.png" alt="Driving" title="Driving"/> Driving
                         </span>
@@ -188,4 +163,4 @@
     <t t-name="MapView.record">
         <t t-raw="widget.content"/>
     </t>
-</templates>
+</template>

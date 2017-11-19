@@ -1,35 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <data>
-        <template id="web_google_maps.assets_gmaps">
-            <t t-set="google_maps_api_key" t-value="request.env['ir.config_parameter'].sudo().get_param('google_maps_api_key')"/>
-            <t t-set="google_maps_lang_localization" t-value="request.env['ir.config_parameter'].sudo().get_param('google_maps_lang_localization')"/>
-            <t t-set="google_maps_region_localization" t-value="request.env['ir.config_parameter'].sudo().get_param('google_maps_region_localization')"/>
-            <t t-if="google_maps_api_key">
-                <script t-att-async="1" t-att-defer="1" t-attf-src="//maps.googleapis.com/maps/api/js?key=#{google_maps_api_key}&amp;libraries=geometry,places#{google_maps_region_localization}#{google_maps_lang_localization}"/>
-            </t>
-            <t t-if="not google_maps_api_key">
-                <script t-att-async="1" t-att-defer="1" t-attf-src="//maps.googleapis.com/maps/api/js?libraries=geometry,places#{google_maps_region_localization}#{google_maps_lang_localization}"/>
-            </t>
-            <script type="text/javascript" src="/web_google_maps/static/lib/google/markerclusterer.js"/>
-        </template>
-        <!-- Load gmaps assets -->
-        <!-- Didn't load the assets like how Odoo call and manage the assets (t-call-assets) -->
-        <!-- the reason is we don't have the actual file and it will be downloaded when the page is loaded -->
-        <template id="webclient_bootstrap" name="webclient_bootstrap gmaps" inherit_id="web.webclient_bootstrap">
-            <xpath expr="//t[@t-call-assets='web.assets_common']" position="before">
-                <t t-call="web_google_maps.assets_gmaps"/>
-            </xpath>
-        </template>
-        <template id="assets_backend" name="web_google_maps assets backend" inherit_id="web.assets_backend">
-            <xpath expr="." position="inside">
-                <link rel="stylesheet" href="/web_google_maps/static/src/css/google_places_widget.css"/>
-                <script type="text/javascript" src="/web_google_maps/static/src/js/view/map_view_places_autocomplete.js"/>
-                <script type="text/javascript" src="/web_google_maps/static/src/js/view/map_record.js"/>
-                <script type="text/javascript" src="/web_google_maps/static/src/js/view/map_view.js"/>
-                <script type="text/javascript" src="/web_google_maps/static/src/js/widget/google_places_widget.js"/>
-                <script type="text/javascript" src="/web_google_maps/static/src/js/widget/google_places_autocomplete_widget.js"/>
-            </xpath>
-        </template>
-    </data>
+    <template id="web_google_maps.assets_gmaps">
+        <script type="text/javascript" t-attf-src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnIWC27gJofPgEwWMy8NnJLOOCDxAKGYk"/>
+    </template>
+    <!-- Load gmaps assets -->
+    <!-- Didn't load the assets like how Odoo call and manage the assets (t-call-assets) -->
+    <!-- the reason is we don't have the actual file and it will be downloaded when the page is loaded -->
+    <template id="webclient_bootstrap" name="webclient_bootstrap gmaps" inherit_id="web.webclient_bootstrap">
+        <xpath expr="//t[@t-call-assets='web.assets_common']" position="before">
+            <t t-call="web_google_maps.assets_gmaps"/>
+        </xpath>
+    </template>
+    <template id="assets_backend" name="web_google_maps assets backend" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" type="text/less" href="/web_google_maps/static/src/less/web_maps.less"/>
+            <script type="text/javascript" src="/web_google_maps/static/src/js/view/map/map_model.js"/>
+            <script type="text/javascript" src="/web_google_maps/static/src/js/view/map/map_controller.js"/>
+            <script type="text/javascript" src="/web_google_maps/static/src/js/view/map/map_renderer.js"/>
+            <script type="text/javascript" src="/web_google_maps/static/src/js/view/map/map_view.js"/>
+            <script type="text/javascript" src="/web_google_maps/static/src/js/view/view_registry.js"/>
+        </xpath>
+    </template>
 </odoo>
