@@ -4,7 +4,8 @@
         <field name="name">view.res.partner.map</field>
         <field name="model">res.partner</field>
         <field name="arch" type="xml">
-            <map string="Map" lat="partner_latitude" lng="partner_longitude" colors="blue:company_type=='person';green:company_type=='company';">
+            <map class="o_res_partner_map" string="Map" lat="partner_latitude" lng="partner_longitude" colors="blue:company_type=='person';green:company_type=='company';">
+                <field name="id"/>
                 <field name="name"/>
                 <field name="street"/>
                 <field name="street2"/>
@@ -16,23 +17,35 @@
                 <field name="partner_latitude"/>
                 <field name="partner_longitude"/>
                 <field name="company_type"/>
+                <field name="image_small"/>
+                <field name="mobile"/>
+                <field name="phone"/>
+                <field name="type"/>
+                <field name="function"/>
                 <templates>
                     <t t-name="map-marker-iw">
-                        <div class="gm-iw-container o_map_global_click">
+                        <div class="gm-iw-container o_map_global_click o_res_partner_map">
                             <div class="gm-iw-title">
-                                <img t-att-src="map_image('res.partner', 'image_small', record.id.value)"/>
-                                <span><t t-esc="record.name.value"/></span>
+                                <img t-att-src="map_image('res.partner', 'image_small', record.id.raw_value)"/>
+                                <span><field name="name"/></span>
                             </div>
-                            <div class="gm-iw-content">
-                                <p>
-                                    <span t-esc="record.street.value"/>&#032;<span t-esc="record.street2.value"/>
-                                </p>
-                                <p>
-                                    <span t-esc="record.city.value"/>,&#032;<span t-esc="record.zip.value"/>
-                                </p>
-                                <p>
-                                    <span t-esc="record.state_id.value"/>,&#032;<span t-esc="record.country_id.value"/>
-                                </p>
+                            <div class="gm-iw-details">
+                                <div t-if="record.function.raw_value"><field name="function"/></div>
+                                <div t-if="record.email.raw_value">
+                                    <field name="email" widget="email"/>
+                                </div>
+                                <div t-if="record.type.raw_value != 'contact'">
+                                    <div>
+                                        <field name="street"/>
+                                        <field name="street2"/>
+                                        <field name="zip"/>
+                                        <field name="city"/>
+                                    </div>
+                                    <field t-if="record.state_id.raw_value" name="state_id"/>
+                                    <field name="country_id"/>
+                                </div>
+                                <div t-if="record.phone.raw_value">Phone: <field name="phone"/></div>
+                                <div t-if="record.mobile.raw_value">Mobile: <field name="mobile"/></div>
                             </div>
                         </div>
                     </t>
@@ -42,5 +55,25 @@
     </record>
     <record id="base.action_partner_form" model="ir.actions.act_window">
         <field name="view_mode">kanban,tree,form,map</field>
+    </record>
+    <record id="action_res_partner_map" model="ir.actions.act_window">
+        <field name="name">Customer Map</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_type">map</field>
+        <field name="view_mode">map</field>
+        <field name="domain">[('id', 'in', active_ids)]</field>
+    </record>
+    <record id="view_partner_form" model="ir.ui.view">
+        <field name="name">Google Places Partner Form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button name="%(web_google_maps.action_res_partner_map)d" type="action"
+                    class="oe_stat_button" icon="fa-map-marker" string="Map"
+                    attrs="{'invisible': ['|',('partner_latitude', '=', 0.0), ('partner_longitude', '=', 0.0)]}"/>
+            </div>
+        </field>
     </record>
 </odoo>

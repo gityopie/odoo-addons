@@ -1,8 +1,6 @@
 .o_map_container {
     height: 100%;
-    width: 100%;
     .o-flex-display();
-
 
     .o_map_view {
         .o-flex(1, 1, auto);
@@ -33,4 +31,44 @@
         }
     }
 
+    .gm-iw-container {
+        cursor: pointer;
+
+        .gm-iw-title {
+            font-size: 22px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .gm-iw-title span:nth-of-type(1) {
+            color: #7c7bad;
+        }
+
+        .gm-iw-content {
+            font-weight: 400;
+            font-size: 14px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .gm-iw-details {
+            width: 100%;
+            ul {
+                margin-bottom: @o-kanban-inner-hmargin*0.5;;
+                padding-left: 0;
+                list-style: none;
+                font-size: @font-size-small;
+
+                li {
+                    margin-bottom: 2px;
+                }
+            }
+        }
+
+        .gm-iw-content p {
+            line-height: 12px;
+        }
+    }
+
 }
+
