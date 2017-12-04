@@ -1,7 +1,7 @@
 odoo.define('web_google_maps.MapRenderer', function (require) {
     'use strict';
 
-    var BasicRenderer = require('web.BasicRenderer');
+    var AbstractRenderer = require('web.AbstractRenderer');
     var core = require('web.core');
     var QWeb = require('web.QWeb');
     var session = require('web.session');
@@ -77,14 +77,14 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
         }
     }
 
-    var MapRenderer = BasicRenderer.extend({
+    var MapRenderer = AbstractRenderer.extend({
         className: 'o_map_view',
         template: 'MapView',
         /**
          * @override
          */
         init: function (parent, state, params) {
-            this._super(parent, state, params);
+            this._super.apply(this, arguments);
 
             this.fieldLat = params.fieldLat;
             this.fieldLng = params.fieldLng;
@@ -110,28 +110,28 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
         },
         start: function () {
             this._initMap();
-            return this._super.apply(this, arguments);
+            return this._super();
         },
         /**
          * Initialize map view
          */
         _initMap: function () {
-            this.infoWindow = new google.maps.InfoWindow();
-            this.gmap = new google.maps.Map(this.$('.o_map_view').get(0), {
-                mapTypeId: google.maps.MapTypeId.ROADMAP,
+            this.infoWindow = new window.google.maps.InfoWindow();
+            this.$('.o_map_view').empty();
+            this.gMap = new window.google.maps.Map(this.$('.o_map_view').get(0), {
+                mapTypeId: window.google.maps.MapTypeId.ROADMAP,
                 zoom: 3,
                 minZoom: 3,
                 maxZoom: 20,
                 fullscreenControl: true,
                 mapTypeControl: true,
                 mapTypeControlOptions: {
-                    style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-                    position: google.maps.ControlPosition.TOP_CENTER
+                    style: window.google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+                    position: window.google.maps.ControlPosition.TOP_CENTER
                 }
             });
-            this.markerCluster = new MarkerClusterer(this.gmap, null, {
-                imagePath: '/web_google_maps/static/src/img/m'
-            });
+            this.markerCluster = new MarkerClusterer(this.gMap, null,
+                {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
         },
         _getIconColor: function (record) {
             if (this.color) {
@@ -165,24 +165,24 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
         _createMarker: function (latLng, record) {
             var options = {
                 position: latLng,
-                map: this.gmap,
-                animation: google.maps.Animation.DROP,
+                map: this.gMap,
+                animation: window.google.maps.Animation.DROP,
             };
             var color = this._getIconColor(record);
             if (color && this.iconColors.indexOf(color) !== -1) {
                 options.icon = this.iconUrl + color + '-dot.png';
             }
-            var marker = new google.maps.Marker(options);
+            var marker = new window.google.maps.Marker(options);
             this.markers.push(marker);
             this.markerCluster.addMarker(marker);
-            google.maps.event.addListener(marker, 'click', this._markerInfoWindow(marker, record));
+            window.google.maps.event.addListener(marker, 'click', this._markerInfoWindow(marker, record));
         },
         _markerInfoWindow: function (marker, record) {
             var self = this;
             var content = this._setMarkerInfoWindow(record);
             return function () {
                 self.infoWindow.setContent(content);
-                self.infoWindow.open(self.gmap, marker);
+                self.infoWindow.open(self.gMap, marker);
             };
         },
         _setMarkerInfoWindow: function (record) {
@@ -198,31 +198,33 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
          */
         _renderMarker: function (record) {
             if (record.data[this.fieldLat] && record.data[this.fieldLng]) {
-                var latLng = new google.maps.LatLng(record.data[this.fieldLat], record.data[this.fieldLng]);
+                var latLng = new window.google.maps.LatLng(record.data[this.fieldLat], record.data[this.fieldLng]);
                 this._createMarker(latLng, record);
             }
         },
         _renderMarkers: function () {
-            var self = this;
-            var locs =[{lat: 59.327, lng: 18.067}, {lat: -25.363, lng:131.044}];
-            _.each(locs, function(loc){
-                var latLng = new google.maps.LatLng(loc.lat, loc.lng);
-                var marker = new google.maps.Marker({
-                    position: latLng,
-                    map: self.gmap,
-                    animation: google.maps.Animation.DROP,
-                });
-                self.markers.push(marker);
-                self.markerCluster.addMarker(marker);
-            });
-            // return _.map(this.state.data, this._renderMarker.bind(this));
+            return _.map(this.state.data, this._renderMarker.bind(this));
         },
-        _renderView: function () {
+        _render: function () {
             var self = this;
+            var deferred = new $.Deferred();
             this._clearMarkerClusters();
             this._renderMarkers();
-            return this._super.apply(this, arguments).then(function() {
-                return self._mapCentered();
+            return this._super.apply(this, arguments).then(function () {
+                self._mapCentered();
+                window.google.maps.event.addListenerOnce(self.gMap, 'idle', function() {
+                    window.google.maps.event.trigger(self.gMap, 'resize');
+                });
+                // switch between viewing all coords into a single coord somehow caused the map center didn't work as expected
+                window.google.maps.event.addListenerOnce(self.gMap, 'center_changed', function() {
+                    if (self.markers.length === 1) {
+                        self.gMap.panTo(self.markers[0].getPosition());
+                        self.gMap.setZoom(17);
+                    } else {
+                        self.gMap.panToBounds(self.latLngBounds);
+                    }
+                });
+                return deferred.resolve();
             });
         },
         /**
@@ -231,18 +233,15 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
          */
         _mapCentered: function () {
             var self = this;
-            var def = new $.Deferred();
-            var bounds = new google.maps.LatLngBounds();
-            if (this.markers.length === 1) {
-               self.gmap.setCenter(self.markers[0].getPosition());
+            if (this.markers.length == 1) {
+                this.gMap.setCenter(this.markers[0].getPosition());
             } else {
-                _.each(self.markers, function (marker) {
-                    bounds.extend(marker.getPosition());
+                this.latLngBounds = new window.google.maps.LatLngBounds();
+                _.each(this.markers, function (marker) {
+                    self.latLngBounds.extend(marker.getPosition());
                 });
-                self.gmap.fitBounds(bounds);
+                this.gMap.fitBounds(self.latLngBounds);
             }
-            def.resolve();
-            return def;
         },
         _clearMarkerClusters: function () {
             this.markerCluster.clearMarkers();

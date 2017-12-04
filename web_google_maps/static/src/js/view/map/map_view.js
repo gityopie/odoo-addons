@@ -13,7 +13,8 @@ odoo.define('web_google_maps.MapView', function (require) {
         display_name: _lt('Map'),
         icon: 'fa-map-o',
         jsLibs: [
-            '/web_google_maps/static/lib/google/markerclusterer.js',
+            '//developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js',
+            '//maps.googleapis.com/maps/api/js?key=AIzaSyCnIWC27gJofPgEwWMy8NnJLOOCDxAKGYk&amp;libraries=geometry,places'
         ],
         config: _.extend({}, BasicView.prototype.config, {
             Renderer: MapRenderer,

@@ -1,21 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <template id="web_google_maps.assets_gmaps">
-        <script type="text/javascript" t-attf-src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnIWC27gJofPgEwWMy8NnJLOOCDxAKGYk"/>
-    </template>
-    <!-- Load gmaps assets -->
-    <!-- Didn't load the assets like how Odoo call and manage the assets (t-call-assets) -->
-    <!-- the reason is we don't have the actual file and it will be downloaded when the page is loaded -->
-    <template id="webclient_bootstrap" name="webclient_bootstrap gmaps" inherit_id="web.webclient_bootstrap">
-        <xpath expr="//t[@t-call-assets='web.assets_common']" position="before">
-            <t t-call="web_google_maps.assets_gmaps"/>
-        </xpath>
-    </template>
     <template id="assets_backend" name="web_google_maps assets backend" inherit_id="web.assets_backend">
         <xpath expr="." position="inside">
             <link rel="stylesheet" type="text/less" href="/web_google_maps/static/src/less/web_maps.less"/>
-            <!-- <script type="text/javascript" src="/web_google_maps/static/src/js/view/map/map_model.js"/> -->
-            <!-- <script type="text/javascript" src="/web_google_maps/static/src/js/view/map/map_controller.js"/> -->
             <script type="text/javascript" src="/web_google_maps/static/src/js/view/map/map_record.js"/>
             <script type="text/javascript" src="/web_google_maps/static/src/js/view/map/map_renderer.js"/>
             <script type="text/javascript" src="/web_google_maps/static/src/js/view/map/map_view.js"/>
