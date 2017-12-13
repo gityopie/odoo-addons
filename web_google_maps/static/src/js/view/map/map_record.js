@@ -18,9 +18,9 @@ odoo.define('web_google_maps.MapRecord', function(require) {
         init: function (parent, state, options) {
             this._super(parent);
 
-            this.fields = state.fields;
-            this.fieldsInfo = state.fieldsInfo.map;
-            this.modelName = state.model;
+            this.fields = parent.fields;
+            this.fieldsInfo = parent.fieldsInfo.map;
+            this.modelName = parent.model;
 
             this.options = options;
             this.editable = options.editable;
@@ -189,31 +189,38 @@ odoo.define('web_google_maps.MapRecord', function(require) {
             return new Domain(d).compute(this.state.evalContext);
         },
         _transformRecord: function (recordData) {
+            console.log('_transformRecord');
+            console.log('+++++++++++++');
+            console.log(this);
+            console.log(recordData);
             var self = this;
             var new_record = {};
-            _.each(this.state.getFieldNames(), function (name) {
+            _.each(this.fieldNames, function (name) {
+                console.log(name);
                 var value = recordData[name];
-                var r = _.clone(self.fields[name] || {});
+                console.log(value)
+                // var r = _.clone(self.fields[name] || {});
 
-                if ((r.type === 'date' || r.type === 'datetime') && value) {
-                    r.raw_value = value.toDate();
-                } else if (r.type === 'one2many' || r.type === 'many2many') {
-                    r.raw_value = value.count ? value.res_ids : [];
-                } else if (r.type === 'many2one' ) {
-                    r.raw_value = value && value.res_id || false;
-                } else {
-                    r.raw_value = value;
-                }
+                // if ((r.type === 'date' || r.type === 'datetime') && value) {
+                //     r.raw_value = value.toDate();
+                // } else if (r.type === 'one2many' || r.type === 'many2many') {
+                //     r.raw_value = value.count ? value.res_ids : [];
+                // } else if (r.type === 'many2one' ) {
+                //     r.raw_value = value && value.res_id || false;
+                // } else {
+                //     r.raw_value = value;
+                // }
 
-                if (r.type) {
-                    var formatter = field_utils.format[r.type];
-                    r.value = formatter(value, self.fields[name], recordData, self.state);
-                } else {
-                    r.value = value;
-                }
+                // if (r.type) {
+                //     var formatter = field_utils.format[r.type];
+                //     r.value = formatter(value, self.fields[name], recordData, self.state);
+                // } else {
+                //     r.value = value;
+                // }
 
-                new_record[name] = r;
+                // new_record[name] = r;
             });
+            console.log('+++++++++++++')
             return new_record;
         },
         /**
@@ -223,8 +230,8 @@ odoo.define('web_google_maps.MapRecord', function(require) {
             this.state = recordState;
             this.id = recordState.res_id;
             this.db_id = recordState.id;
-            this.recordData = recordState.data;
-            this.record = this._transformRecord(recordState.data);
+            this.recordData = recordState;
+            this.record = this._transformRecord(recordState);
             this.qweb_context = {
                 map_image: this._getImageURL.bind(this),
                 map_compute_domain: this._computeDomain.bind(this),

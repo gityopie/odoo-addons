@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <template>
     <div t-name="MapView" class="o_map_container">
         <div class="o_map_sidenav closed">

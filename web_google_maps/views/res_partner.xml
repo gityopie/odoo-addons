@@ -62,7 +62,6 @@
         <field name="res_model">res.partner</field>
         <field name="view_type">map</field>
         <field name="view_mode">map</field>
-        <field name="domain">[('id', 'in', active_ids)]</field>
     </record>
     <record id="view_partner_form" model="ir.ui.view">
         <field name="name">Google Places Partner Form</field>
@@ -71,7 +70,7 @@
         <field name="arch" type="xml">
             <div name="button_box" position="inside">
                 <button name="%(web_google_maps.action_res_partner_map)d" type="action"
-                    class="oe_stat_button" icon="fa-map-marker" string="Map"
+                    class="oe_stat_button" icon="fa-map-marker" string="Map" context="{'search_default_name': name, 'search_default_id': active_id}"
                     attrs="{'invisible': ['|',('partner_latitude', '=', 0.0), ('partner_longitude', '=', 0.0)]}"/>
             </div>
         </field>

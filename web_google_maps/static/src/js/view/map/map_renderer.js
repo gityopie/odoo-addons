@@ -1,7 +1,7 @@
 odoo.define('web_google_maps.MapRenderer', function (require) {
     'use strict';
 
-    var AbstractRenderer = require('web.AbstractRenderer');
+    var BasicRenderer = require('web.BasicRenderer');
     var core = require('web.core');
     var QWeb = require('web.QWeb');
     var session = require('web.session');
@@ -77,7 +77,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
         }
     }
 
-    var MapRenderer = AbstractRenderer.extend({
+    var MapRenderer = BasicRenderer.extend({
         className: 'o_map_view',
         template: 'MapView',
         /**
@@ -86,6 +86,8 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
         init: function (parent, state, params) {
             this._super.apply(this, arguments);
 
+            this.displayFields = params.displayFields;
+            this.model = params.model;
             this.fieldLat = params.fieldLat;
             this.fieldLng = params.fieldLng;
             this.color = params.markerColor;
@@ -116,18 +118,18 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
          * Initialize map view
          */
         _initMap: function () {
-            this.infoWindow = new window.google.maps.InfoWindow();
+            this.infoWindow = new google.maps.InfoWindow();
             this.$('.o_map_view').empty();
-            this.gMap = new window.google.maps.Map(this.$('.o_map_view').get(0), {
-                mapTypeId: window.google.maps.MapTypeId.ROADMAP,
+            this.gMap = new google.maps.Map(this.$('.o_map_view').get(0), {
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
                 zoom: 3,
                 minZoom: 3,
                 maxZoom: 20,
                 fullscreenControl: true,
                 mapTypeControl: true,
                 mapTypeControlOptions: {
-                    style: window.google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-                    position: window.google.maps.ControlPosition.TOP_CENTER
+                    style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+                    position: google.maps.ControlPosition.TOP_CENTER
                 }
             });
             this.markerCluster = new MarkerClusterer(this.gMap, null,
@@ -142,7 +144,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
                 return '';
             }
 
-            var context = _.mapObject(_.extend({}, record.data, {
+            var context = _.mapObject(_.extend({}, record, {
                 uid: session.uid,
                 current_date: moment().format('YYYY-MM-DD') // TODO: time, datetime, relativedelta
             }), function (val, key) {
@@ -166,20 +168,20 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
             var options = {
                 position: latLng,
                 map: this.gMap,
-                animation: window.google.maps.Animation.DROP,
+                animation: google.maps.Animation.DROP,
             };
             var color = this._getIconColor(record);
             if (color && this.iconColors.indexOf(color) !== -1) {
                 options.icon = this.iconUrl + color + '-dot.png';
             }
-            var marker = new window.google.maps.Marker(options);
+            var marker = new google.maps.Marker(options);
             this.markers.push(marker);
             this.markerCluster.addMarker(marker);
-            window.google.maps.event.addListener(marker, 'click', this._markerInfoWindow(marker, record));
+            google.maps.event.addListener(marker, 'click', this._markerInfoWindow(marker, record));
         },
         _markerInfoWindow: function (marker, record) {
             var self = this;
-            var content = this._setMarkerInfoWindow(record);
+            var content = this._setMarkerInfoWindow(record); //'<div>Helo</div>'; //
             return function () {
                 self.infoWindow.setContent(content);
                 self.infoWindow.open(self.gMap, marker);
@@ -187,7 +189,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
         },
         _setMarkerInfoWindow: function (record) {
             var el_div = document.createElement('div');
-            var markerIw = new MapRecord(this, record, this.recordOptions);
+            var markerIw = $('<div>Helo</div>'); // new MapRecord(this, record, this.recordOptions);
             markerIw.appendTo(el_div);
             return el_div;
         },
@@ -197,35 +199,19 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
          * @param {Object} record
          */
         _renderMarker: function (record) {
-            if (record.data[this.fieldLat] && record.data[this.fieldLng]) {
-                var latLng = new window.google.maps.LatLng(record.data[this.fieldLat], record.data[this.fieldLng]);
+            if (record && (record[this.fieldLat] && record[this.fieldLng])) {
+                var latLng = new google.maps.LatLng(record[this.fieldLat], record[this.fieldLng]);
                 this._createMarker(latLng, record);
             }
         },
         _renderMarkers: function () {
             return _.map(this.state.data, this._renderMarker.bind(this));
         },
-        _render: function () {
+        _renderView: function () {
             var self = this;
-            var deferred = new $.Deferred();
             this._clearMarkerClusters();
             this._renderMarkers();
-            return this._super.apply(this, arguments).then(function () {
-                self._mapCentered();
-                window.google.maps.event.addListenerOnce(self.gMap, 'idle', function() {
-                    window.google.maps.event.trigger(self.gMap, 'resize');
-                });
-                // switch between viewing all coords into a single coord somehow caused the map center didn't work as expected
-                window.google.maps.event.addListenerOnce(self.gMap, 'center_changed', function() {
-                    if (self.markers.length === 1) {
-                        self.gMap.panTo(self.markers[0].getPosition());
-                        self.gMap.setZoom(17);
-                    } else {
-                        self.gMap.panToBounds(self.latLngBounds);
-                    }
-                });
-                return deferred.resolve();
-            });
+            return this._super.apply(this, arguments).then(self._mapCentered.bind(self));
         },
         /**
          * Center map
@@ -236,12 +222,24 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
             if (this.markers.length == 1) {
                 this.gMap.setCenter(this.markers[0].getPosition());
             } else {
-                this.latLngBounds = new window.google.maps.LatLngBounds();
+                this.latLngBounds = new google.maps.LatLngBounds();
                 _.each(this.markers, function (marker) {
                     self.latLngBounds.extend(marker.getPosition());
                 });
-                this.gMap.fitBounds(self.latLngBounds);
+                self.gMap.fitBounds(self.latLngBounds);
             }
+            google.maps.event.addListenerOnce(self.gMap, 'idle', function() {
+                google.maps.event.trigger(self.gMap, 'resize');
+                if (self.markers.length === 1) {
+                    self.gMap.setZoom(17);
+                    self.gMap.panTo(self.markers[0].getPosition());
+                }
+            });
+            google.maps.event.addListenerOnce(self.gMap, 'center_changed', function() {
+                if (self.markers.length === 1) {
+                    self.gMap.setZoom(17);
+                }
+            });
         },
         _clearMarkerClusters: function () {
             this.markerCluster.clearMarkers();

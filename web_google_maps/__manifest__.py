@@ -2,7 +2,7 @@
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 {
     'name': 'Web Google Maps',
-    'version': '1.2',
+    'version': '11.0.0.1',
     'author': "Yopi Angi",
     'maintainer': 'Yopi Angi<yopiangi@gmail.com>',
     'category': 'web',
@@ -17,13 +17,14 @@ form view, it provide autocomplete feature when you typed an address of partner
 3. Routes information
 """,
     'depends': [
-        'website_google_map'
+        'base_setup',
+        'base_geolocalize',
     ],
     'website': '',
     'data': [
         'views/google_places_template.xml',
         'views/res_partner.xml',
-        # 'views/res_config.xml'
+        'views/res_config.xml'
     ],
     'qweb': ['static/src/xml/widget_places.xml'],
     'installable': True,
