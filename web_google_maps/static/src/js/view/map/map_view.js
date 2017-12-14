@@ -70,8 +70,6 @@ odoo.define('web_google_maps.MapView', function (require) {
             this.loadParams.mapping = mapping;
             this.loadParams.fields = fields;
             this.loadParams.fieldsInfo = viewInfo.fieldsInfo;
-            this.loadParams.parentID = viewInfo.parentID;
-            this.recordID = params.recordID;
             this.model = params.model;
         },
         _setMarkerColors: function (colors) {

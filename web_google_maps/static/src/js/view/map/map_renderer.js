@@ -135,6 +135,10 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
             this.markerCluster = new MarkerClusterer(this.gMap, null,
                 {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
         },
+        /**
+         * Defining marker color
+         * @param {any} record
+         */
         _getIconColor: function (record) {
             if (this.color) {
                 return this.color;
@@ -163,6 +167,8 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
         },
         /**
          * Create marker
+         * @param {any} latLng: instance of google LatLng
+         * {any} record
          */
         _createMarker: function (latLng, record) {
             var options = {
@@ -181,7 +187,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
         },
         _markerInfoWindow: function (marker, record) {
             var self = this;
-            var content = this._setMarkerInfoWindow(record); //'<div>Helo</div>'; //
+            var content = '<div>Hello</div>'; // this._setMarkerInfoWindow(record);
             return function () {
                 self.infoWindow.setContent(content);
                 self.infoWindow.open(self.gMap, marker);
@@ -189,7 +195,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
         },
         _setMarkerInfoWindow: function (record) {
             var el_div = document.createElement('div');
-            var markerIw = $('<div>Helo</div>'); // new MapRecord(this, record, this.recordOptions);
+            var markerIw = new MapRecord(this, record, this.recordOptions);
             markerIw.appendTo(el_div);
             return el_div;
         },
@@ -219,25 +225,17 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
          */
         _mapCentered: function () {
             var self = this;
-            if (this.markers.length == 1) {
-                this.gMap.setCenter(this.markers[0].getPosition());
-            } else {
-                this.latLngBounds = new google.maps.LatLngBounds();
-                _.each(this.markers, function (marker) {
-                    self.latLngBounds.extend(marker.getPosition());
-                });
-                self.gMap.fitBounds(self.latLngBounds);
-            }
             google.maps.event.addListenerOnce(self.gMap, 'idle', function() {
                 google.maps.event.trigger(self.gMap, 'resize');
                 if (self.markers.length === 1) {
+                    self.gMap.setCenter(self.markers[0].getPosition());
                     self.gMap.setZoom(17);
-                    self.gMap.panTo(self.markers[0].getPosition());
-                }
-            });
-            google.maps.event.addListenerOnce(self.gMap, 'center_changed', function() {
-                if (self.markers.length === 1) {
-                    self.gMap.setZoom(17);
+                } else {
+                    var latLngBounds = new google.maps.LatLngBounds();
+                    _.each(self.markers, function (marker) {
+                        latLngBounds.extend(marker.getPosition());
+                    });
+                    self.gMap.fitBounds(latLngBounds);
                 }
             });
         },
