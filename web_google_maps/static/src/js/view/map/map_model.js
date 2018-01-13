@@ -1,67 +1,60 @@
 odoo.define('web_google_maps.MapModel', function(require) {
     'use strict';
 
-    var AbstractModel = require('web.AbstractModel');
-    var Context = require('web.Context');
-    var core = require('web.core');
-    var fieldUtils = require('web.field_utils');
-    var session = require('web.session');
-    var time = require('web.time');
-    
-    var _t = core._t;
-    
+    var BasicModel = require('web.BasicModel');
 
-
-    var MapModel = AbstractModel.extend({
-        get: function () {
-            return _.extend({}, this.data, {
-                fields: this.fields
-            });
-        },
-        load: function (params) {
-            var self = this;
-            this.fields = params.fields;
-            this.fieldNames = params.fieldNames;
-            this.fieldsInfo = params.fieldsInfo;
-            this.modelName = params.modelName;
-            this.mode = params.mode;
-            this.data = {
-                domain: params.domain,
-                context: params.context,
-                filter: params.filter
+    var MapModel = BasicModel.extend({
+        reload: function (id, options) {
+            if (options && options.groupBy && !options.groupBy.length) {
+                options.groupBy = this.defaultGroupedBy;
             }
-            return this._loadMap();
-        },
-        reload: function (_handle, params) {
-            if (params.domain) {
-                this.data.domain = params.domain;
-            }
-            return this._loadMap();
-        },
-        _loadMap: function () {
-            var self = this;
-            return self._rpc({
-                model: self.modelName,
-                method: 'search_read',
-                context: self.data.context,
-                domain: self.data.domain,
-                fields: self.fieldNames
-            }).then(self._parseServerData.bind(this));
+            var def = this._super(id, options);
+            return this._reloadProgressBarGroupFromRecord(id, def);
         },
         /**
-         * parse the server values to javascript framwork
-         *
-         * @param {Object} data the server data to parse
+         * @override
          */
-        _parseServerData: function (data) {
+        load: function (params) {
+            this.defaultGroupedBy = params.groupBy;
+            params.groupedBy = (params.groupedBy && params.groupedBy.length) ? params.groupedBy : this.defaultGroupedBy;
+            return this._super(params);
+        },
+        /**
+         * Ensures that there is no nested groups in Map (only the first grouping
+         * level is taken into account).
+         *
+         * @override
+         * @private
+         * @param {Object} list valid resource object
+         */
+        _readGroup: function (list) {
             var self = this;
-            this.data.data = data;
-            _.each(data, function(event) {
-                _.each(self.fieldNames, function (fieldName) {
-                    event[fieldName] = self._parseServerValue(self.fields[fieldName], event[fieldName]);
-                });
-            });
-        }
+            if (list.groupedBy.length > 1) {
+                list.groupedBy = [list.groupedBy[0]];
+            }
+            return this._super.apply(this, arguments);
+        },
+        _reloadProgressBarGroupFromRecord: function (recordID, def) {
+            var element = this.localData[recordID];
+            if (element.type !== 'record') {
+                return def;
+            }
+
+            // If we updated a record, then we must potentially update columns'
+            // progressbars, so we need to load groups info again
+            var self = this;
+            while (element) {
+                if (element.progressBar) {
+                    return def.then(function (data) {
+                        return self._load(element, {onlyGroups: true}).then(function () {
+                            return data;
+                        });
+                    });
+                }
+                element = this.localData[element.parentID];
+            }
+            return def;
+        },
     });
 
     return MapModel;

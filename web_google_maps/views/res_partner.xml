@@ -27,25 +27,20 @@
                         <div class="gm-iw-container o_map_global_click o_res_partner_map">
                             <div class="gm-iw-title">
                                 <img t-att-src="map_image('res.partner', 'image_small', record.id.raw_value)"/>
-                                <span><field name="name"/></span>
+                                <span><strong><field name="display_name"/></strong></span>
                             </div>
                             <div class="gm-iw-details">
-                                <div t-if="record.function.raw_value"><field name="function"/></div>
-                                <div t-if="record.email.raw_value">
-                                    <field name="email" widget="email"/>
-                                </div>
-                                <div t-if="record.type.raw_value != 'contact'">
-                                    <div>
-                                        <field name="street"/>
-                                        <field name="street2"/>
-                                        <field name="zip"/>
-                                        <field name="city"/>
-                                    </div>
-                                    <field t-if="record.state_id.raw_value" name="state_id"/>
-                                    <field name="country_id"/>
-                                </div>
-                                <div t-if="record.phone.raw_value">Phone: <field name="phone"/></div>
-                                <div t-if="record.mobile.raw_value">Mobile: <field name="mobile"/></div>
+                                <ul>
+                                    <li t-if="record.parent_id.raw_value and !record.function.raw_value"><field name="parent_id"/></li>
+                                    <li t-if="!record.parent_id.raw_value and record.function.raw_value"><field name="function"/></li>
+                                    <li t-if="record.parent_id.raw_value and record.function.raw_value"><field name="function"/> at <field name="parent_id"/></li>
+                                    <li t-if="record.city.raw_value and !record.country_id.raw_value"><field name="city"/></li>
+                                    <li t-if="!record.city.raw_value and record.country_id.raw_value"><field name="country_id"/></li>
+                                    <li t-if="record.city.raw_value and record.country_id.raw_value"><field name="city"/>, <field name="country_id"/></li>
+                                    <li t-if="record.email.raw_value" class="o_text_overflow"><field name="email"/></li>
+                                    <li t-if="record.phone.raw_value">Phone: <field name="phone"/></li>
+                                    <li t-if="record.mobile.raw_value">Mobile: <field name="mobile"/></li>
+                                </ul>
                             </div>
                         </div>
                     </t>
@@ -56,12 +51,18 @@
     <record id="base.action_partner_form" model="ir.actions.act_window">
         <field name="view_mode">kanban,tree,form,map</field>
     </record>
+    <record id="action_partner_form_view3" model="ir.actions.act_window.view">
+        <field eval="3" name="sequence"/>
+        <field name="view_mode">map</field>
+        <field name="view_id" ref="view_res_partner_map"/>
+        <field name="act_window_id" ref="base.action_partner_form"/>
+    </record>
     <record id="action_res_partner_map" model="ir.actions.act_window">
         <field name="name">Customer Map</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">res.partner</field>
-        <field name="view_type">map</field>
-        <field name="view_mode">map</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">map,tree,form</field>
     </record>
     <record id="view_partner_form" model="ir.ui.view">
         <field name="name">Google Places Partner Form</field>

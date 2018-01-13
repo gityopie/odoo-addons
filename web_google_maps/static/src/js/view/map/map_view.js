@@ -1,25 +1,26 @@
 odoo.define('web_google_maps.MapView', function (require) {
     'use strict';
 
-    var AbstractView = require('web.AbstractView');
+    var BasicView = require('web.BasicView');
     var core = require('web.core');
     var utils = require('web.utils');
-    var MapModel = require('web_google_maps.MapModel');
-    var MapController = require('web_google_maps.MapController');
+    var config = require('web.config');
+    // var MapModel = require('web_google_maps.MapModel');
+    // var MapController = require('web_google_maps.MapController');
     var MapRenderer = require('web_google_maps.MapRenderer');
+    var BasicModel = require('web.BasicModel');
+    var BasicController = require('web.BasicController');
 
     var _lt = core._lt;
 
-    var MapView = AbstractView.extend({
+    var MapView = BasicView.extend({
         accesskey: 'm',
         display_name: _lt('Map'),
         icon: 'fa-map-o',
-        jsLibs: [
-            '//developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js',
-        ],
+        jsLibs: [],
         config: {
-            Model: MapModel,
-            Controller: MapController,
+            Model: BasicModel,
+            Controller: BasicController,
             Renderer: MapRenderer,
         },
         viewType: 'map',
@@ -32,47 +33,47 @@ odoo.define('web_google_maps.MapView', function (require) {
 
             var markerColors = ['green', 'blue', 'red', 'yellow', 'purple', 'orange', 'pink'];
             var iconUrl = '//maps.google.com/mapfiles/ms/icons/';
-            var colors = this._setMarkerColors(attrs.colors);
-
-            var mapping = {};
-            var fieldNames = fields.display_name ? ['display_name'] : [];
-            var displayFields = {};
-            var filters = {};
-            var modelFilters = [];
-
-            _.each(arch.children, function (child) {
-                if (child.tag !== 'field') return;
-                var fieldName = child.attrs.name;
-                fieldNames.push(fieldName);
-                if (!child.attrs.invisible) {
-                    displayFields[fieldName] = child.attrs;
-                }
+            var colors = this._setMarkersColor(attrs.colors);
+            var activeActions = this.controllerParams.activeActions;
+            activeActions = _.extend(activeActions, {
+                group_create: arch.attrs.group_create ? JSON.parse(arch.attrs.group_create) : true,
+                group_edit: arch.attrs.group_edit ? JSON.parse(arch.attrs.group_edit) : true,
+                group_delete: arch.attrs.group_delete ? JSON.parse(arch.attrs.group_delete) : true,
             });
-            if (_.isEmpty(displayFields)) {
-                displayFields = fields.display_name ? {'display_name': {}} : [];
-            }
 
-            this.rendererParams.record_options = {
-                editable: false,
-                deletable: false,
-                read_only_mode: true
-            };
+
+            this.loadParams.type = 'list';
+            this.loadParams.groupBy = arch.attrs.default_group_by ? [arch.attrs.default_group_by] : (params.groupBy || []);
+
+            this.rendererParams.arch = arch;
             this.rendererParams.markerColor = attrs.color;
             this.rendererParams.markerColors = colors;
             this.rendererParams.fieldLat = attrs.lat;
             this.rendererParams.fieldLng = attrs.lng;
             this.rendererParams.iconColors = markerColors;
             this.rendererParams.iconUrl = iconUrl;
-            this.rendererParams.displayFields = displayFields;
-            this.rendererParams.model = viewInfo.model;
+            this.rendererParams.model = params.model;
+            this.rendererParams.record_options = {
+                editable: false,
+                deletable: false,
+                read_only_mode: true
+            };
+            this.rendererParams.column_options = {
+                editable: activeActions.group_edit,
+                deletable: activeActions.group_delete,
+                group_creatable: activeActions.group_create && !config.device.isMobile,
+                quick_create: params.isQuickCreateEnabled || false,
+                hasProgressBar: false,
+            };
+            this.rendererParams.record_options = {
+                editable: activeActions.edit,
+                deletable: activeActions.delete,
+                read_only_mode: params.readOnlyMode,
+            };
 
-            this.loadParams.fieldNames = _.uniq(fieldNames);
-            this.loadParams.mapping = mapping;
-            this.loadParams.fields = fields;
-            this.loadParams.fieldsInfo = viewInfo.fieldsInfo;
-            this.model = params.model;
+            this.controllerParams.readOnlyMode = false;
         },
-        _setMarkerColors: function (colors) {
+        _setMarkersColor: function (colors) {
             if (!colors) {
                 return false;
             }

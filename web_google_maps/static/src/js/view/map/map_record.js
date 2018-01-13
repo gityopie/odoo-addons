@@ -1,4 +1,4 @@
-odoo.define('web_google_maps.MapRecord', function(require) {
+odoo.define('web_google_maps.MapRecord', function (require) {
     'use strict';
 
     var core = require('web.core');
@@ -11,6 +11,14 @@ odoo.define('web_google_maps.MapRecord', function(require) {
     var _t = core._t;
     var QWeb = core.qweb;
 
+    /**
+     * MapRecord is adopted from KanbanRecord
+     * instead of inherit the class, I created a new one and take only
+     * what is necessary for marker info window
+     *
+     * The idea is to be able to generate a qweb template for marker-info-window like kanban template
+     *
+     */
     var MapRecord = Widget.extend({
         /**
          * @override
@@ -18,9 +26,9 @@ odoo.define('web_google_maps.MapRecord', function(require) {
         init: function (parent, state, options) {
             this._super(parent);
 
-            this.fields = parent.fields;
-            this.fieldsInfo = parent.fieldsInfo.map;
-            this.modelName = parent.model;
+            this.fields = state.fields;
+            this.fieldsInfo = state.fieldsInfo.map;
+            this.modelName = state.model;
 
             this.options = options;
             this.editable = options.editable;
@@ -32,6 +40,9 @@ odoo.define('web_google_maps.MapRecord', function(require) {
 
             this._setState(state);
         },
+        /**
+         * @override
+         */
         start: function () {
             return this._super.apply(this, arguments).then(this._render.bind(this));
         },
@@ -63,6 +74,7 @@ odoo.define('web_google_maps.MapRecord', function(require) {
                             self.subWidgets[field_name] = widget;
                         } else if (core.debug) {
                             // the widget is not implemented
+                            debugger;
                             $field.replaceWith($('<span>', {
                                 text: _.str.sprintf(_t('[No widget %s]'), field_widget),
                             }));
@@ -83,7 +95,9 @@ odoo.define('web_google_maps.MapRecord', function(require) {
             // it is much more efficient to use a formatter
             var field = this.fields[field_name];
             var value = this.recordData[field_name];
-            var options = { data: this.recordData };
+            var options = {
+                data: this.recordData
+            };
             var formatted_value = field_utils.format[field.type](value, field, options);
             var $result = $('<span>', {
                 text: formatted_value,
@@ -121,7 +135,9 @@ odoo.define('web_google_maps.MapRecord', function(require) {
                 }
                 attrs[key] = value;
             });
-            var options = _.extend({}, this.options, {attrs: attrs});
+            var options = _.extend({}, this.options, {
+                attrs: attrs
+            });
             var widget = new Widget(this, field_name, this.state, options);
             widget.replace($field);
             this._setFieldDisplay(widget.$el, field_name);
@@ -157,16 +173,26 @@ odoo.define('web_google_maps.MapRecord', function(require) {
             var url;
             if (this.record[field] && this.record[field].value && !utils.is_bin_size(this.record[field].value)) {
                 url = 'data:image/png;base64,' + this.record[field].value;
-            } else if (this.record[field] && ! this.record[field].value) {
+            } else if (this.record[field] && !this.record[field].value) {
                 url = "/web/static/src/img/placeholder.png";
             } else {
-                if (_.isArray(id)) { id = id[0]; }
-                if (!id) { id = undefined; }
-                if (options.preview_image)
+                if (_.isArray(id)) {
+                    id = id[0];
+                }
+                if (!id) {
+                    id = undefined;
+                }
+                if (options.preview_image) {
                     field = options.preview_image;
+                }
                 var unique = this.record.__last_update && this.record.__last_update.value.replace(/[^0-9]/g, '');
                 var session = this.getSession();
-                url = session.url('/web/image', {model: model, field: field, id: id, unique: unique});
+                url = session.url('/web/image', {
+                    model: model,
+                    field: field,
+                    id: id,
+                    unique: unique
+                });
                 if (cache !== undefined) {
                     // Set the cache duration in seconds.
                     url += '&cache=' + parseInt(cache, 10);
@@ -189,38 +215,32 @@ odoo.define('web_google_maps.MapRecord', function(require) {
             return new Domain(d).compute(this.state.evalContext);
         },
         _transformRecord: function (recordData) {
-            console.log('_transformRecord');
-            console.log('+++++++++++++');
-            console.log(this);
-            console.log(recordData);
-            var self = this;
-            var new_record = {};
-            _.each(this.fieldNames, function (name) {
-                console.log(name);
-                var value = recordData[name];
-                console.log(value)
-                // var r = _.clone(self.fields[name] || {});
+            var self = this,
+                new_record = {},
+                value, r, formatter;
+            _.each(this.state.getFieldNames(), function (name) {
+                value = recordData[name];
+                r = _.clone(self.fields[name] || {});
 
-                // if ((r.type === 'date' || r.type === 'datetime') && value) {
-                //     r.raw_value = value.toDate();
-                // } else if (r.type === 'one2many' || r.type === 'many2many') {
-                //     r.raw_value = value.count ? value.res_ids : [];
-                // } else if (r.type === 'many2one' ) {
-                //     r.raw_value = value && value.res_id || false;
-                // } else {
-                //     r.raw_value = value;
-                // }
+                if ((r.type === 'date' || r.type === 'datetime') && value) {
+                    r.raw_value = value.toDate();
+                } else if (r.type === 'one2many' || r.type === 'many2many') {
+                    r.raw_value = value.count ? value.res_ids : [];
+                } else if (r.type === 'many2one') {
+                    r.raw_value = value && value.res_id || false;
+                } else {
+                    r.raw_value = value;
+                }
 
-                // if (r.type) {
-                //     var formatter = field_utils.format[r.type];
-                //     r.value = formatter(value, self.fields[name], recordData, self.state);
-                // } else {
-                //     r.value = value;
-                // }
+                if (r.type) {
+                    formatter = field_utils.format[r.type];
+                    r.value = formatter(value, self.fields[name], recordData, self.state);
+                } else {
+                    r.value = value;
+                }
 
-                // new_record[name] = r;
+                new_record[name] = r;
             });
-            console.log('+++++++++++++')
             return new_record;
         },
         /**
@@ -230,8 +250,8 @@ odoo.define('web_google_maps.MapRecord', function(require) {
             this.state = recordState;
             this.id = recordState.res_id;
             this.db_id = recordState.id;
-            this.recordData = recordState;
-            this.record = this._transformRecord(recordState);
+            this.recordData = recordState.data;
+            this.record = this._transformRecord(recordState.data);
             this.qweb_context = {
                 map_image: this._getImageURL.bind(this),
                 map_compute_domain: this._computeDomain.bind(this),

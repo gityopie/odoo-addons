@@ -1,43 +1,28 @@
 odoo.define('web_google_maps.MapController', function(require) {
     'use strict';
 
-    var AbstractController = require('web.AbstractController');
-    var core = require('web.core');
-    var Dialog = require('web.Dialog');
-    var FieldManagerMixin = require('web.FieldManagerMixin');
-    var Pager = require('web.Pager');
-    
-    var _t = core._t;
+    var KanbanController = require('web.KanbanController');
+    var BasicController = require('web.BasicController');
 
-
-    var MapController = AbstractController.extend(FieldManagerMixin, {
-        custom_events: _.extend({}, AbstractController.prototype.custom_events, FieldManagerMixin.custom_events, {
-            reload: '_onReload',
-            translate: '_onTranslate',
-        }),
+    var MapController = BasicController.extend({
         init: function (parent, model, renderer, params) {
             this._super.apply(this, arguments);
-            this.displayName = params.displayName;
-            this.formViewId = params.formViewId;
-            this.readonlyFormViewId = params.readonlyFormViewId;
-            this.mapping = params.mapping;
-            this.context = params.context;
+            this.createGroupMarkerEnabled = this._isCreateGroupMarkerEnabled();
         },
-        /**
-         * @param {Object} record
-         * @param {integer} record.id
-         * @returns {Deferred}
-         */
-        _updateRecord: function (record) {
-            return this.model.updateRecord(record).then(this.reload.bind(this));
+        update: function () {
+            this.createGroupMarkerEnabled = this._isCreateGroupMarkerEnabled();
+            return this._super.apply(this, arguments);
         },
-        /**
-         * @param {OdooEvent} event
-         */
-        _onChangeFilter: function (event) {
-            if (this.model.changeFilter(event.data) && !event.data.no_reload) {
-                this.reload();
+        _isCreateGroupMarkerEnabled: function () {
+            var groupMarkerCreate = this.is_action_enabled('group_marker_create');
+            if (!groupMarkerCreate) {
+                // pre-return to avoid a lot of the following processing
+                return false;
             }
+            var state = this.model.get(this.handle, {raw: true});
+            var groupByField = state.fields[state.groupedBy[0]];
+            var groupedByM2o = groupByField && (groupByField.type === 'many2one');
+            return groupedByM2o;
         },
     });
 
