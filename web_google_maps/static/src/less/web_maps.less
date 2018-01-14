@@ -7,7 +7,7 @@
         min-width: 0;
     }
 
-    .o_map_sidenav {
+    .o_map_left_sidenav {
         left: 0;
         top: 0;
         bottom: 0;
@@ -29,6 +29,48 @@
                 border: none;
             }
         }
+    }
+
+    .o_map_right_sidebar {
+        right: 0;
+        bottom: 0;
+        background-color: #f5f5f5;
+
+        &.closed {
+            width: 0;
+            transition: 0.5s;
+            transform: translateX(-100%);
+            -webkit-transform: translateX(-100%);
+        }
+
+        &.open {
+            width: 250px;
+            transition: 0.5s;
+            transform: translateX(0);
+            -webkit-transform: translateX(0);
+        }
+
+        ul {
+            margin-top: 10px;
+            padding-left: 3px;
+            list-style: none;
+            font-size: 12px;
+
+            li {
+                padding-bottom: 8px;
+
+                span {
+                    padding: 3px 6px;
+
+                    &.total {
+                        font-size: 10px;
+                        background: #ddd;
+                        border-radius: 3px;
+                    }
+                }
+            }
+        }
+
     }
 
     .gm-iw-container {
