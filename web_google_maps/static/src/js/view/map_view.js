@@ -262,20 +262,17 @@ odoo.define('web.MapView', function (require) {
             }
         },
         _map_centered: function () {
-            google.maps.event.trigger(this.map, 'resize');
-            if (this.markers.length == 1) {
-                var self = this;
-                google.maps.event.addListenerOnce(this.map, 'idle', function () {
-                    self.map.setCenter(self.markers[0].getPosition());
-                    self.map.setZoom(17);
-                });
-            } else {
-                var bounds = new google.maps.LatLngBounds();
-                _.each(this.markers, function (marker) {
-                    bounds.extend(marker.getPosition());
-                });
-                this.map.fitBounds(bounds);
-            }
+            var self = this;
+            var bounds = new google.maps.LatLngBounds();
+            _.each(this.markers, function (marker) {
+                bounds.extend(marker.getPosition());
+            });
+            this.map.fitBounds(bounds);
+
+            google.maps.event.addListenerOnce(this.map, 'idle', function () {
+                google.maps.event.trigger(self.map, 'resize');
+                if (self.map.getZoom() > 17) self.map.setZoom(17);
+            });
         },
         do_show: function () {
             this.do_push_state({});
