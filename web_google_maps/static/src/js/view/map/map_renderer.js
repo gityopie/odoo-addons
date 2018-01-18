@@ -6,8 +6,8 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
     var QWeb = require('web.QWeb');
     var session = require('web.session');
     var utils = require('web.utils');
-    var MapRecord = require('web_google_maps.MapRecord');
     var Widget = require('web.Widget');
+    var MapRecord = require('web_google_maps.MapRecord');
 
     var qweb = core.qweb;
 
@@ -152,8 +152,8 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
                     position: google.maps.ControlPosition.TOP_CENTER
                 }
             });
-            this.markerCluster = new MarkerClusterer(this.gmap, null, {
-                imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
+            this.markerCluster = new MarkerClusterer(this.gmap, [], {
+                imagePath: '/web_google_maps/static/src/img/m'
             });
             this.$right_sidebar = this.$('.o_map_right_sidebar');
         },
