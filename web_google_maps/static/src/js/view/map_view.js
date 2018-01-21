@@ -185,7 +185,7 @@ odoo.define('web.MapView', function (require) {
         },
         _create_marker: function (lat_lng, record) {
             var options = '',
-                icon_url = '//maps.google.com/mapfiles/ms/icons/',
+                icon_url = 'https://maps.google.com/mapfiles/ms/icons/',
                 icon_color = '',
                 marker = '';
 
@@ -212,8 +212,8 @@ odoo.define('web.MapView', function (require) {
         },
         marker_infowindow: function (marker, record) {
             var self = this;
-            var content = this.marker_infowindow_content(record);
             return function () {
+                var content = self.marker_infowindow_content(record);
                 self.infowindow.setContent(content);
                 self.infowindow.open(self.map, marker);
             }
@@ -239,7 +239,7 @@ odoo.define('web.MapView', function (require) {
                     position: google.maps.ControlPosition.TOP_CENTER
                 }
             });
-            this.marker_cluster = new MarkerClusterer(this.map, null, {
+            this.marker_cluster = new MarkerClusterer(this.map, [], {
                 imagePath: '/web_google_maps/static/src/img/m'
             });
             this.on_maps_add_controls();
