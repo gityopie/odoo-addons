@@ -41,7 +41,7 @@ odoo.define('web.MapView', function (require) {
                     position: google.maps.ControlPosition.TOP_CENTER
                 }
             });
-            this.marker_cluster = new MarkerClusterer(this.map, null, {
+            this.marker_cluster = new MarkerClusterer(this.map, [], {
                 imagePath: '/web_google_maps/static/src/img/m'
             });
             this.on_maps_add_controls();
@@ -105,20 +105,17 @@ odoo.define('web.MapView', function (require) {
             }
         },
         _map_centered: function () {
-            google.maps.event.trigger(this.map, 'resize');
-            if (this.markers.length == 1) {
-                var self = this;
-                google.maps.event.addListenerOnce(this.map, 'idle', function () {
-                    self.map.setCenter(self.markers[0].getPosition());
-                    self.map.setZoom(16);
-                });
-            } else {
-                var bounds = new google.maps.LatLngBounds();
-                _.each(this.markers, function (marker) {
-                    bounds.extend(marker.getPosition());
-                });
-                this.map.fitBounds(bounds);
-            }
+            var self = this;
+            var bounds = new google.maps.LatLngBounds();
+            _.each(this.markers, function (marker) {
+                bounds.extend(marker.getPosition());
+            });
+            this.map.fitBounds(bounds);
+
+            google.maps.event.addListenerOnce(this.map, 'idle', function () {
+                google.maps.event.trigger(self.map, 'resize');
+                if (self.map.getZoom() > 17) self.map.setZoom(17);
+            });
         },
         fields_list: function () {
             var fields = _.keys(this.fields);
