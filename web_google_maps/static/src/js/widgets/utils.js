@@ -38,7 +38,7 @@ odoo.define('web_google_maps.Utils', function (require) {
             rpc.query({
                 'model': model,
                 'method': 'search_read',
-                'args': [['|', ['name', '=', value], ['code', '=', value]], ['display_name',]]
+                'args': [['|', ['name', '=', value], ['code', '=', value]], ['display_name', ]]
             }).then(function (record) {
                 res[field_name] = _.first(record) || false;
                 def.resolve(res);
@@ -51,6 +51,8 @@ odoo.define('web_google_maps.Utils', function (require) {
     }
 
     function gmaps_get_geolocation(place, options) {
+        if (!place) return {};
+
         var vals = {};
         _.each(options, function (alias, field) {
             if (alias === 'latitude') {
@@ -63,8 +65,10 @@ odoo.define('web_google_maps.Utils', function (require) {
     }
 
     function gmaps_populate_places(place, place_options) {
-        var values = {}, vals;
+        if (!place) return {};
 
+        var values = {},
+            vals;
         _.each(place_options, function (option, field) {
             if (option instanceof Array && !_.has(values, field)) {
                 vals = _.filter(_.map(option, function (opt) {
@@ -79,13 +83,15 @@ odoo.define('web_google_maps.Utils', function (require) {
     }
 
     function gmaps_populate_address(place, address_options, delimiter) {
+        if (!place) return {};
+
         var address_options = address_options || {},
             fields_delimiter = delimiter || {
                 street: " ",
                 street2: ", "
             },
             fields_to_fill = {},
-            options, temp, result = {};
+            options, temp, dlmter, result = {};
 
         // initialize object key and value
         _.each(address_options, function (value, key) {
@@ -107,7 +113,7 @@ odoo.define('web_google_maps.Utils', function (require) {
         });
 
         _.each(fields_to_fill, function (value, key) {
-            var dlmter = fields_delimiter[key] || ' ';
+            dlmter = fields_delimiter[key] || ' ';
             if (key == 'city') {
                 result[key] = _.first(_.filter(value)) || '';
             } else {

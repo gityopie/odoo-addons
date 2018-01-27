@@ -214,9 +214,9 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
          * @return function
          */
         _markerInfoWindow: function (marker, record) {
-            var self = this;
+            var self = this,
+                content = self._setMarkerInfoWindow(record);
             return function () {
-                var content = self._setMarkerInfoWindow(record);
                 self.infoWindow.setContent(content);
                 self.infoWindow.open(self.gmap, marker);
             };

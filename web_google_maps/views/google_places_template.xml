@@ -26,7 +26,7 @@
             <script type="text/javascript" src="/web_google_maps/static/src/js/view/map/map_view.js"></script>
             <script type="text/javascript" src="/web_google_maps/static/src/js/view/view_registry.js"></script>
             <script type="text/javascript" src="/web_google_maps/static/src/js/widgets/utils.js"></script>
-            <script type="text/javascript" src="/web_google_maps/static/src/js/widgets/gplace_address_autocomplete.js"></script>
+            <script type="text/javascript" src="/web_google_maps/static/src/js/widgets/gplaces_autocomplete.js"></script>
             <script type="text/javascript" src="/web_google_maps/static/src/js/widgets/fields_registry.js"></script>
         </xpath>
     </template>
