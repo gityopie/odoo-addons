@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
+    <record id="view_partner_form_gplaces_autocomplete" model="ir.ui.view">
+        <field name="name">Google Places Partner Form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <field name="name" position="attributes">
+                <attribute name="widget">gplaces_autocomplete</attribute>
+                <attribute name="options">{'lat': 'partner_latitude', 'lng': 'partner_longitude'}</attribute>
+            </field>
+            <field name="street" position="attributes">
+                <attribute name="widget">gplaces_address_autocomplete</attribute>
+                <attribute name="options">{'lat': 'partner_latitude', 'lng': 'partner_longitude'}</attribute>
+            </field>
+        </field>
+    </record>
     <record id="view_res_partner_map" model="ir.ui.view">
         <field name="name">view.res.partner.map</field>
         <field name="model">res.partner</field>
