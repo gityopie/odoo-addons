@@ -298,14 +298,11 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
             var self = this, place, 
                 google_address, requests = [],
                 partner_geometry;
-            this.places_autocomplete = new google.maps.places.Autocomplete(this.$input.get(0), {
-                types: ['geocode']
-            });
+            this.places_autocomplete = new google.maps.places.Autocomplete(this.$input.get(0));
             // When the user selects an address from the dropdown, populate the address fields in the form.
             this.places_autocomplete.addListener('place_changed', function () {
                 var values = {};
                 place = this.getPlace();
-                console.log(place);
                 if (place.hasOwnProperty('address_components')) {
                     // Get address
                     var google_address = self._populateAddress(place, self.fillfields.address, self.fillfields_delimiter);

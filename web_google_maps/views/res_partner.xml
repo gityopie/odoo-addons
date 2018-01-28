@@ -19,7 +19,7 @@
         <field name="name">view.res.partner.map</field>
         <field name="model">res.partner</field>
         <field name="arch" type="xml">
-            <map class="o_res_partner_map" string="Map" lat="partner_latitude" lng="partner_longitude" colors="blue:company_type=='person';green:company_type=='company';">
+            <map class="o_res_partner_map" no_limit="true" string="Map" lat="partner_latitude" lng="partner_longitude" colors="blue:company_type=='person';green:company_type=='company';">
                 <field name="id"/>
                 <field name="name"/>
                 <field name="street"/>
