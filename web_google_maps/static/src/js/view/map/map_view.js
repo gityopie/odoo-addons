@@ -28,8 +28,12 @@ odoo.define('web_google_maps.MapView', function (require) {
             var attrs = arch.attrs;
             var fields = viewInfo.fields;
 
-            var markerColors = ['green', 'blue', 'red', 'yellow', 'purple', 'orange', 'pink'];
-            var iconUrl = '//maps.google.com/mapfiles/ms/icons/';
+            var markerColors = [
+                'green', 'yellow', 'blue', 'light-green',
+                'red', 'magenta', 'black', 'purple', 'orange',
+                'pink', 'grey', 'brown', 'cyan', 'white'
+            ];
+            var iconUrl = '/web_google_maps/static/src/img/markers/';
             var colors = this._setMarkersColor(attrs.colors);
 
             this.loadParams.openGroupByDefault = true;
@@ -66,9 +70,9 @@ odoo.define('web_google_maps.MapView', function (require) {
                 .chain()
                 .compact()
                 .map(function (color_pair) {
-                        pair = color_pair.split(':');
-                        color = pair[0];
-                        expr = pair[1];
+                    pair = color_pair.split(':');
+                    color = pair[0];
+                    expr = pair[1];
                     return [color, py.parse(py.tokenize(expr)), expr];
                 }).value();
         }

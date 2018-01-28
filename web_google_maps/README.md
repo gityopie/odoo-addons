@@ -6,7 +6,7 @@ Web Google Maps
 
 This module contains three new features:
  - New view type and mode (`map`)
- - New widget (`gplaces_address_form`)
+ - New widget (`gplaces_address_autocomplete`)
  - New widget (`gplaces_autocomplete`)
  
 
@@ -16,10 +16,11 @@ Enable you to display a partner location or all your partners location around th
 This feature will work seamlessly with Odoo means you can search your partner location using Odoo search feature.     
 
 There are five available attributes that you can customize:
- - `lat` : an attritube to tell the map the latitude field on the object (mandatory)
- - `lng` : an attritute to tell the map the longitude field on the object (mandatory)
- - `title` : an attribute to tell the map the title that will be printed on marker info window (optional, by default 'name')
- - `color` : an attribute to modify marker color (optional) any given color will set all markers color.
+ - `no_limit` : attribute to tell the map either to load all records(markers) in a single load or take Odoo default behavior
+ - `lat` : attritube to tell the map the latitude field on the object (mandatory)
+ - `lng` : attritute to tell the map the longitude field on the object (mandatory)
+ - `title` : attribute to tell the map the title that will be printed on marker info window (optional, by default 'name')
+ - `color` : attribute to modify marker color (optional) any given color will set all markers color.
  - `colors` : work like attribute `color` but more configurable (you can set marker color depends on it's value) this attribute works similar to `colors` of tree view on Odoo 9.0
  
 How to create the view?    
@@ -31,7 +32,8 @@ Example
         <field name="model">res.partner</field>
         <field name="arch" type="xml">
             <!-- Define aliase name for geolocation fields into view attributes -->
-            <map string="Map" lat="partner_latitude" lng="partner_longitude">
+            <map class="o_res_partner_map" no_limit="true" string="Map" lat="partner_latitude" lng="partner_longitude" colors="blue:company_type=='person';green:company_type=='company';">
+                <field name="id"/>
                 <field name="name"/>
                 <field name="street"/>
                 <field name="street2"/>
@@ -42,23 +44,31 @@ Example
                 <field name="country_id"/>
                 <field name="partner_latitude"/>
                 <field name="partner_longitude"/>
-                <templates> <!-- qweb template used for marker infowindow -->
+                <field name="company_type"/>
+                <field name="image_small"/>
+                <field name="mobile"/>
+                <field name="phone"/>
+                <field name="type"/>
+                <field name="function"/>
+                <templates>
                     <t t-name="map-marker-iw">
-                        <div class="gm-iw-container o_map_global_click">
+                        <div class="gm-iw-container o_map_global_click o_res_partner_map">
                             <div class="gm-iw-title">
-                                <img t-att-src="map_image('res.partner', 'image_small', record.id.value)"/>
-                                <span><t t-esc="record.name.value"/></span>
+                                <img t-att-src="map_image('res.partner', 'image_small', record.id.raw_value)"/>
+                                <span><strong><field name="display_name"/></strong></span>
                             </div>
-                            <div class="gm-iw-content">
-                                <p>
-                                    <span t-esc="record.street.value"/>&#032;<span t-esc="record.street2.value"/> 
-                                </p>
-                                <p>
-                                    <span t-esc="record.city.value"/>,&#032;<span t-esc="record.zip.value"/>
-                                </p>
-                                <p>
-                                    <span t-esc="record.state_id.value"/>,&#032;<span t-esc="record.country_id.value"/>
-                                </p>
+                            <div class="gm-iw-details">
+                                <ul>
+                                    <li t-if="record.parent_id.raw_value and !record.function.raw_value"><field name="parent_id"/></li>
+                                    <li t-if="!record.parent_id.raw_value and record.function.raw_value"><field name="function"/></li>
+                                    <li t-if="record.parent_id.raw_value and record.function.raw_value"><field name="function"/> at <field name="parent_id"/></li>
+                                    <li t-if="record.city.raw_value and !record.country_id.raw_value"><field name="city"/></li>
+                                    <li t-if="!record.city.raw_value and record.country_id.raw_value"><field name="country_id"/></li>
+                                    <li t-if="record.city.raw_value and record.country_id.raw_value"><field name="city"/>, <field name="country_id"/></li>
+                                    <li t-if="record.email.raw_value" class="o_text_overflow"><field name="email"/></li>
+                                    <li t-if="record.phone.raw_value">Phone: <field name="phone"/></li>
+                                    <li t-if="record.mobile.raw_value">Mobile: <field name="mobile"/></li>
+                                </ul>
                             </div>
                         </div>
                     </t>
@@ -94,17 +104,8 @@ Example:
         ...
     </map>
 
-### Available color options     
- - ![alt text](https://maps.google.com/mapfiles/ms/icons/green-dot.png) **green**    
- - ![alt text](https://maps.google.com/mapfiles/ms/icons/blue-dot.png) **blue**    
- - ![alt text](https://maps.google.com/mapfiles/ms/icons/red-dot.png) **red**    
- - ![alt text](https://maps.google.com/mapfiles/ms/icons/yellow-dot.png) **yellow**    
- - ![alt text](https://maps.google.com/mapfiles/ms/icons/purple-dot.png) **purple**    
- - ![alt text](https://maps.google.com/mapfiles/ms/icons/orange-dot.png) **orange**    
- - ![alt text](https://maps.google.com/mapfiles/ms/icons/pink-dot.png) **pink**    
 
-
-## New widget (`gplaces_address_form`)
+## New widget (`gplaces_address_autocomplete`)
 
 Basically this new widget will integrate another cool feature of Google Maps which is "Place Autocomplete Address Form" (go and visit this [site](https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete-addressform) if you don't know yet how this cool feature work) 
 
@@ -154,14 +155,14 @@ Example:
        ...
        <field name="arch" type="xml">
             ...
-            <field name="street" widget="gplaces_address_form" options="{'component_form': {'street_number': 'short_name'}}"/>
+            <field name="street" widget="gplaces_address_autocomplete" options="{'component_form': {'street_number': 'short_name'}}"/>
             ...
         </field>
     </record>
 
 
 ### Fill fields (`fillfields`)
-Is an option that will be influenced by `gplaces_address_form` widget.    
+Is an option that will be influenced by `gplaces_address_autocomplete` widget.    
 This options should contains known `fields` that you want to set a value for each field automatically.    
 A field can contains one or multiple elements of component form    
 By default this options are configured like following value:
@@ -194,15 +195,15 @@ This options tell the widget the fields geolocation, in order to have this field
 
 ## New widget (`gplaces_autocomplete`)
 
-Basically this new widget will integrate another cool feature of Google Maps which is "Place Autocomplete" (go and visit this [site](https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete) if you don't know yet how this cool feature work) 
+Basically this new widget will integrate "Google Place Autocomplete" (go and visit this [site](https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete)
 
-This widget have similar configuration to `gplaces_address_form`.
+This widget have similar configuration to `gplaces_address_autocomplete`.
 
 ### Component form (`component_form`)
-Same configuration of `gplaces_address_form` component form
+Same configuration of `gplaces_address_autocomplete` component form
 
 ### Fill fields (`fillfields`)
-This configuration works similar to `gplace_address_form`.
+This configuration works similar to `gplaces_address_autocomplete`.
 
 By default this options are configured like following value:
 >
@@ -211,10 +212,6 @@ By default this options are configured like following value:
             name: 'name',
             website: 'website',
             phone: ['international_phone_number', 'formatted_phone_number']
-        },
-        geolocation: {
-            partner_latitude: 'latitude',
-            partner_longitude: 'longitude'
         },
         address: {
             street: ['street_number', 'route'],
@@ -227,8 +224,8 @@ By default this options are configured like following value:
     };
 
 # Technical:
-This module will install `website_google_maps`.    
-*I recommend you to add Google Maps Key API into Odoo Website Admin settings when you installed this module*
+This module will install `base_setup` and `base_geolocalize` (no more `website_google_maps`).    
+*I recommend you to add Google Maps Key API into Odoo Settings > General Settings when you installed this module*
 
 
 The goal of this module is to bring the power of Google Maps into Odoo    

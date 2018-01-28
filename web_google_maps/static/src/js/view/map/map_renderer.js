@@ -201,7 +201,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
                 animation: google.maps.Animation.DROP
             };
             if (color) {
-                options.icon = this.iconUrl + color + '-dot.png';
+                options.icon = this.iconUrl + color.trim() + '.png';
             }
             var marker = new google.maps.Marker(options);
             this.markers.push(marker);
@@ -258,13 +258,14 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
             this.markerGroupedInfo.push({
                 'title': record.value || 'Undefined',
                 'count': record.count,
-                'marker': this.iconUrl + color + '-dot.png'
+                'marker': this.iconUrl + color.trim() + '.png'
             });
         },
         _renderUngrouped: function (record) {
+            var color, latLng;
             if (record.data && (record.data[this.fieldLat] && record.data[this.fieldLng])) {
-                var color = this._getIconColor(record);
-                var latLng = new google.maps.LatLng(record.data[this.fieldLat], record.data[this.fieldLng]);
+                color = this._getIconColor(record);
+                latLng = new google.maps.LatLng(record.data[this.fieldLat], record.data[this.fieldLng]);
                 record.markerColor = color;
                 this._createMarker(latLng, record, color);
             }
