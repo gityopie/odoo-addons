@@ -76,6 +76,10 @@ class ResConfigSettings(models.TransientModel):
     google_maps_region_localization = fields.Selection(
             selection=get_region_selection,
             string='Google Maps Region Localization')
+    
+    @api.onchange('google_maps_lang_localization')
+    def onchange_lang_localization(self):
+        self.google_maps_region_localization = ''
 
     @api.multi
     def set_values(self):

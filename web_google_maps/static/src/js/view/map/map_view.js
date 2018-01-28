@@ -34,6 +34,11 @@ odoo.define('web_google_maps.MapView', function (require) {
 
             this.loadParams.openGroupByDefault = true;
             this.loadParams.type = 'list';
+            // Override max limit record per view
+            // I set it as 'undefined' to be able to load all records(markers) in single load
+            // if you want to have a default Odoo 'limit' configuration, just remove the line below
+            this.loadParams.limit = undefined;
+
             this.loadParams.groupBy = arch.attrs.default_group_by ? [arch.attrs.default_group_by] : (params.groupBy || []);
 
             this.rendererParams.arch = arch;

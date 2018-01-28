@@ -168,7 +168,8 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
          */
         _getFillFieldsType: function () {
             var self = this,
-                field, fields = [];
+                fields = [],
+                field;
             if (this._isValid) {
                 _.each(this.fillfields, function (val, name) {
                     if (_.contains(self._type_relations, self.record.fields[name].type)) {
@@ -191,8 +192,8 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
             return fields;
         },
         _initGplacesAutocomplete: function () {
-            var self = this,
-                place, google_address, requests = [],
+            var self = this, place, 
+                google_address, requests = [],
                 partner_geometry;
             this.places_autocomplete = new google.maps.places.Autocomplete(this.$input.get(0), {
                 types: ['geocode']
@@ -233,8 +234,10 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
          */
         isValid: function () {
             this._super.apply(this, arguments);
-            var self = this;
-            var unknown_fields = _.filter(_.keys(self.fillfields), function (field) {
+            var self = this, 
+                unknown_fields;
+    
+            unknown_fields = _.filter(_.keys(self.fillfields), function (field) {
                 return !self.record.fields.hasOwnProperty(field);
             });
             if (unknown_fields.length > 0) {
@@ -266,19 +269,20 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
         },
         _getFillFieldsType: function () {
             var self = this,
-                fields = [];
+                fields = [],
+                field;
             if (this._isValid) {
                 for (var option in this.fillfields) {
                     _.each(this.fillfields[option], function (val, name) {
                         if (_.contains(self._type_relations, self.record.fields[name].type)) {
-                            var field = {
+                            field = {
                                 name: name,
                                 type: self.record.fields[name].type,
                                 relation: self.record.fields[name].relation
                             };
                             fields.push(field);
                         } else {
-                            var field = {
+                            field = {
                                 name: name,
                                 type: self.record.fields[name].type,
                                 relation: false
@@ -291,8 +295,8 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
             return fields;
         },
         _initGplacesAutocomplete: function () {
-            var self = this,
-                place, google_address, requests = [],
+            var self = this, place, 
+                google_address, requests = [],
                 partner_geometry;
             this.places_autocomplete = new google.maps.places.Autocomplete(this.$input.get(0), {
                 types: ['geocode']
@@ -301,6 +305,7 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
             this.places_autocomplete.addListener('place_changed', function () {
                 var values = {};
                 place = this.getPlace();
+                console.log(place);
                 if (place.hasOwnProperty('address_components')) {
                     // Get address
                     var google_address = self._populateAddress(place, self.fillfields.address, self.fillfields_delimiter);
@@ -340,9 +345,10 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
          */
         isValid: function () {
             this._super.apply(this, arguments);
-            var self = this;
+            var self = this,
+                unknown_fields;
             for (var option in this.fillfields) {
-                var unknown_fields = _.filter(_.keys(this.fillfields[option]), function (field) {
+                unknown_fields = _.filter(_.keys(this.fillfields[option]), function (field) {
                     return !self.record.fields.hasOwnProperty(field);
                 });
                 if (unknown_fields.length > 0) {
