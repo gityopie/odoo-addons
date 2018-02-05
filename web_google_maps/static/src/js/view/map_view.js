@@ -17,7 +17,11 @@ odoo.define('web.MapView', function (require) {
     var _lt = core._lt;
     var _t = core._t;
 
-    var MARKER_ICON_COLORS = ['green', 'blue', 'red', 'yellow', 'purple', 'orange', 'pink'];
+    var MARKER_ICON_COLORS = [
+        'green', 'yellow', 'blue', 'light-green',
+        'red', 'magenta', 'black', 'purple', 'orange',
+        'pink', 'grey', 'brown', 'cyan', 'white'
+    ];
 
     var MapView = View.extend({
         template: 'MapView',
@@ -185,7 +189,7 @@ odoo.define('web.MapView', function (require) {
         },
         _create_marker: function (lat_lng, record) {
             var options = '',
-                icon_url = 'https://maps.google.com/mapfiles/ms/icons/',
+                icon_url = '/web_google_maps/static/src/img/markers/',
                 icon_color = '',
                 marker = '';
 
@@ -196,7 +200,7 @@ odoo.define('web.MapView', function (require) {
             }
             icon_color = this._get_icon_color(record);
             if (icon_color && MARKER_ICON_COLORS.indexOf(icon_color) !== -1) {
-                options.icon = icon_url + icon_color + '-dot.png';
+                options.icon = icon_url + icon_color + '.png';
             }
             marker = new google.maps.Marker(options);
             this.markers.push(marker);
@@ -212,8 +216,8 @@ odoo.define('web.MapView', function (require) {
         },
         marker_infowindow: function (marker, record) {
             var self = this;
+            var content = self.marker_infowindow_content(record);
             return function () {
-                var content = self.marker_infowindow_content(record);
                 self.infowindow.setContent(content);
                 self.infowindow.open(self.map, marker);
             }
