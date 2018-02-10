@@ -2,6 +2,7 @@ odoo.define('web.MapView', function (require) {
     'use strict';
 
     var core = require('web.core');
+    var ajax = require('web.ajax');
     var View = require('web.View');
     var pyeval = require('web.pyeval');
     var session = require('web.session');
@@ -881,16 +882,14 @@ odoo.define('web.MapView', function (require) {
                 self.map.setMapTypeId('styled_map');
             }
             if (!this.map_theme) {
-                new Model('ir.config_parameter')
-                    .call('get_param', ['google_maps_theme'])
-                    .then(function (theme) {
-                        if (theme) {
-                            if (MAP_STYLE.hasOwnProperty(theme) && theme !== 'default') {
-                                self.map_theme = theme;
-                                update_map(theme);
-                            }
+                ajax.jsonRpc('/web/map_theme').then(function (data) {
+                    if (data) {
+                        if (MAP_STYLE.hasOwnProperty(data.theme) && data.theme !== 'default') {
+                            self.map_theme = data.theme;
+                            update_map(data.theme);
                         }
-                    });
+                    }
+                });
             }
         },
         /**
