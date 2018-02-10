@@ -103,6 +103,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
             this.iconColors = params.iconColors;
             this.iconUrl = params.iconUrl;
             this.markers = [];
+            this.mapThemes = params.mapThemes;
 
             this.qweb = new QWeb(session.debug, {
                 _s: session.origin
@@ -134,6 +135,36 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
             return this._super.apply(this, arguments);
         },
         /**
+         * Style the map
+         * @private
+         */
+        _getMapTheme: function () {
+            var self = this;
+            var update_map = function (style) {
+                var styledMapType = new google.maps.StyledMapType(self.mapThemes[style], {
+                    name: 'Styled map'
+                });
+                self.gmap.setOptions({
+                    mapTypeControlOptions: {
+                        mapTypeIds: ['roadmap', 'satellite', 'hybrid', 'terrain', 'styled_map'],
+                        style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+                        position: google.maps.ControlPosition.TOP_CENTER
+                    }
+                });
+                //Associate the styled map with the MapTypeId and set it to display.
+                self.gmap.mapTypes.set('styled_map', styledMapType);
+                self.gmap.setMapTypeId('styled_map');
+            }
+            if (!this.theme) {
+                this._rpc({route: '/web/map_theme'}).then(function (data) {
+                    if (data.theme && self.mapThemes.hasOwnProperty(data.theme)) {
+                        self.theme = data.theme;
+                        update_map(data.theme);
+                    }
+                });
+            }
+        },
+        /**
          * Initialize map
          * @private
          */
@@ -146,12 +177,9 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
                 minZoom: 3,
                 maxZoom: 20,
                 fullscreenControl: true,
-                mapTypeControl: true,
-                mapTypeControlOptions: {
-                    style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-                    position: google.maps.ControlPosition.TOP_CENTER
-                }
+                mapTypeControl: true
             });
+            this._getMapTheme();
             this.markerCluster = new MarkerClusterer(this.gmap, [], {
                 imagePath: '/web_google_maps/static/src/img/m'
             });

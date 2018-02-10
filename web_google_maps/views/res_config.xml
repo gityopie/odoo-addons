@@ -22,6 +22,10 @@
                                         <field name="google_maps_view_api_key"/>
                                     </div>
                                     <div class="mt16">
+                                        <label for="google_maps_theme" string="Theme"/>
+                                        <field name="google_maps_theme"/>
+                                    </div>
+                                    <div class="mt16">
                                         <label for="google_maps_lang_localization" string="Language"/>
                                         <field name="google_maps_lang_localization"/>
                                     </div>
