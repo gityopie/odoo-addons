@@ -1045,7 +1045,6 @@ odoo.define('web.MapView', function (require) {
             return element;
         },
         init_map: function () {
-            var map_type_ids = ['roadmap', 'satellite', 'hybrid', 'terrain'];
             this.map = new google.maps.Map(this.$('.o_map_view').get(0), {
                 mapTypeId: google.maps.MapTypeId.ROADMAP,
                 zoom: 3,
