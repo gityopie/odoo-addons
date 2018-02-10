@@ -7,9 +7,7 @@
     'category': 'web',
     'summary': "Wizard window options",
     'description': "Enable to maximize and minimize wizard window",
-    'depends': [
-        'web'
-    ],
+    'depends': ['web'],
     'website': '',
     'data': [
         'data/config_parameter.xml',

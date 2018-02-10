@@ -94,15 +94,6 @@ Example:
         ...
     </map>
 
-### Available color options     
- - ![alt text](https://maps.google.com/mapfiles/ms/icons/green-dot.png) **green**    
- - ![alt text](https://maps.google.com/mapfiles/ms/icons/blue-dot.png) **blue**    
- - ![alt text](https://maps.google.com/mapfiles/ms/icons/red-dot.png) **red**    
- - ![alt text](https://maps.google.com/mapfiles/ms/icons/yellow-dot.png) **yellow**    
- - ![alt text](https://maps.google.com/mapfiles/ms/icons/purple-dot.png) **purple**    
- - ![alt text](https://maps.google.com/mapfiles/ms/icons/orange-dot.png) **orange**    
- - ![alt text](https://maps.google.com/mapfiles/ms/icons/pink-dot.png) **pink**    
-
 
 ## New widget (`gplaces_address_form`)
 

@@ -75,6 +75,17 @@ class WebsiteConfigSettings(models.TransientModel):
     google_maps_region_localization = fields.Selection(
         selection=get_region_selection,
         string='Google Maps Region Localization')
+    google_maps_theme = fields.Selection(
+        selection=[
+            ('default', 'Default'),
+            ('aubergine', 'Aubergine'),
+            ('night', 'Night'),
+            ('dark', 'Dark'),
+            ('retro', 'Retro'),
+            ('silver', 'Silver')],
+        default='default',
+        string='Map theme'
+    )
 
     def set_google_maps_lang_localization(self):
         ir_config_obj = self.env['ir.config_parameter']
@@ -120,3 +131,15 @@ class WebsiteConfigSettings(models.TransientModel):
         else:
             region = ''
         return dict(google_maps_region_localization=region)
+
+    def set_google_maps_theme(self):
+        ir_config_obj = self.env['ir.config_parameter']
+        theme = self.google_maps_theme or 'default'
+        ir_config_obj.set_param('google_maps_theme',
+                                theme,
+                                groups=['base.group_system'])
+
+    def get_default_google_maps_theme(self, fields):
+        ir_config_obj = self.env['ir.config_parameter']
+        theme = ir_config_obj.get_param('google_maps_theme', default='default')
+        return dict(google_maps_theme=theme)

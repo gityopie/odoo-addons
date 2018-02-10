@@ -2,10 +2,10 @@
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 {
     'name': 'Web Google Maps',
-    'version': '1.2',
+    'version': '10.0.1.0.3',
     'author': "Yopi Angi",
     'maintainer': 'Yopi Angi<yopiangi@gmail.com>',
-    'category': 'web',
+    'category': 'Web',
     'description': """
 Web Google Map and google places autocomplete address form
 ==========================================================
@@ -16,9 +16,7 @@ This module brings three features:
 form view, it provide autocomplete feature when you typed an address of partner
 3. Routes information
 """,
-    'depends': [
-        'website_google_map'
-    ],
+    'depends': ['website_google_map'],
     'website': '',
     'data': [
         'views/google_places_template.xml',

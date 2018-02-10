@@ -2,10 +2,10 @@
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 {
     'name': 'CRM Maps',
-    'version': '0.1',
+    'version': '10.0.1.0.1',
     'author': "Yopi Angi",
     'maintainer': 'Yopi Angi<yopiangi@gmail.com>',
-    'category': 'web',
+    'category': 'CRM',
     'description': """
 CRM Maps
 ========
@@ -17,12 +17,8 @@ Show your leads and pipelines on map
         'sales_team',
         'web_google_maps'
     ],
-    'data': [
-        'views/crm_lead.xml'
-    ],
-    'qweb': [
-        'static/src/xml/dashboard.xml'
-    ],
+    'data': ['views/crm_lead.xml'],
+    'qweb': ['static/src/xml/dashboard.xml'],
     'demo': [],
     'installable': True,
     'uninstall_hook': 'uninstall_hook',
