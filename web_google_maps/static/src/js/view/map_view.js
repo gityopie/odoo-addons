@@ -1050,7 +1050,12 @@ odoo.define('web.MapView', function (require) {
                 minZoom: 3,
                 maxZoom: 20,
                 fullscreenControl: true,
-                mapTypeControl: true
+                mapTypeControl: true,
+                mapTypeControlOptions: {
+                    mapTypeIds: ['roadmap', 'satellite', 'hybrid', 'terrain'],
+                    style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+                    position: google.maps.ControlPosition.TOP_CENTER
+                }
             });
             this.set_map_theme();
             this.marker_cluster = new MarkerClusterer(this.map, [], {
