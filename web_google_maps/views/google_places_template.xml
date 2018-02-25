@@ -5,12 +5,12 @@
         <t t-set="google_maps_lang_localization" t-value="request.env['ir.config_parameter'].sudo().get_param('google_maps_lang_localization')"/>
         <t t-set="google_maps_region_localization" t-value="request.env['ir.config_parameter'].sudo().get_param('google_maps_region_localization')"/>
         <t t-if="google_maps_api_key">
-            <script t-att-async="'async'" t-att-defer="'defer'" t-attf-src="https://maps.googleapis.com/maps/api/js?key=#{google_maps_api_key}&amp;libraries=geometry,places#{google_maps_lang_localization}#{google_maps_region_localization}"></script>
+            <script t-att-async="'async'" t-att-defer="'defer'" t-attf-src="https://maps.googleapis.com/maps/api/js?v=3.31&amp;key=#{google_maps_api_key}&amp;libraries=geometry,places#{google_maps_lang_localization}#{google_maps_region_localization}"></script>
         </t>
         <t t-if="not google_maps_api_key">
-            <script t-att-async="'async'" t-att-defer="'defer'" t-attf-src="https://maps.googleapis.com/maps/api/js?libraries=geometry,places#{google_maps_lang_localization}#{google_maps_region_localization}"></script>
+            <script t-att-async="'async'" t-att-defer="'defer'" t-attf-src="https://maps.googleapis.com/maps/api/js?v=3.31&amp;libraries=geometry,places#{google_maps_lang_localization}#{google_maps_region_localization}"></script>
         </t>
-        <script src="https://cdn.rawgit.com/gityopie/v3-utility-library/master.2018-01-18.99a385c/markerclusterer/src/markerclusterer.js"></script>
+        <script src="https://cdn.rawgit.com/gityopie/v3-utility-library/master.2018-02-25.6c72652/markerclusterer/src/markerclusterer.js"></script>
     </template>
     <template id="webclient_bootstrap" name="webclient_bootstrap gmaps" inherit_id="web.webclient_bootstrap">
         <xpath expr="//t[@t-call-assets='web.assets_common']" position="before">
