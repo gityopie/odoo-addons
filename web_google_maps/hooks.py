@@ -11,5 +11,3 @@ def uninstall_hook(cr, registry):
                "WHERE view_mode LIKE '%map,%';")
     cr.execute("DELETE FROM ir_act_window "
                "WHERE view_mode = 'map';")
-    cr.execute("DELETE FROM ir_act_window_view "
-               "WHERE view_mode = 'map';")
