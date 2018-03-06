@@ -87,7 +87,8 @@ class ResConfigSettings(models.TransientModel):
 
     @api.onchange('google_maps_lang_localization')
     def onchange_lang_localization(self):
-        self.google_maps_region_localization = ''
+        if not self.google_maps_lang_localization:
+            self.google_maps_region_localization = ''
 
     @api.multi
     def set_values(self):
@@ -111,7 +112,6 @@ class ResConfigSettings(models.TransientModel):
 
         lang_localization = self._get_google_maps_lang_localization()
         region_localization = self._get_google_maps_region_localization()
-
         res.update({
             'google_maps_view_api_key': ICPSudo.get_param(
                     'google_maps_view_api_key', default=''),

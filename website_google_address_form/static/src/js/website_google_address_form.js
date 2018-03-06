@@ -205,7 +205,7 @@ odoo.define('website_google_address_form.website_portal_form', function (require
     var streetFillInputs = {
         street: {
             selector: 'input[name="street"]',
-            components: ['route', 'street_number']
+            components: ['street_number', 'route']
         },
         street2: {
             selector: 'input[name="street2"]',
@@ -258,7 +258,7 @@ odoo.define('website_google_address_form.website_sale_form', function (require) 
     var streetFillInputs = {
         street: {
             selector: 'input[name="street"]',
-            components: ['route', 'street_number']
+            components: ['street_number', 'route']
         },
         street2: {
             selector: 'input[name="street2"]',
