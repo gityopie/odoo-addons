@@ -12,14 +12,10 @@ odoo.define('web_google_maps.GooglePlacesFormAddress', function (require) {
     var FieldCharGooglePlaces = form_widgets.FieldChar.extend({
         template: 'web_google_maps.FieldGooglePlaces',
         display_name: _t('Google Places Form Address'),
-        events: {
-            'focus': 'geolocate',
-            'change': 'store_dom_value'
-        },
+        events: {'focus': 'geolocate'},
         init: function (field_manager, node) {
             this._super.apply(this, arguments);
             this.type_relations = ['one2many', 'many2one', 'many2many'];
-            this.places_autocomplete = false;
             this.component_form = MapViewPlacesAutocomplete.GOOGLE_PLACES_COMPONENT_FORM;
             this.fillfields = {
                 street: ['street_number', 'route'],
@@ -59,6 +55,9 @@ odoo.define('web_google_maps.GooglePlacesFormAddress', function (require) {
                     }
                 }
                 this.target_fields = this.get_field_type();
+                if (this.is_fields_valid()) {
+                    this.initAutocomplete();
+                }
             }
         },
         get_field_type: function () {
@@ -113,7 +112,7 @@ odoo.define('web_google_maps.GooglePlacesFormAddress', function (require) {
                 });
             }
         },
-        gmaps_initialize: function () {
+        initAutocomplete: function () {
             var self = this,
                 place, google_address, requests = [],
                 partner_geometry;
@@ -149,12 +148,6 @@ odoo.define('web_google_maps.GooglePlacesFormAddress', function (require) {
         prepare_value: function (model, field_name, value) {
             return MapViewPlacesAutocomplete.odoo_prepare_values(model, field_name, value);
         },
-        render_value: function () {
-            this._super.apply(this, arguments);
-            if (this.$input && this.is_fields_valid()) {
-                this.gmaps_initialize();
-            }
-        },
         is_fields_valid: function () {
             var self = this;
             var unknown_fields = _.filter(_.keys(self.fillfields), function (field) {
@@ -168,8 +161,18 @@ odoo.define('web_google_maps.GooglePlacesFormAddress', function (require) {
             }
         },
         destroy_content: function () {
-            google.maps.event.clearInstanceListeners(this.places_autocomplete);
+            if (this.places_autocomplete) {
+                google.maps.event.clearInstanceListeners(this.places_autocomplete);
+            }
             this._super.apply(this, arguments);
+        },
+        /**
+         * Overwritten method
+         * Prevent parent to bind 'focus' event on field widget
+         * it triggers google to bind the autocomplete while the form has been saved
+         */
+        focus: function() {
+            return false;
         }
     });
 

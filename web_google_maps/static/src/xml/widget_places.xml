@@ -6,7 +6,7 @@
             t-att-barcode_events="widget.options.barcode_events"
             t-att-id="widget.id_for_label"
             t-att-tabindex="widget.node.attrs.tabindex"
-            t-att-autofocus="widget.node.attrs.autofocus"
+            autofocus="off"
             t-att-placeholder="widget.node.attrs.placeholder"
             t-att-maxlength="widget.field.size"/>
         <span t-if="widget.get('effective_readonly')"/>
@@ -17,7 +17,7 @@
             t-att-barcode_events="widget.options.barcode_events"
             t-att-id="widget.id_for_label"
             t-att-tabindex="widget.node.attrs.tabindex"
-            t-att-autofocus="widget.node.attrs.autofocus"
+            autofocus="off"
             t-att-placeholder="widget.node.attrs.placeholder"
             t-att-maxlength="widget.field.size"/>
         <span t-if="widget.get('effective_readonly')"/>

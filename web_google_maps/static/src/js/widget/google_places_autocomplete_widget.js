@@ -11,13 +11,10 @@ odoo.define('web_google_maps.GooglePlacesAutocomplete', function (require) {
     var FieldCharGooglePlacesAutocomplete = form_widgets.FieldChar.extend({
         template: 'web_google_maps.FieldGooglePlacesAutocomplete',
         display_name: _t('Google Places'),
-        events: {
-            'change': 'store_dom_value'
-        },
+        events: {'focus': 'geolocate'},
         init: function (field_manager, node) {
             this._super.apply(this, arguments);
             this.type_relations = ['one2many', 'many2one', 'many2many'];
-            this.places_autocomplete = false;
             this.component_form = MapViewPlacesAutocomplete.GOOGLE_PLACES_COMPONENT_FORM;
             this.fillfields = {
                 general: {
@@ -43,6 +40,25 @@ odoo.define('web_google_maps.GooglePlacesAutocomplete', function (require) {
                 street2: ", ",
             };
         },
+        geolocate: function () {
+            var self = this,
+                geolocation, circle;
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    geolocation = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+
+                    circle = new google.maps.Circle({
+                        center: geolocation,
+                        radius: position.coords.accuracy
+                    });
+
+                    self.places_autocomplete.setBounds(circle.getBounds());
+                });
+            }
+        },
         initialize_content: function () {
             var self = this;
             this._super();
@@ -60,6 +76,9 @@ odoo.define('web_google_maps.GooglePlacesAutocomplete', function (require) {
                     }
                 }
                 this.target_fields = this.get_field_type();
+                if (this.is_fields_valid()) {
+                    this.initAutocomplete();
+                }
             }
         },
         get_field_type: function () {
@@ -101,7 +120,7 @@ odoo.define('web_google_maps.GooglePlacesAutocomplete', function (require) {
             }
             return res;
         },
-        gmaps_initialize: function () {
+        initAutocomplete: function () {
             var self = this;
             this.places_autocomplete = new google.maps.places.Autocomplete(this.$input.get(0));
             // When the user selects an address from the dropdown, populate the address fields in the form.
@@ -138,12 +157,6 @@ odoo.define('web_google_maps.GooglePlacesAutocomplete', function (require) {
         prepare_value: function (model, field_name, value) {
             return MapViewPlacesAutocomplete.odoo_prepare_values(model, field_name, value);
         },
-        render_value: function () {
-            this._super.apply(this, arguments);
-            if (this.$input) {
-                this.gmaps_initialize();
-            }
-        },
         is_fields_valid: function () {
             var self = this;
             var unknown_vals = [];
@@ -159,8 +172,19 @@ odoo.define('web_google_maps.GooglePlacesAutocomplete', function (require) {
             return true;
         },
         destroy_content: function () {
-            google.maps.event.clearInstanceListeners(this.places_autocomplete);
+            if (this.places_autocomplete) {
+                google.maps.event.clearInstanceListeners(this.places_autocomplete);
+            }
+            this.places_autocomplete = false;
             this._super.apply(this, arguments);
+        },
+        /**
+         * Overwritten method
+         * Prevent parent to bind 'focus' event on field widget
+         * it triggers google to bind the autocomplete while the form has been saved
+         */
+        focus: function() {
+            return false;
         }
     });
 
