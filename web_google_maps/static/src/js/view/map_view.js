@@ -1367,7 +1367,7 @@ odoo.define('web.MapView', function (require) {
             }
             this.$buttons.on('click', '.o_map_button_reload', function (ev) {
                 ev.preventDefault();
-                self.on_load_markers();
+                self.map_centered();
             });
             this.$buttons.appendTo($node);
         },
