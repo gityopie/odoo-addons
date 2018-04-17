@@ -150,6 +150,7 @@ odoo.define('web_google_maps.GooglePlacesAutocomplete', function (require) {
                             });
                         });
                     });
+                    self.$input.val(place.name);
                 }
             });
         },
