@@ -11,7 +11,7 @@ odoo.define('web_google_maps.GooglePlacesAutocomplete', function (require) {
     var FieldCharGooglePlacesAutocomplete = form_widgets.FieldChar.extend({
         template: 'web_google_maps.FieldGooglePlacesAutocomplete',
         display_name: _t('Google Places'),
-        events: {'focus': 'geolocate'},
+        events: _.extend({}, form_widgets.FieldChar.prototype.events, {'focus': 'geolocate'}),
         init: function (field_manager, node) {
             this._super.apply(this, arguments);
             this.type_relations = ['one2many', 'many2one', 'many2many'];
