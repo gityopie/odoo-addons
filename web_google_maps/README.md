@@ -226,6 +226,8 @@ The goal of this module is to bring the power of Google Maps into Odoo
 This module has tested on Odoo Version 10.0c    
 
 
+You can buy me a cup of [☕](http://ko-fi.com/yopiangi), if you want to support me to keep this project maintained. Thanks :)
+
 Regards,  
 Yopi  
 yopiangi@gmail.com
