@@ -4,6 +4,8 @@ Web Google Maps
 [![Demo](https://i.ytimg.com/vi/2UdG5ILDtiY/3.jpg)](https://youtu.be/2UdG5ILDtiY "Demo")    
 
 
+You can buy me a cup of [☕](http://ko-fi.com/yopiangi), if you want to support me to keep this project maintained. Thanks :)
+
 This module contains three new features:
  - New view type and mode (`map`)
  - New widget (`gplaces_address_form`)
