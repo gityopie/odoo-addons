@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data>
-        <act_window id="act_res_partner_map" name="Map" res_model="res.partner" view_type="map" view_mode="map" />
+        <record id="act_res_partner_map" model="ir.actions.act_window">
+            <field name="name">Map</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_type">form</field>
+            <field name="domain">[('id', '=', active_id)]</field>
+            <field name="view_mode">map,tree,form</field>
+        </record>
         <record id="view_partner_form" model="ir.ui.view">
             <field name="name">Google Places Partner Form</field>
             <field name="model">res.partner</field>
@@ -16,8 +23,7 @@
                 </field>
                 <div name="button_box" position="inside">
                     <button name="%(web_google_maps.act_res_partner_map)d" type="action"
-                        class="oe_stat_button" context="{'search_default_name': name}"
-                        icon="fa-map-marker" string="Map" attrs="{'invisible': ['|',('partner_latitude', '=', 0.0), ('partner_longitude', '=', 0.0)]}"/>
+                        class="oe_stat_button" icon="fa-map-marker" string="Map" attrs="{'invisible': ['|',('partner_latitude', '=', 0.0), ('partner_longitude', '=', 0.0)]}"/>
                     <button name="action_map_route" type="object"
                         class="oe_stat_button" context="{'route_direction': True}"
                         icon="fa-map-signs" string="Route" attrs="{'invisible': ['|',('partner_latitude', '=', 0.0), ('partner_longitude', '=', 0.0)]}"/>
