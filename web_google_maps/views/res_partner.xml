@@ -73,10 +73,11 @@
         <field name="act_window_id" ref="base.action_partner_form"/>
     </record>
     <record id="action_res_partner_map" model="ir.actions.act_window">
-        <field name="name">Customer Map</field>
+        <field name="name">Map</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">res.partner</field>
         <field name="view_type">form</field>
+        <field name="domain">[('id', '=', active_id)]</field>
         <field name="view_mode">map,tree,form</field>
     </record>
     <record id="view_partner_form" model="ir.ui.view">
@@ -86,7 +87,7 @@
         <field name="arch" type="xml">
             <div name="button_box" position="inside">
                 <button name="%(web_google_maps.action_res_partner_map)d" type="action"
-                    class="oe_stat_button" icon="fa-map-marker" string="Map" context="{'search_default_name': name, 'search_default_id': active_id}"
+                    class="oe_stat_button" icon="fa-map-marker" string="Map" 
                     attrs="{'invisible': ['|',('partner_latitude', '=', 0.0), ('partner_longitude', '=', 0.0)]}"/>
             </div>
         </field>
