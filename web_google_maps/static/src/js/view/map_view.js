@@ -3,16 +3,19 @@ odoo.define('web.MapView', function (require) {
 
     var core = require('web.core');
     var ajax = require('web.ajax');
+    var data = require('web.data');
+    var data_manager = require('web.data_manager');
     var View = require('web.View');
-    var pyeval = require('web.pyeval');
     var session = require('web.session');
-    var Widget = require('web.Widget');
-    var Model = require('web.Model');
     var QWeb = require('web.QWeb');
+    var Pager = require('web.Pager');
     var utils = require('web.utils');
+    var MapControls = require('web_google_maps.MapsControls');
 
     var MapViewPlacesAutocomplete = require('web.MapViewPlacesAutocomplete');
-    var MapRecord = require('web_google_maps.Record');
+    var KanbanRecord = require('web_kanban.Record');
+    var kanban_widgets = require('web_kanban.widgets');
+    var fields_registry = kanban_widgets.registry;
 
     var qweb = core.qweb;
     var _lt = core._lt;
@@ -819,7 +822,10 @@ odoo.define('web.MapView', function (require) {
         icon: 'fa-map-o',
         mobile_friendly: true,
         custom_events: {
-            'map_record_open': 'switch_form_view'
+            'kanban_record_open': 'open_record',
+            'kanban_record_edit': 'edit_record',
+            'kanban_record_delete': 'delete_record',
+            'kanban_do_action': 'open_action'
         },
         init: function () {
             this._super.apply(this, arguments);
@@ -829,34 +835,46 @@ odoo.define('web.MapView', function (require) {
             this.markers = [];
             this.map = false;
             this.shown = $.Deferred();
+            this.data = undefined;
+            this.limit = this.options.limit || parseInt(this.fields_view.arch.attrs.limit, 10) || 40;
+            this.default_group_by = this.fields_view.arch.attrs.default_group_by;
             this.fields = this.fields_view.fields;
+            this.fields_keys = _.keys(this.fields_view.fields);
             this.children_field = this.fields_view.field_parent;
             this.geocoder = new google.maps.Geocoder;
+            this.search_orderer = new utils.DropMisordered();
             // Retrieve many2manys stored in the fields_view if it has already been processed
             this.many2manys = this.fields_view.many2manys || [];
             this.m2m_context = {};
         },
-        start: function () {
-            var self = this;
-            this.record_options = {
-                editable: false,
-                deletable: false,
-                fields: this.fields_view.fields,
-                qweb: this.qweb,
-                model: this.model,
-                read_only_mode: this.options.read_only_mode,
-            };
-            this.shown.done(this.proxy('_init_start'));
-            return this._super();
+        init_map: function () {
+            this.map = new google.maps.Map(this.$('.o_map_view').get(0), {
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+                zoom: 3,
+                minZoom: 3,
+                maxZoom: 20,
+                fullscreenControl: true,
+                mapTypeControl: true,
+                mapTypeControlOptions: {
+                    mapTypeIds: ['roadmap', 'satellite', 'hybrid', 'terrain'],
+                    style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+                    position: google.maps.ControlPosition.TOP_CENTER
+                }
+            });
+            this.set_map_theme();
+            this.marker_cluster = new MarkerClusterer(this.map, [], {
+                imagePath: '/web_google_maps/static/src/img/m',
+                gridSize: 20,
+                maxZoom: 17
+            });
+            this.on_maps_add_controls();
         },
-        _init_start: function () {
+        start: function () {
             this.init_map();
-            this.on_load_markers();
-            return $.when();
+            return this._super();
         },
         willStart: function () {
             this.set_geolocation_fields();
-            this.set_marker_title();
             this.set_marker_colors();
             this.get_marker_iw_template();
             return this._super();
@@ -894,11 +912,12 @@ odoo.define('web.MapView', function (require) {
         },
         /**
          * This method is adopted from kanban view
+         * to manage marker info window
          */
         get_marker_iw_template: function () {
             var child;
             for (var i = 0, ii = this.fields_view.arch.children.length; i < ii; i++) {
-                child = this.fields_view.arch.children[i];
+                var child = this.fields_view.arch.children[i];
                 if (child.tag === "templates") {
                     transform_qweb_template(child, this.fields_view, this.many2manys);
                     this.fields_view.many2manys = this.many2manys;
@@ -920,15 +939,6 @@ odoo.define('web.MapView', function (require) {
             } else {
                 this.do_warn(_t('Error: cannot display locations'), _t('Please define alias name for geolocations fields for map view!'));
                 return false;
-            }
-        },
-        set_marker_title: function () {
-            if (this.fields_view.arch.attrs.title) {
-                var title = this.fields_view.arch.attrs.title;
-                if (!this.fields.hasOwnProperty(title)) {
-                    this.do_warn(_t('Map View Attributes'), _t('The field for marker title needs to be loaded into view!'));
-                }
-                this.marker_title = title;
             }
         },
         set_marker_colors: function () {
@@ -969,30 +979,73 @@ odoo.define('web.MapView', function (require) {
             }
             return '';
         },
-        on_load_markers: function () {
+        load_markers: function () {
             var self = this;
-            this.load_markers().done(function () {
+            var latLng;
+
+            this.clear_markers_cluster();
+            if (this.data.is_empty) {
+                this.do_notify(_t('No geolocation is found!'));
+                return false;
+            }
+
+            return $.when(this.data.records.forEach(function (record) {
+                if (record[self.latitude] && record[self.longitude]) {
+                    latLng = new google.maps.LatLng(record[self.latitude], record[self.longitude]);
+                    self._create_marker(latLng, record);
+                };
+            })).then(function () {
                 self.map_centered();
             });
         },
-        load_markers: function () {
-            var self = this,
-                latLng;
-
+        load_records: function (offset, dataset) {
+            var options = {
+                'limit': this.limit,
+                'offset': offset
+            };
+            dataset = dataset || this.dataset;
             this.infowindow = new google.maps.InfoWindow();
-            return $.when(this.dataset.read_slice(this.fields_list()).done(function (records) {
-                self.clear_marker_clusterer();
-                if (!records.length) {
-                    self.do_notify(_t('No geolocation is found!'));
-                    return false;
-                }
-                _.each(records, function (record) {
-                    if (record[self.latitude] && record[self.longitude]) {
-                        latLng = new google.maps.LatLng(record[self.latitude], record[self.longitude]);
-                        self._create_marker(latLng, record);
+            return dataset.read_slice(this.fields_keys, options)
+                .then(function (records) {
+                    return {
+                        records: records,
+                        is_empty: !records.length,
+                        grouped: false, // this moment, grouped will not be applied on this view.
                     };
                 });
-            }));
+        },
+        render_pager: function ($node, options) {
+            var self = this;
+            this.pager = new Pager(this, this.dataset.size(), 1, this.limit, options);
+            this.pager.appendTo($node);
+            this.pager.on('pager_changed', this, function (state) {
+                self.limit = state.limit;
+                self.load_records(state.current_min - 1)
+                    .then(function (data) {
+                        self.data = data;
+                    })
+                    .done(this.proxy('render'));
+            });
+            this.update_pager();
+        },
+        render: function () {
+            this.record_options = {
+                editable: false,
+                deletable: false,
+                fields: this.fields_view.fields,
+                qweb: this.qweb,
+                model: this.model,
+                read_only_mode: this.options.read_only_mode,
+            };
+            this.load_markers();
+        },
+        update_pager: function () {
+            if (this.pager) {
+                this.pager.update_state({
+                    size: this.dataset.size(),
+                    current_min: 1
+                });
+            }
         },
         _get_icon_color: function (record) {
             if (this.color) {
@@ -1001,79 +1054,70 @@ odoo.define('web.MapView', function (require) {
             return this.get_marker_color(record);
         },
         _create_marker: function (lat_lng, record) {
-            var options = '',
-                icon_url = '/web_google_maps/static/src/img/markers/',
-                icon_color = '',
-                marker = '';
-
-            options = {
+            var icon_url = '/web_google_maps/static/src/img/markers/';
+            var options = {
                 position: lat_lng,
                 map: this.map,
-                animation: google.maps.Animation.DROP
+                animation: google.maps.Animation.DROP,
+                _odoo_record: record
             }
-            icon_color = this._get_icon_color(record);
+            var icon_color = this._get_icon_color(record);
             if (icon_color && MARKER_ICON_COLORS.indexOf(icon_color) !== -1) {
                 options.icon = icon_url + icon_color + '.png';
             }
-            marker = new google.maps.Marker(options);
+            var marker = new google.maps.Marker(options);
             this.markers.push(marker);
-            this.set_marker(marker, record);
+            this.cluster_add_marker(marker);
         },
-        clear_marker_clusterer: function () {
+        clear_markers_cluster: function () {
             this.marker_cluster.clearMarkers();
             this.markers.length = 0;
         },
-        set_marker: function (marker, record) {
+        /**
+         * Handle Multiple Markers present at the same coordinates
+         */
+        cluster_add_marker: function (marker) {
+            var markerInClusters = this.marker_cluster.getMarkers();
+            var existing_records = [];
+            if (markerInClusters.length > 0) {
+                markerInClusters.forEach(function (_cMarker) {
+                    var _position = _cMarker.getPosition();
+                    if (marker.getPosition().equals(_position)) {
+                        existing_records.push(_cMarker._odoo_record);
+                    }
+                });
+            }
             this.marker_cluster.addMarker(marker);
-            google.maps.event.addListener(marker, 'click', this.marker_infowindow(marker, record));
+            google.maps.event.addListener(marker, 'click', this.marker_infowindow(marker, existing_records));
         },
-        marker_infowindow: function (marker, record) {
+        marker_infowindow: function (marker, current_records) {
             var self = this;
-            var content = self.marker_infowindow_content(record);
+            var _content = '';
+            var div_content = document.createElement('div');
+            div_content.className = 'o_kanban_view';
+            div_content.style.cssText = 'display:block;max-height:400px;overflow-y:auto;';
+
+            if (current_records.length > 0) {
+                current_records.forEach(function (_record) {
+                    _content = self.marker_infowindow_content(_record);
+                    _content.appendTo(div_content);
+                });
+            }
+
+            var new_content = self.marker_infowindow_content(marker._odoo_record);
+            new_content.appendTo(div_content);
             return function () {
-                self.infowindow.setContent(content);
+                self.infowindow.setContent(div_content);
                 self.infowindow.open(self.map, marker);
             }
         },
         marker_infowindow_content: function (record) {
-            var element, options, marker_record;
-            element = document.createElement('div');
-            options = _.clone(this.record_options);
-            marker_record = new MapRecord(this, record, options);
-            marker_record.appendTo(element);
-            return element;
-        },
-        init_map: function () {
-            this.map = new google.maps.Map(this.$('.o_map_view').get(0), {
-                mapTypeId: google.maps.MapTypeId.ROADMAP,
-                zoom: 3,
-                minZoom: 3,
-                maxZoom: 20,
-                fullscreenControl: true,
-                mapTypeControl: true,
-                mapTypeControlOptions: {
-                    mapTypeIds: ['roadmap', 'satellite', 'hybrid', 'terrain'],
-                    style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-                    position: google.maps.ControlPosition.TOP_CENTER
-                }
-            });
-            this.set_map_theme();
-            this.marker_cluster = new MarkerClusterer(this.map, [], {
-                imagePath: '/web_google_maps/static/src/img/m'
-            });
-            this.on_maps_add_controls();
-        },
-        fields_list: function () {
-            var fields = _.keys(this.fields);
-            if (!_(fields).contains(this.children_field)) {
-                fields.push(this.children_field);
-            }
-            return _.filter(fields);
+            var options = _.clone(this.record_options);
+            var marker_record = new KanbanRecord(this, record, options);
+            return marker_record;
         },
         map_centered: function () {
-            var self = this,
-                context = this.dataset.context;
-
+            var context = this.dataset.context;
             if (context.route_direction) {
                 this.on_init_routes();
             } else {
@@ -1096,17 +1140,49 @@ odoo.define('web.MapView', function (require) {
         do_show: function () {
             this.do_push_state({});
             this.shown.resolve();
-            return this._super.apply(this, arguments);
+            return this._super();
         },
+        /**
+         * Grouping records on maps is not supported yet
+         */
         do_search: function (domain, context, group_by) {
-            var self = this,
-                _super = this._super,
-                _args = arguments;
-
-            this.shown.done(function () {
-                _super.apply(self, _args);
-                self.on_load_markers();
+            var self = this;
+            var group_by_field = group_by[0] || this.default_group_by;
+            var field = this.fields[group_by_field];
+            var options = {};
+            var fields_def;
+            if (field === undefined) {
+                fields_def = data_manager.load_fields(this.dataset).then(function (fields) {
+                    self.fields = fields;
+                    field = self.fields[group_by_field];
+                });
+            }
+            var load_def = $.when(fields_def).then(function () {
+                var grouped_by_m2o = field && (field.type === 'many2one');
+                options = _.extend(options, {
+                    search_domain: domain,
+                    search_context: context,
+                    group_by_field: group_by_field,
+                    grouped: false,
+                    grouped_by_m2o: grouped_by_m2o,
+                    relation: (grouped_by_m2o ? field.relation : undefined),
+                });
+                return self.load_records();
             });
+            return this.search_orderer
+                .add(load_def)
+                .then(function (data) {
+                    _.extend(self, options);
+                    if (options.grouped) {
+                        var new_ids = _.union.apply(null, _.map(data.groups, function (group) {
+                            return group.dataset.ids;
+                        }));
+                        self.dataset.alter_ids(new_ids);
+                    }
+                    self.data = data;
+                })
+                .then(this.proxy('render'))
+                .then(this.proxy('update_pager'));
         },
         on_maps_add_controls: function () {
             this.map_layer_traffic_controls();
@@ -1118,7 +1194,7 @@ odoo.define('web.MapView', function (require) {
          */
         map_layer_traffic_controls: function () {
             var route_mode = this.dataset.context.route_direction ? true : false;
-            var map_controls = new MapControl(this, route_mode);
+            var map_controls = new MapControls.MapControl(this, route_mode);
             map_controls.setElement($(qweb.render('MapViewControl', {})));
             map_controls.start();
         },
@@ -1206,9 +1282,8 @@ odoo.define('web.MapView', function (require) {
             });
         },
         get_routes_distance: function (route) {
-            var content = "",
-                i;
-            for (i = 0; i < route.legs.length; i++) {
+            var content = '';
+            for (var i = 0; i < route.legs.length; i++) {
                 content += '<strong>' + route.legs[i].start_address + '</strong> &#8594;';
                 content += ' <strong>' + route.legs[i].end_address + '</strong>';
                 content += '<p>' + route.legs[i].distance.text + '</p>';
@@ -1347,11 +1422,7 @@ odoo.define('web.MapView', function (require) {
             this.$('.btn_map_control').toggleClass('opened');
         },
         reload: function () {
-            var self = this;
-            setTimeout(function () {
-                self.on_load_markers();
-            }, 1000);
-            return $.when();
+            this.load_markers();
         },
         render_buttons: function ($node) {
             var self = this;
@@ -1371,131 +1442,57 @@ odoo.define('web.MapView', function (require) {
             });
             this.$buttons.appendTo($node);
         },
-        switch_form_view: function (event, options) {
+        add_record: function () {
+            this.dataset.index = null;
+            this.do_switch_view('form');
+        },
+
+        open_record: function (event, options) {
             if (this.dataset.select_id(event.data.id)) {
                 this.do_switch_view('form', options);
             } else {
-                this.do_warn("Map: could not find id#" + event.data.id);
+                this.do_warn("Kanban: could not find id#" + event.data.id);
             }
-        }
-    });
+        },
 
-    var MapControl = Widget.extend({
-        events: {
-            'click .btn_map_control': 'on_control_maps'
+        edit_record: function (event) {
+            this.open_record(event, {
+                mode: 'edit'
+            });
         },
-        init: function (parent, route) {
-            this._super.apply(this, arguments);
-            this.parent = parent;
-            this.route = route;
-        },
-        _init_controls: function () {
-            this.parent.map.controls[google.maps.ControlPosition.LEFT_TOP].push(this.$el.get(0));
-        },
-        start: function () {
+
+        delete_record: function (event) {
             var self = this;
+            var record = event.data.record;
 
-            this.parent.shown.done(this.proxy('_init_controls'));
-
-            var map_layers = new MapControlLayer(this.parent);
-            map_layers.setElement($(qweb.render('MapControlLayers', {})));
-            map_layers.start();
-
-            if (this.route) {
-                var map_routes = new MapControlTravelMode(this.parent);
-                map_routes.setElement($(qweb.render('MapControlTravelMode', {})));
-                map_routes.start();
+            function do_it() {
+                return $.when(self.dataset.unlink([record.id])).done(function () {
+                    record.destroy();
+                    if (event.data.after) {
+                        event.data.after();
+                    }
+                });
             }
-        },
-        on_control_maps: function () {
-            this.parent.on_toogle_sidenav();
-        }
-    });
-
-    var MapControlLayer = Widget.extend({
-        events: {
-            'click #map_layer': 'on_change_layer',
-        },
-        init: function (parent) {
-            this._super.apply(this, arguments);
-            this.parent = parent;
-        },
-        start: function () {
-            this.parent.$('.sidenav-body>#accordion').append(this.$el);
-        },
-        on_change_layer: function (ev) {
-            ev.preventDefault();
-            var layer = $(ev.currentTarget).data('layer');
-            if (layer == 'traffic') {
-                this._on_traffic_layer(ev);
-            } else if (layer == 'transit') {
-                this._on_transit_layer(ev);
-            } else if (layer == 'bicycle') {
-                this._on_bicycle_layer(ev);
-            }
-        },
-        _on_traffic_layer: function (ev) {
-            $(ev.currentTarget).toggleClass('active');
-            if ($(ev.currentTarget).hasClass('active')) {
-                this.trafficLayer = new google.maps.TrafficLayer();
-                this.trafficLayer.setMap(this.parent.map);
+            if (this.options.confirm_on_delete) {
+                Dialog.confirm(this, _t("Are you sure you want to delete this record ?"), {
+                    confirm_callback: do_it
+                });
             } else {
-                this.trafficLayer.setMap(null);
+                do_it();
             }
         },
-        _on_transit_layer: function (ev) {
-            $(ev.currentTarget).toggleClass('active');
-            if ($(ev.currentTarget).hasClass('active')) {
-                this.transitLayer = new google.maps.TransitLayer();
-                this.transitLayer.setMap(this.parent.map);
-            } else {
-                this.transitLayer.setMap(null);
-            }
-        },
-        _on_bicycle_layer: function (ev) {
-            $(ev.currentTarget).toggleClass('active');
-            if ($(ev.currentTarget).hasClass('active')) {
-                this.bikeLayer = new google.maps.BicyclingLayer();
-                this.bikeLayer.setMap(this.parent.map);
-            } else {
-                this.bikeLayer.setMap(null);
-            }
-        },
-        destroy: function () {
-            if (this.transitLayer) {
-                this.transitLayer.setMap(null);
-            }
 
-            if (this.bikeLayer) {
-                this.bikeLayer.setMap(null);
+        open_action: function (event) {
+            var self = this;
+            if (event.data.context) {
+                event.data.context = new data.CompoundContext(event.data.context)
+                    .set_eval_context({
+                        active_id: event.target.id,
+                        active_ids: [event.target.id],
+                        active_model: this.model,
+                    });
             }
-
-            if (this.trafficLayer) {
-                this.trafficLayer.setMap(null);
-            }
-
-            this._super.apply(this, arguments);
-        }
-
-    });
-
-    var MapControlTravelMode = Widget.extend({
-        events: {
-            'click #travel_mode': 'on_change_mode'
-        },
-        init: function (parent) {
-            this._super.apply(this, arguments);
-            this.parent = parent;
-        },
-        start: function () {
-            this.parent.$('.sidenav-body > #accordion').append(this.$el);
-        },
-        on_change_mode: function (ev) {
-            ev.preventDefault();
-            $(ev.currentTarget).siblings().removeClass('active');
-            $(ev.currentTarget).toggleClass('active');
-            var mode = $(ev.currentTarget).data('mode');
-            this.parent.on_calculate_and_display_route(mode);
+            this.do_execute_action(event.data, this.dataset, event.target.id, _.bind(self.reload_record, this, event.target));
         },
     });
 
@@ -1513,7 +1510,7 @@ odoo.define('web.MapView', function (require) {
         if (node.tag && node.attrs.modifiers) {
             var modifiers = JSON.parse(node.attrs.modifiers || '{}');
             if (modifiers.invisible) {
-                qweb_add_if(node, _.str.sprintf("!map_compute_domain(%s)", JSON.stringify(modifiers.invisible)));
+                qweb_add_if(node, _.str.sprintf("!kanban_compute_domain(%s)", JSON.stringify(modifiers.invisible)));
             }
         }
         switch (node.tag) {
@@ -1525,7 +1522,7 @@ odoo.define('web.MapView', function (require) {
                         many2manys.push(node.attrs.name);
                     }
                     node.tag = 'div';
-                    node.attrs['class'] = (node.attrs['class'] || '') + ' oe_form_field o_form_field_many2manytags o_map_tags';
+                    node.attrs['class'] = (node.attrs['class'] || '') + ' oe_form_field o_form_field_many2manytags o_kanban_tags';
                 } else if (fields_registry.contains(ftype)) {
                     // do nothing, the kanban record will handle it
                 } else {
@@ -1536,9 +1533,9 @@ odoo.define('web.MapView', function (require) {
             case 'button':
             case 'a':
                 var type = node.attrs.type || '';
-                if (_.indexOf('action,object,edit,open,delete,url'.split(','), type) !== -1) {
+                if (_.indexOf('action,object,edit,open,delete,url,set_cover'.split(','), type) !== -1) {
                     _.each(node.attrs, function (v, k) {
-                        if (_.indexOf('icon,type,name,args,string,context,states'.split(','), k) != -1) {
+                        if (_.indexOf('icon,type,name,args,string,context,states,kanban_states'.split(','), k) != -1) {
                             node.attrs['data-' + k] = v;
                             delete(node.attrs[k]);
                         }
@@ -1552,7 +1549,7 @@ odoo.define('web.MapView', function (require) {
                         node.attrs.type = 'button';
                     }
 
-                    var action_classes = " oe_map_action oe_map_action_" + node.tag;
+                    var action_classes = " oe_kanban_action oe_kanban_action_" + node.tag;
                     if (node.attrs['t-attf-class']) {
                         node.attrs['t-attf-class'] += action_classes;
                     } else if (node.attrs['t-att-class']) {

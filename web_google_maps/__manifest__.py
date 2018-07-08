@@ -16,7 +16,7 @@ This module brings three features:
 form view, it provide autocomplete feature when you typed an address of partner
 3. Routes information
 """,
-    'depends': ['website_google_map'],
+    'depends': ['web_kanban', 'website_google_map'],
     'website': '',
     'data': [
         'views/google_places_template.xml',
