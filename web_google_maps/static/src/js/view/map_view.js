@@ -917,7 +917,7 @@ odoo.define('web.MapView', function (require) {
         get_marker_iw_template: function () {
             var child;
             for (var i = 0, ii = this.fields_view.arch.children.length; i < ii; i++) {
-                var child = this.fields_view.arch.children[i];
+                child = this.fields_view.arch.children[i];
                 if (child.tag === "templates") {
                     transform_qweb_template(child, this.fields_view, this.many2manys);
                     this.fields_view.many2manys = this.many2manys;
