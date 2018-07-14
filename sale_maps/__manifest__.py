@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 {
-    'name': 'Contacts Maps',
+    'name': 'Sale Maps',
     'version': '10.0.1.0.0',
     'author': "Yopi Angi",
     'maintainer': 'Yopi Angi<yopiangi@gmail.com>',
-    'category': 'Contacts',
+    'category': 'Sale',
     'description': """
-Contacts Maps
-=============
+Sale Maps
+=========
 
 """,
-    'depends': ['contacts', 'web_google_maps'],
+    'depends': ['sale', 'web_google_maps'],
     'website': '',
     'data': [
         'views/res_partner.xml',
