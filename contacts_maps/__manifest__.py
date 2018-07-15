@@ -11,7 +11,7 @@ Contacts Maps
 =============
 
 """,
-    'depends': ['contacts', 'sale_maps'],
+    'depends': ['contacts', 'web_google_maps'],
     'website': '',
     'data': [
         'views/res_partner.xml',
