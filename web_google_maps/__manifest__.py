@@ -12,8 +12,8 @@ Web Google Map and google places autocomplete address form
 
 This module brings three features:
 1. A new view 'map'
-2. Enabled google places autocomplete address form 
-For example, on customer form view, the widget provide autocomplete feature 
+2. Enabled google places autocomplete address form
+For example, on customer form view, the widget provide autocomplete feature
 when typing address of partner
 3. Routes information
 """,

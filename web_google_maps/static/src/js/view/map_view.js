@@ -1105,6 +1105,8 @@ odoo.define('web.MapView', function (require) {
         marker_infowindow: function (marker, current_records) {
             var self = this;
             var _content = '';
+            var marker_records = [];
+            
             var div_content = document.createElement('div');
             div_content.className = 'o_kanban_view';
             div_content.style.cssText = 'display:block;max-height:400px;overflow-y:auto;';
@@ -1112,16 +1114,18 @@ odoo.define('web.MapView', function (require) {
             if (current_records.length > 0) {
                 current_records.forEach(function (_record) {
                     _content = self.marker_infowindow_content(_record);
+                    marker_records.push(_content);
                     _content.appendTo(div_content);
                 });
             }
 
             var marker_record = self.marker_infowindow_content(marker._odoo_record);
             marker_record.appendTo(div_content);
+            marker_records.push(marker_record);
             return function () {
                 self.infowindow.setContent(div_content);
                 self.infowindow.open(self.map, marker);
-                self.postprocess_m2m_tags(marker_record);
+                self.postprocess_m2m_tags(marker_records);
             }
         },
         marker_infowindow_content: function (record) {
