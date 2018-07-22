@@ -18,7 +18,6 @@ This feature will work seamlessly with Odoo means you can search your partner lo
 There are five available attributes that you can customize:
  - `lat` : an attritube to tell the map the latitude field on the object (mandatory)
  - `lng` : an attritute to tell the map the longitude field on the object (mandatory)
- - `title` : an attribute to tell the map the title that will be printed on marker info window (optional, by default 'name')
  - `color` : an attribute to modify marker color (optional) any given color will set all markers color.
  - `colors` : work like attribute `color` but more configurable (you can set marker color depends on it's value) this attribute works similar to `colors` of tree view on Odoo 9.0
  
@@ -30,35 +29,84 @@ Example
         <field name="name">view.partner.map</field>
         <field name="model">res.partner</field>
         <field name="arch" type="xml">
-            <!-- Define aliase name for geolocation fields into view attributes -->
-            <map string="Map" lat="partner_latitude" lng="partner_longitude">
-                <field name="name"/>
+            <map string="Map" lat="partner_latitude" lng="partner_longitude" colors="blue:company_type=='person';green:company_type=='company';">
+                <field name="color"/>
+                <field name="display_name"/>
+                <field name="email"/>
+                <field name="parent_id"/>
+                <field name="is_company"/>
+                <field name="function"/>
+                <field name="phone"/>
                 <field name="street"/>
                 <field name="street2"/>
-                <field name="city"/>
                 <field name="zip"/>
-                <field name="email"/>
-                <field name="state_id"/>
+                <field name="city"/>
                 <field name="country_id"/>
+                <field name="mobile"/>
+                <field name="state_id"/>
+                <field name="category_id"/>
+                <field name="image_small"/>
+                <field name="type"/>
                 <field name="partner_latitude"/>
                 <field name="partner_longitude"/>
-                <templates> <!-- qweb template used for marker infowindow -->
-                    <t t-name="map-marker-iw">
-                        <div class="gm-iw-container o_map_global_click">
-                            <div class="gm-iw-title">
-                                <img t-att-src="map_image('res.partner', 'image_small', record.id.value)"/>
-                                <span><t t-esc="record.name.value"/></span>
+                <field name="company_type"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="o_kanban_tags_section oe_kanban_partner_categories">
+                                <span class="oe_kanban_list_many2many">
+                                    <field name="category_id" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                                </span>
                             </div>
-                            <div class="gm-iw-content">
-                                <p>
-                                    <span t-esc="record.street.value"/>&#032;<span t-esc="record.street2.value"/> 
-                                </p>
-                                <p>
-                                    <span t-esc="record.city.value"/>,&#032;<span t-esc="record.zip.value"/>
-                                </p>
-                                <p>
-                                    <span t-esc="record.state_id.value"/>,&#032;<span t-esc="record.country_id.value"/>
-                                </p>
+                            <div class="o_kanban_image">
+                                <t t-if="record.image_small.raw_value">
+                                    <img t-att-src="kanban_image('res.partner', 'image_small', record.id.value)"/>
+                                </t>
+                                <t t-if="!record.image_small.raw_value">
+                                    <t t-if="record.type.raw_value === 'delivery'">
+                                        <img t-att-src='_s + "/base/static/src/img/truck.png"' class="o_kanban_image oe_kanban_avatar_smallbox"/>
+                                    </t>
+                                    <t t-if="record.type.raw_value === 'invoice'">
+                                        <img t-att-src='_s + "/base/static/src/img/money.png"' class="o_kanban_image oe_kanban_avatar_smallbox"/>
+                                    </t>
+                                    <t t-if="record.type.raw_value != 'invoice' &amp;&amp; record.type.raw_value != 'delivery'">
+                                        <t t-if="record.is_company.raw_value === true">
+                                            <img t-att-src='_s + "/base/static/src/img/company_image.png"'/>
+                                        </t>
+                                        <t t-if="record.is_company.raw_value === false">
+                                            <img t-att-src='_s + "/base/static/src/img/avatar.png"'/>
+                                        </t>
+                                    </t>
+                                </t>
+                            </div>
+                            <div class="oe_kanban_details">
+                                <strong class="oe_partner_heading">
+                                    <field name="display_name"/>
+                                </strong>
+                                <ul>
+                                    <li t-if="record.parent_id.raw_value and !record.function.raw_value">
+                                        <field name="parent_id"/>
+                                    </li>
+                                    <li t-if="!record.parent_id.raw_value and record.function.raw_value">
+                                        <field name="function"/>
+                                    </li>
+                                    <li t-if="record.parent_id.raw_value and record.function.raw_value">
+                                        <field name="function"/> at <field name="parent_id"/>
+                                    </li>
+                                    <li t-if="record.city.raw_value and !record.country_id.raw_value">
+                                        <field name="city"/>
+                                    </li>
+                                    <li t-if="!record.city.raw_value and record.country_id.raw_value">
+                                        <field name="country_id"/>
+                                    </li>
+                                    <li t-if="record.city.raw_value and record.country_id.raw_value">
+                                        <field name="city"/>, <field name="country_id"/>
+                                    </li>
+                                    <li t-if="record.email.raw_value" class="o_text_overflow">
+                                        <field name="email"/>
+                                    </li>
+                                </ul>
+                                <div class="oe_kanban_partner_links"/>
                             </div>
                         </div>
                     </t>
@@ -74,6 +122,11 @@ Example
         <field name="view_mode">tree,form,map</field>
         ...
     </record>
+
+
+The view looks familiar?    
+Yes, you're right.    
+The marker infowindow will use `kanban-box` kanban card style.    
 
 
 ##  How to setup color for marker on map?

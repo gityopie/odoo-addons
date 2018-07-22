@@ -6,6 +6,7 @@ odoo.define('web.MapView', function (require) {
     var data = require('web.data');
     var data_manager = require('web.data_manager');
     var View = require('web.View');
+    var Dialog = require('web.Dialog');
     var session = require('web.session');
     var QWeb = require('web.QWeb');
     var Pager = require('web.Pager');
@@ -809,15 +810,14 @@ odoo.define('web.MapView', function (require) {
     var MapView = View.extend({
         template: 'MapView',
         accesskey: "m",
-        className: 'o_map',
+        className: 'o_map_view',
         display_name: _lt('Map'),
         defaults: _.extend(View.prototype.defaults, {
-            // records can be selected one by one
-            selectable: true,
-            // whether the column headers should be displayed
-            header: true,
-            action_buttons: true,
-            searchable: true,
+            quick_creatable: true,
+            creatable: true,
+            create_text: undefined,
+            read_only_mode: false,
+            confirm_on_delete: true,
         }),
         icon: 'fa-map-o',
         mobile_friendly: true,
@@ -825,13 +825,16 @@ odoo.define('web.MapView', function (require) {
             'kanban_record_open': 'open_record',
             'kanban_record_edit': 'edit_record',
             'kanban_record_delete': 'delete_record',
-            'kanban_do_action': 'open_action'
+            'kanban_record_update': 'update_record',
+            'kanban_do_action': 'open_action',
+            'kanban_column_archive_records': 'archive_records',
+            'kanban_call_method': 'call_method',
         },
         init: function () {
             this._super.apply(this, arguments);
             this.qweb = new QWeb(session.debug, {
                 _s: session.origin
-            });
+            }, false);
             this.markers = [];
             this.map = false;
             this.shown = $.Deferred();
@@ -846,6 +849,7 @@ odoo.define('web.MapView', function (require) {
             // Retrieve many2manys stored in the fields_view if it has already been processed
             this.many2manys = this.fields_view.many2manys || [];
             this.m2m_context = {};
+            this.widgets = [];
         },
         init_map: function () {
             this.map = new google.maps.Map(this.$('.o_map_view').get(0), {
@@ -874,9 +878,9 @@ odoo.define('web.MapView', function (require) {
             return this._super();
         },
         willStart: function () {
+            this.get_marker_iw_template();
             this.set_geolocation_fields();
             this.set_marker_colors();
-            this.get_marker_iw_template();
             return this._super();
         },
         /**
@@ -1005,7 +1009,7 @@ odoo.define('web.MapView', function (require) {
             };
             dataset = dataset || this.dataset;
             this.infowindow = new google.maps.InfoWindow();
-            return dataset.read_slice(this.fields_keys, options)
+            return dataset.read_slice(this.fields_keys.concat(['__last_update']), options)
                 .then(function (records) {
                     return {
                         records: records,
@@ -1030,8 +1034,8 @@ odoo.define('web.MapView', function (require) {
         },
         render: function () {
             this.record_options = {
-                editable: false,
-                deletable: false,
+                editable: this.is_action_enabled('edit'),
+                deletable: this.is_action_enabled('delete'),
                 fields: this.fields_view.fields,
                 qweb: this.qweb,
                 model: this.model,
@@ -1046,6 +1050,15 @@ odoo.define('web.MapView', function (require) {
                     current_min: 1
                 });
             }
+        },
+        is_action_enabled: function (action) {
+            if (action === 'create' && !this.options.creatable) {
+                return false;
+            }
+            return this._super(action);
+        },
+        has_active_field: function () {
+            return this.fields_view.fields.active;
         },
         _get_icon_color: function (record) {
             if (this.color) {
@@ -1093,28 +1106,93 @@ odoo.define('web.MapView', function (require) {
         marker_infowindow: function (marker, current_records) {
             var self = this;
             var _content = '';
+            var marker_records = [];
+
             var div_content = document.createElement('div');
             div_content.className = 'o_kanban_view';
-            div_content.style.cssText = 'display:block;max-height:400px;overflow-y:auto;';
+            div_content.style.cssText = 'display:block;max-height:400px;overflow-y:auto;width:350px;';
 
             if (current_records.length > 0) {
                 current_records.forEach(function (_record) {
                     _content = self.marker_infowindow_content(_record);
+                    marker_records.push(_content);
                     _content.appendTo(div_content);
                 });
             }
 
-            var new_content = self.marker_infowindow_content(marker._odoo_record);
-            new_content.appendTo(div_content);
+            var marker_record = self.marker_infowindow_content(marker._odoo_record);
+            marker_record.appendTo(div_content);
+            marker_records.push(marker_record);
             return function () {
                 self.infowindow.setContent(div_content);
                 self.infowindow.open(self.map, marker);
+                self.postprocess_m2m_tags(marker_records);
             }
         },
         marker_infowindow_content: function (record) {
             var options = _.clone(this.record_options);
             var marker_record = new KanbanRecord(this, record, options);
             return marker_record;
+        },
+        postprocess_m2m_tags: function (records) {
+            var self = this;
+            if (!this.many2manys.length) {
+                return;
+            }
+            var relations = {};
+            records = records ? (records instanceof Array ? records : [records]) :
+                this.grouped ? Array.prototype.concat.apply([], _.pluck(this.widgets, 'records')) :
+                this.widgets;
+
+            records.forEach(function (record) {
+                self.many2manys.forEach(function (name) {
+                    var field = record.record[name];
+                    var $el = record.$('.oe_form_field.o_form_field_many2manytags[name=' + name + ']').empty();
+                    // fields declared in the kanban view may not be used directly
+                    // in the template declaration, for example fields for which the
+                    // raw value is used -> $el[0] is undefined, leading to errors
+                    // in the following process. Preventing to add push the id here
+                    // prevents to make unnecessary calls to name_get
+                    if (!$el[0]) {
+                        return;
+                    }
+                    if (!relations[field.relation]) {
+                        relations[field.relation] = {
+                            ids: [],
+                            elements: {},
+                            context: self.m2m_context[name]
+                        };
+                    }
+                    var rel = relations[field.relation];
+                    field.raw_value.forEach(function (id) {
+                        rel.ids.push(id);
+                        if (!rel.elements[id]) {
+                            rel.elements[id] = [];
+                        }
+                        rel.elements[id].push($el[0]);
+                    });
+                });
+            });
+            _.each(relations, function (rel, rel_name) {
+                var dataset = new data.DataSetSearch(self, rel_name, self.dataset.get_context(rel.context));
+                dataset.read_ids(_.uniq(rel.ids), ['name', 'color']).done(function (result) {
+                    result.forEach(function (record) {
+                        // Does not display the tag if color = 10
+                        if (typeof record.color !== 'undefined' && record.color != 10) {
+                            var $tag = $('<span>')
+                                .addClass('o_tag o_tag_color_' + record.color)
+                                .attr('title', _.str.escapeHTML(record.name));
+                            $(rel.elements[record.id]).append($tag);
+                        }
+                    });
+                    // we use boostrap tooltips for better and faster display
+                    self.$('span.o_tag').tooltip({
+                        delay: {
+                            'show': 50
+                        }
+                    });
+                });
+            });
         },
         map_centered: function () {
             var context = this.dataset.context;
@@ -1141,6 +1219,9 @@ odoo.define('web.MapView', function (require) {
             this.do_push_state({});
             this.shown.resolve();
             return this._super();
+        },
+        do_reload: function () {
+            this.do_search(this.search_domain, this.search_context, []);
         },
         /**
          * Grouping records on maps is not supported yet
@@ -1201,7 +1282,7 @@ odoo.define('web.MapView', function (require) {
         /**
          * The three keys('model', 'method', 'fields') in the object assigned to variable 'options' is a mandatory keys.
          * The idea is to be able to pass any 'object' that can be created within the map
-         *  
+         *
          * The fields options is divided into three parts:
          * 1) 'general'
          *     This configuration is for 'general' fields of the object, fields like name, phone, etc..
@@ -1471,6 +1552,7 @@ odoo.define('web.MapView', function (require) {
                     if (event.data.after) {
                         event.data.after();
                     }
+                    self.do_reload();
                 });
             }
             if (this.options.confirm_on_delete) {
@@ -1480,6 +1562,17 @@ odoo.define('web.MapView', function (require) {
             } else {
                 do_it();
             }
+        },
+
+        update_record: function (event) {
+            var self = this;
+            var record = event.target;
+            return this.dataset.write(record.id, event.data)
+                .done(function () {
+                    if (!self.isDestroyed()) {
+                        self.reload_record(record);
+                    }
+                });
         },
 
         open_action: function (event) {
@@ -1494,6 +1587,46 @@ odoo.define('web.MapView', function (require) {
             }
             this.do_execute_action(event.data, this.dataset, event.target.id, _.bind(self.reload_record, this, event.target));
         },
+
+        reload_record: function (record) {
+            var self = this;
+            this.dataset.read_ids([record.id], this.fields_keys.concat(['__last_update'])).done(function (records) {
+                if (records.length) {
+                    record.update(records[0]);
+                    self.postprocess_m2m_tags(record);
+                } else {
+                    record.destroy();
+                }
+            });
+        },
+
+        archive_records: function (event) {
+            if (!this.has_active_field()) {
+                return;
+            }
+            var active_value = !event.data.archive;
+            var record_ids = [];
+            _.each(event.target.records, function (kanban_record) {
+                if (kanban_record.record.active.value != active_value) {
+                    record_ids.push(kanban_record.id);
+                }
+            });
+            if (record_ids.length) {
+                this.dataset.call('write', [record_ids, {
+                        active: active_value
+                    }])
+                    .done(this.do_reload);
+            }
+        },
+
+        call_method: function (event) {
+            var data = event.data;
+            this.dataset.call(data.method, data.params).then(function () {
+                if (data.callback) {
+                    data.callback();
+                }
+            });
+        }
     });
 
     // The two functions below are adopted from kanban view
@@ -1517,7 +1650,7 @@ odoo.define('web.MapView', function (require) {
             case 'field':
                 var ftype = fvg.fields[node.attrs.name].type;
                 ftype = node.attrs.widget ? node.attrs.widget : ftype;
-                if (ftype === 'many2many') {
+                if (fvg.fields[node.attrs.name].type === 'many2many') {
                     if (_.indexOf(many2manys, node.attrs.name) < 0) {
                         many2manys.push(node.attrs.name);
                     }
