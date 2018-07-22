@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_website_config_settings_inherit" model="ir.ui.view">
+            <field name="name">view.website.config.settings.inherit</field>
+            <field name="model">website.config.settings</field>
+            <field name="inherit_id" ref="website.view_website_config_settings"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[1]" position="inside">
+                    <label for="id" string="Google Maps Theme"/>
+                    <div name="google_maps_theme">
+                        <div>
+                            <label for="google_maps_theme" string="Theme"/>
+                            <field name="google_maps_theme" class="oe_inline"/>
+                        </div>
+                    </div>
+                    <label for="id" string="Google Maps Localization"/>
+                    <div name="google_maps_lang_localization">
+                        <div>
+                            <p>Visit the <a href="https://developers.google.com/maps/documentation/javascript/localization" target="_blank">page</a> about Localizing the Map</p>
+                        </div>
+                        <div>
+                            <label for="google_maps_lang_localization" string="Language"/>
+                            <field name="google_maps_lang_localization" class="oe_inline"/>
+                            <div attrs="{'invisible': [('google_maps_lang_localization', 'in', ['', False])]}">
+                                <p>If you set the language of the map, it's important to consider setting the region too.</p>
+                                <p>This helps ensure that your application complies with local laws.</p>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="google_maps_region_localization" string="Region"/>
+                            <field name="google_maps_region_localization" class="oe_inline"/>
+                        </div>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

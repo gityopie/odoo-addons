@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 from odoo import api, exceptions, models, _
 
 
@@ -31,3 +32,15 @@ class ResPartner(models.Model):
             'context': context,
             'domain': [('id', 'in', partners)]
         }
+
+    @api.model
+    def create_partner_from_map(self, values):
+        default_fields = ['name', 'street', 'street2', 'website', 'phone',
+                          'city', 'zip', 'country_id', 'state_id',
+                          'partner_latitude', 'partner_longitude']
+        if isinstance(values, dict) and any(
+                val in default_fields for val in values.keys()):
+            partner_id = self.env['res.partner'].create(values)
+            return partner_id.id
+        else:
+            return False

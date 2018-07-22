@@ -2,25 +2,31 @@
     <div class="oe_row oe_spaced">
         <h2 class="oe_slogan" style="color:#875A7B;">Brings Google Maps features into Odoo Web</h2>
         <h4 class="oe_slogan">Show all your partners location on google maps</h4>
-        <p class="text-center">
-            <strong>[Update 08 July 2017]</strong>
-            <u>Not just partner(res.partner) model but any model contains geolocation fields</u>
-        </p>
         <div class="oe_span12">
-            <img class="oe_picture oe_screenshot" src="map_view.png">
+            <img class="oe_picture oe_screenshot" src="maps.png">
             <div class="text-center">
-                <a href="https://youtu.be/YmM-8VCNRzE" class="btn btn-primary" target="_blank">Demo Video</a>
+                <a href="https://youtu.be/2UdG5ILDtiY" class="btn btn-primary" target="_blank">Demo Video</a>
             </div>
         </div>
         <div class="oe_span12">
-            <p>This module brings three features:</p>
+            <p>This module brings five new features:</p>
             <ul>
-                <li>Allows user to view all partners addresses on google maps.</li>
+                <li>New view
+                    <em>map</em> allows user to view all partners addresses on google maps.</li>
                 <li>
-                    Enabled <a target="_blank" href="https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete-addressform">Google places autocomplete address form</a> into partner form view,<br/>
-                    provide autocomplete feature when you typed an address of partner
+                    New widget
+                    <em>gplaces_address_form</em>, enabled
+                    <a target="_blank" href="https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete-addressform">Google places autocomplete address form</a> into partner form view,
+                    <br/> provide autocomplete feature when you typed an address of partner (or any field using this widget)
+                </li>
+                <li>
+                    New widget
+                    <em>gplaces_autocomplete</em>, enabled
+                    <a target="_blank" href="https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete">Google places autocomplete</a> into partner form view,
+                    <br/> provide autocomplete feature when you typed partner name (or any field using this widget)
                 </li>
                 <li>Routes information</li>
+                <li>Map Localization</li>
             </ul>
         </div>
     </div>
@@ -28,9 +34,9 @@
 <section class="oe_container oe_separator"></section>
 <section class="oe_container">
     <div class="oe_row oe_spaced oe_mb64">
-        <h4 class="oe_slogan">New Widget for Google Place Autocomplete Address Form</h4>
+        <h4 class="oe_slogan">New Widget Google Place Autocomplete Address Form</h4>
         <div class="oe_span12">
-            <img class="oe_picture oe_screenshot" src="widget_google_places.png">
+            <img class="oe_picture oe_screenshot" src="widget_gplaces_address_form.gif">
         </div>
         <div class="oe_span12 oe_mb32">
             <p>Provide autocomplete feature when typing an address</p>
@@ -40,9 +46,21 @@
 <section class="oe_container oe_separator"></section>
 <section class="oe_container">
     <div class="oe_row oe_spaced oe_mb64">
+        <h4 class="oe_slogan">New Widget Google Place Autocomplete</h4>
+        <div class="oe_span12">
+            <img class="oe_picture oe_screenshot" src="widget_gplaces_autocomplete.gif">
+        </div>
+        <div class="oe_span12 oe_mb32">
+            <p>Provide autocomplete feature when typing partner's name</p>
+        </div>
+    </div>
+</section>
+<section class="oe_container oe_separator"></section>
+<section class="oe_container">
+    <div class="oe_row oe_spaced oe_mb64">
         <h4 class="oe_slogan">Routes</h4>
         <div class="oe_span12">
-            <img class="oe_picture oe_screenshot" src="map_view_routes.png">
+            <img class="oe_picture oe_screenshot" src="route_info.png">
         </div>
         <div class="oe_span12 oe_mb32">
             <p>Distance information between two partners locations</p>
@@ -52,6 +70,42 @@
                 <li>Travel mode (driving, walking, bicycling, transit)</li>
                 <li>Redirection to google maps website to see the full features</li>
             </ul>
+        </div>
+    </div>
+</section>
+<section class="oe_container oe_separator"></section>
+<section class="oe_container">
+    <div class="oe_row oe_spaced oe_mb64">
+        <h4 class="oe_slogan">Create new partner within the map</h4>
+        <div class="oe_span12">
+            <img class="oe_picture oe_screenshot" src="create_new_partner_in_map.png">
+        </div>
+        <div class="oe_span12 oe_mb32">
+            <p>Using google places autocomplete, you can search any company, hotel, restaurant or any places recognized by Google</p>
+            <p>and then create it as your new partner</p>
+        </div>
+    </div>
+</section>
+<section class="oe_container oe_separator"></section>
+<section class="oe_container">
+    <div class="oe_row oe_spaced oe_mb64">
+        <div class="oe_span12">
+            <h2>Bug Tracker</h2>
+            <p>Bugs are tracked on
+                <a class="reference external" target="_blank" href="https://github.com/gityopie/odoo-addons/issues">GitHub Issues</a>. In case of trouble, please check there if your issue has already been reported. If you spotted
+                it first, help us smashing it by providing a detailed and welcomed feedback.</p>
+        </div>
+        <div class="oe_span12">
+            <h3>Contributors</h3>
+            <ul class="simple">
+                <li>Yopi Angi &lt;
+                    <a class="reference external" href="mailto:yopiangi@gmail.com">yopiangi@gmail.com</a>&gt;</li>
+            </ul>
+        </div>
+        <div class="oe_span12">
+            <h3>Maintainer</h3>
+            <p>This module is maintained by myself, if you are interested to contribute please let me know</p>
+            <p>Thank you</p>
         </div>
     </div>
 </section>

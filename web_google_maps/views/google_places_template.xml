@@ -1,23 +1,34 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <template id="layout" inherit_id="web.layout" name="web_google_maps layout">
-            <xpath expr="//script[1]" position="after">
-                <t t-set="google_maps_api_key" t-value="request.env['ir.config_parameter'].sudo().get_param('google_maps_api_key')"/>
-                <t t-if="google_maps_api_key">
-                    <script t-att-async="true" t-att-defer="true" type="text/javascript" t-attf-src="//maps.googleapis.com/maps/api/js?key=#{google_maps_api_key}&amp;libraries=geometry,places"/>
-                </t>
-                <t t-if="not google_maps_api_key">
-                    <script t-att-async="true" t-att-defer="true" type="text/javascript" t-attf-src="//maps.googleapis.com/maps/api/js?libraries=geometry,places"/>
-                </t>
-                <script type="text/javascript" src="/web_google_maps/static/lib/google/markerclusterer.js"/>
+        <template id="web_google_maps.assets_gmaps">
+            <t t-set="google_maps_api_key" t-value="request.env['ir.config_parameter'].sudo().get_param('google_maps_api_key')"/>
+            <t t-set="google_maps_lang_localization" t-value="request.env['ir.config_parameter'].sudo().get_param('google_maps_lang_localization')"/>
+            <t t-set="google_maps_region_localization" t-value="request.env['ir.config_parameter'].sudo().get_param('google_maps_region_localization')"/>
+            <t t-if="google_maps_api_key">
+                <script t-att-async="async" t-att-defer="defer" t-attf-src="https://maps.googleapis.com/maps/api/js?v=3.32&amp;key=#{google_maps_api_key}&amp;libraries=geometry,places#{google_maps_region_localization}#{google_maps_lang_localization}"></script>
+            </t>
+            <t t-if="not google_maps_api_key">
+                <script t-att-async="'async'" t-att-defer="'defer'" t-attf-src="https://maps.googleapis.com/maps/api/js?v=3.32&amp;libraries=geometry,places#{google_maps_region_localization}#{google_maps_lang_localization}"></script>
+            </t>
+            <script src="https://cdn.rawgit.com/gityopie/v3-utility-library/master.2018-02-25.6c72652/markerclusterer/src/markerclusterer.js"></script>
+        </template>
+        <!-- Load gmaps assets -->
+        <!-- Didn't load the assets like how Odoo call and manage the assets (t-call-assets) -->
+        <!-- the reason is we don't have the actual file and it will be downloaded when the page is loaded -->
+        <template id="webclient_bootstrap" name="webclient_bootstrap gmaps" inherit_id="web.webclient_bootstrap">
+            <xpath expr="//t[@t-call-assets='web.assets_common']" position="before">
+                <t t-call="web_google_maps.assets_gmaps"/>
             </xpath>
         </template>
         <template id="assets_backend" name="web_google_maps assets backend" inherit_id="web.assets_backend">
             <xpath expr="." position="inside">
                 <link rel="stylesheet" href="/web_google_maps/static/src/css/google_places_widget.css"/>
-                <script type="text/javascript" src="/web_google_maps/static/src/js/view/map_view.js"/>
-                <script type="text/javascript" src="/web_google_maps/static/src/js/google_places_widget.js"/>
+                <script type="text/javascript" src="/web_google_maps/static/src/js/view/map_view_places_autocomplete.js"></script>
+                <script type="text/javascript" src="/web_google_maps/static/src/js/view/map_controls.js"></script>
+                <script type="text/javascript" src="/web_google_maps/static/src/js/view/map_view.js"></script>
+                <script type="text/javascript" src="/web_google_maps/static/src/js/widget/google_places_widget.js"></script>
+                <script type="text/javascript" src="/web_google_maps/static/src/js/widget/google_places_autocomplete_widget.js"></script>
             </xpath>
         </template>
     </data>
