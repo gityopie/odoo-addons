@@ -6,6 +6,7 @@ odoo.define('web.MapView', function (require) {
     var data = require('web.data');
     var data_manager = require('web.data_manager');
     var View = require('web.View');
+    var Dialog = require('web.Dialog');
     var session = require('web.session');
     var QWeb = require('web.QWeb');
     var Pager = require('web.Pager');
@@ -1106,10 +1107,10 @@ odoo.define('web.MapView', function (require) {
             var self = this;
             var _content = '';
             var marker_records = [];
-            
+
             var div_content = document.createElement('div');
             div_content.className = 'o_kanban_view';
-            div_content.style.cssText = 'display:block;max-height:400px;overflow-y:auto;';
+            div_content.style.cssText = 'display:block;max-height:400px;overflow-y:auto;width:350px;';
 
             if (current_records.length > 0) {
                 current_records.forEach(function (_record) {
@@ -1551,6 +1552,7 @@ odoo.define('web.MapView', function (require) {
                     if (event.data.after) {
                         event.data.after();
                     }
+                    self.do_reload();
                 });
             }
             if (this.options.confirm_on_delete) {
