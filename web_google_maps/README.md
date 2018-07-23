@@ -1,7 +1,7 @@
 Web Google Maps
 ===============   
 
-[![Demo](https://i.ytimg.com/vi/2UdG5ILDtiY/3.jpg)](https://youtu.be/2UdG5ILDtiY "Demo")    
+[![Demo](https://i.ytimg.com/vi/2UdG5ILDtiY/3.jpg)](https://youtu.be/5hvAubXgUnc "Demo")    
 
 
 This module contains three new features:
@@ -279,7 +279,7 @@ The goal of this module is to bring the power of Google Maps into Odoo
 This module has tested on Odoo Version 10.0c    
 
 
-You can buy me a cup of [☕](http://ko-fi.com/yopiangi), if you want to support me to keep this project maintained. Thanks :)
+[![ko-fi](https://www.ko-fi.com/img/donate_sm.png)](https://ko-fi.com/P5P4FOM0), if you want to support me to keep this project maintained. Thanks :)
 
 Regards,  
 Yopi  
