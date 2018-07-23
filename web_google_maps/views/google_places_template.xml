@@ -20,7 +20,6 @@
     <template id="assets_backend" name="web_google_maps assets backend" inherit_id="web.assets_backend">
         <xpath expr="." position="inside">
             <link rel="stylesheet" type="text/less" href="/web_google_maps/static/src/less/web_maps.less"/>
-            <script type="text/javascript" src="/web_google_maps/static/src/js/view/map/map_record.js"></script>
             <script type="text/javascript" src="/web_google_maps/static/src/js/view/map/map_model.js"></script>
             <script type="text/javascript" src="/web_google_maps/static/src/js/view/map/map_renderer.js"></script>
             <script type="text/javascript" src="/web_google_maps/static/src/js/view/map/map_view.js"></script>

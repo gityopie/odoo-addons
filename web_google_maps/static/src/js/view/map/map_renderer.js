@@ -7,9 +7,16 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
     var session = require('web.session');
     var utils = require('web.utils');
     var Widget = require('web.Widget');
-    var MapRecord = require('web_google_maps.MapRecord');
+    var KanbanRecord = require('web.KanbanRecord');
 
     var qweb = core.qweb;
+
+    var MapRecord = KanbanRecord.extend({
+        init: function (parent, state, options) {
+            this._super.apply(this, arguments);
+            this.fieldsInfo = state.fieldsInfo.map;
+        }
+    });
 
     function findInNode(node, predicate) {
         if (predicate(node)) {
@@ -37,7 +44,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
         if (node.tag && node.attrs.modifiers) {
             var modifiers = node.attrs.modifiers || {};
             if (modifiers.invisible) {
-                qwebAddIf(node, _.str.sprintf("!map_compute_domain(%s)", JSON.stringify(modifiers.invisible)));
+                qwebAddIf(node, _.str.sprintf("!kanban_compute_domain(%s)", JSON.stringify(modifiers.invisible)));
             }
         }
         switch (node.tag) {
@@ -46,7 +53,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
                 var type = node.attrs.type || '';
                 if (_.indexOf('action,object,edit,open,delete,url,set_cover'.split(','), type) !== -1) {
                     _.each(node.attrs, function (v, k) {
-                        if (_.indexOf('icon,type,name,args,string,context,states,map_states'.split(','), k) !== -1) {
+                        if (_.indexOf('icon,type,name,args,string,context,states,kanban_states'.split(','), k) !== -1) {
                             node.attrs['data-' + k] = v;
                             delete(node.attrs[k]);
                         }
@@ -60,7 +67,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
                         node.attrs.type = 'button';
                     }
 
-                    var action_classes = " oe_map_action oe_map_action_" + node.tag;
+                    var action_classes = " oe_kanban_action oe_kanban_action_" + node.tag;
                     if (node.attrs['t-attf-class']) {
                         node.attrs['t-attf-class'] += action_classes;
                     } else if (node.attrs['t-att-class']) {
@@ -103,11 +110,12 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
             this.iconColors = params.iconColors;
             this.iconUrl = params.iconUrl;
             this.markers = [];
+            this.widgets = [];
             this.mapThemes = params.mapThemes;
 
             this.qweb = new QWeb(session.debug, {
                 _s: session.origin
-            });
+            }, false);
             var templates = findInNode(this.arch, function (n) {
                 return n.tag === 'templates';
             });
@@ -156,7 +164,9 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
                 self.gmap.setMapTypeId('styled_map');
             }
             if (!this.theme) {
-                this._rpc({route: '/web/map_theme'}).then(function (data) {
+                this._rpc({
+                    route: '/web/map_theme'
+                }).then(function (data) {
                     if (data.theme && self.mapThemes.hasOwnProperty(data.theme)) {
                         self.theme = data.theme;
                         update_map(data.theme);
@@ -181,7 +191,9 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
             });
             this._getMapTheme();
             this.markerCluster = new MarkerClusterer(this.gmap, [], {
-                imagePath: '/web_google_maps/static/src/img/m'
+                imagePath: '/web_google_maps/static/src/img/m',
+                gridSize: 20,
+                maxZoom: 17
             });
             this.$right_sidebar = this.$('.o_map_right_sidebar');
         },
@@ -226,14 +238,34 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
             var options = {
                 position: latLng,
                 map: this.gmap,
-                animation: google.maps.Animation.DROP
+                animation: google.maps.Animation.DROP,
+                _odooRecord: record
             };
             if (color) {
                 options.icon = this.iconUrl + color.trim() + '.png';
             }
             var marker = new google.maps.Marker(options);
             this.markers.push(marker);
-            google.maps.event.addListener(marker, 'click', this._markerInfoWindow(marker, record));
+            this._clusterAddMarker(marker);
+            // google.maps.event.addListener(marker, 'click', this._markerInfoWindow(marker, record));
+        },
+        /**
+         * Handle Multiple Markers present at the same coordinates
+         */
+        _clusterAddMarker: function (marker) {
+            var _position;
+            var markerInClusters = this.markerCluster.getMarkers();
+            var existing_records = [];
+            if (markerInClusters.length > 0) {
+                markerInClusters.forEach(function (_cMarker) {
+                    _position = _cMarker.getPosition();
+                    if (marker.getPosition().equals(_position)) {
+                        existing_records.push(_cMarker._odooRecord);
+                    }
+                });
+            }
+            this.markerCluster.addMarker(marker);
+            google.maps.event.addListener(marker, 'click', this._markerInfoWindow(marker, existing_records));
         },
         /**
          * Marker info window
@@ -241,62 +273,79 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
          * @param {any} record
          * @return function
          */
-        _markerInfoWindow: function (marker, record) {
-            var self = this,
-                content = self._setMarkerInfoWindow(record);
+        _markerInfoWindow: function (marker, current_records) {
+            var self = this;
+            var _content = '';
+            var marker_records = [];
+            var div_content = document.createElement('div');
+
+            div_content.className = 'o_kanban_view';
+            div_content.style.cssText = 'display:block;overflow-y:auto;min-height:85px;max-height:400px;';
+
+            if (current_records.length > 0) {
+                current_records.forEach(function (_record) {
+                    _content = self._generateMarkerInfoWindow(_record);
+                    marker_records.push(_content);
+                    _content.appendTo(div_content);
+                });
+            }
+
+            var markerIwContent = this._generateMarkerInfoWindow(marker._odooRecord);
+            markerIwContent.appendTo(div_content);
             return function () {
-                self.infoWindow.setContent(content);
+                self.infoWindow.setContent(div_content);
                 self.infoWindow.open(self.gmap, marker);
             };
         },
         /**
          * @private
          */
-        _setMarkerInfoWindow: function (record) {
-            var el_div = document.createElement('div');
+        _generateMarkerInfoWindow: function (record) {
             var markerIw = new MapRecord(this, record, this.recordOptions);
-            markerIw.appendTo(el_div);
-            return el_div;
+            return markerIw;
         },
         /**
-         * Render a marker, corresponding to a record
+         * Render markers
          * @private
          * @param {Object} record
          */
-        _renderMarker: function (record) {
+        _renderMarkers: function () {
             var is_grouped = !!this.state.groupedBy.length;
             if (is_grouped) {
-                this._renderGrouped(record);
+                this._renderGrouped();
             } else {
-                this._renderUngrouped(record);
+                this._renderUngrouped();
             }
         },
-        _renderGrouped: function (record) {
+        _renderGrouped: function () {
             var self = this;
-            var color = this._getGroupedMarkerColor();
+            var color;
             var latLng;
 
-            record.markerColor = color;
-            _.each(record.data, function(rec) {
-                if (rec.data && (rec.data[self.fieldLat] && rec.data[self.fieldLng])) {
+            _.each(this.state.data, function (record) {
+                record.markerColor = self._getGroupedMarkerColor();
+                _.each(record.data, function (rec) {
                     latLng = new google.maps.LatLng(rec.data[self.fieldLat], rec.data[self.fieldLng]);
                     self._createMarker(latLng, rec, color);
-                }
-            });
-            this.markerGroupedInfo.push({
-                'title': record.value || 'Undefined',
-                'count': record.count,
-                'marker': this.iconUrl + color.trim() + '.png'
+                });
+                self.markerGroupedInfo.push({
+                    'title': record.value || 'Undefined',
+                    'count': record.count,
+                    'marker': self.iconUrl + record.markerColor.trim() + '.png'
+                });
             });
         },
-        _renderUngrouped: function (record) {
-            var color, latLng;
-            if (record.data && (record.data[this.fieldLat] && record.data[this.fieldLng])) {
-                color = this._getIconColor(record);
-                latLng = new google.maps.LatLng(record.data[this.fieldLat], record.data[this.fieldLng]);
+        _renderUngrouped: function () {
+            var self = this;
+            var color;
+            var latLng;
+
+            _.each(this.state.data, function (record) {
+                color = self._getIconColor(record);
+                latLng = new google.maps.LatLng(record.data[self.fieldLat], record.data[self.fieldLng]);
                 record.markerColor = color;
-                this._createMarker(latLng, record, color);
-            }
+                self._createMarker(latLng, record, color);
+            });
         },
         /**
          * Get color
@@ -311,9 +360,6 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
                 color = this.groupedMarkerColors.splice(0, 1)[0];
             }
             return color;
-        },
-        _renderMarkers: function () {
-            return _.map(this.state.data, this._renderMarker.bind(this));
         },
         /**
          * @override
@@ -379,7 +425,36 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
                     this.$right_sidebar.removeClass('open').addClass('closed');
                 }
             }
-        }
+        },
+        /**
+         * Sets the current state and updates some internal attributes accordingly.
+         *
+         * @private
+         * @param {Object} state
+         */
+        _setState: function (state) {
+            this.state = state;
+
+            var groupByFieldAttrs = state.fields[state.groupedBy[0]];
+            var groupByFieldInfo = state.fieldsInfo.map[state.groupedBy[0]];
+            // Deactivate the drag'n'drop if the groupedBy field:
+            // - is a date or datetime since we group by month or
+            // - is readonly (on the field attrs or in the view)
+            var draggable = false;
+            if (groupByFieldAttrs) {
+                if (groupByFieldAttrs.type === "date" || groupByFieldAttrs.type === "datetime") {
+                    draggable = false;
+                } else if (groupByFieldAttrs.readonly !== undefined) {
+                    draggable = !(groupByFieldAttrs.readonly);
+                }
+            }
+            if (groupByFieldInfo) {
+                if (draggable && groupByFieldInfo.readonly !== undefined) {
+                    draggable = !(groupByFieldInfo.readonly);
+                }
+            }
+            this.groupedByM2O = groupByFieldAttrs && (groupByFieldAttrs.type === 'many2one');
+        },
     });
 
     return MapRenderer;
