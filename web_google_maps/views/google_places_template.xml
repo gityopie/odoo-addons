@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="web_google_maps.assets_gmaps">
         <t t-set="google_maps_api_key" t-value="request.env['ir.config_parameter'].sudo().get_param('google_maps_view_api_key')"/>

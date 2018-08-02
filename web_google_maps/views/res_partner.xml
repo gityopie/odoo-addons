@@ -1,20 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="view_partner_form_gplaces_autocomplete" model="ir.ui.view">
-        <field name="name">Google Places Partner Form</field>
-        <field name="model">res.partner</field>
-        <field name="inherit_id" ref="base.view_partner_form"/>
-        <field name="arch" type="xml">
-            <field name="name" position="attributes">
-                <attribute name="widget">gplaces_autocomplete</attribute>
-                <attribute name="options">{'lat': 'partner_latitude', 'lng': 'partner_longitude'}</attribute>
-            </field>
-            <field name="street" position="attributes">
-                <attribute name="widget">gplaces_address_autocomplete</attribute>
-                <attribute name="options">{'lat': 'partner_latitude', 'lng': 'partner_longitude'}</attribute>
-            </field>
-        </field>
-    </record>
     <record id="view_res_partner_map" model="ir.ui.view">
         <field name="name">view.res.partner.map</field>
         <field name="model">res.partner</field>
@@ -70,7 +55,11 @@
                                 <strong class="o_kanban_record_title oe_partner_heading">
                                     <field name="display_name"/>
                                 </strong>
-                                <div class="o_kanban_tags_section oe_kanban_partner_categories"/>
+                                <div class="o_kanban_tags_section oe_kanban_partner_categories">
+                                    <span class="oe_kanban_list_many2many">
+                                        <field name="category_id" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                                    </span>
+                                </div>
                                 <ul>
                                     <li t-if="record.parent_id.raw_value and !record.function.raw_value">
                                         <field name="parent_id"/>
@@ -98,7 +87,6 @@
                                 <div class="oe_kanban_partner_links"/>
                             </div>
                         </div>
-
                     </t>
                 </templates>
             </map>
@@ -112,25 +100,5 @@
         <field name="view_mode">map</field>
         <field name="view_id" ref="view_res_partner_map"/>
         <field name="act_window_id" ref="base.action_partner_form"/>
-    </record>
-    <record id="action_res_partner_map" model="ir.actions.act_window">
-        <field name="name">Map</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">res.partner</field>
-        <field name="view_type">form</field>
-        <field name="domain">[('id', '=', active_id)]</field>
-        <field name="view_mode">map,tree,form</field>
-    </record>
-    <record id="view_partner_form" model="ir.ui.view">
-        <field name="name">Google Places Partner Form</field>
-        <field name="model">res.partner</field>
-        <field name="inherit_id" ref="base.view_partner_form"/>
-        <field name="arch" type="xml">
-            <div name="button_box" position="inside">
-                <button name="%(web_google_maps.action_res_partner_map)d" type="action"
-                    class="oe_stat_button" icon="fa-map-marker" string="Map" 
-                    attrs="{'invisible': ['|',('partner_latitude', '=', 0.0), ('partner_longitude', '=', 0.0)]}"/>
-            </div>
-        </field>
     </record>
 </odoo>

@@ -102,11 +102,12 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
         init: function (parent, state, params) {
             this._super.apply(this, arguments);
 
+            this.defaultMarkerColor = 'red';
             this.markerGroupedInfo = [];
             this.fieldLat = params.fieldLat;
             this.fieldLng = params.fieldLng;
-            this.color = params.markerColor;
-            this.colors = params.markerColors;
+            this.markerColor = params.markerColor;
+            this.markerColors = params.markerColors;
             this.iconColors = params.iconColors;
             this.iconUrl = params.iconUrl;
             this.markers = [];
@@ -203,12 +204,12 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
          * @return string
          */
         _getIconColor: function (record) {
-            if (this.color) {
-                return this.color;
+            if (this.markerColor) {
+                return this.markerColor;
             }
 
-            if (!this.colors) {
-                return '';
+            if (!this.markerColors) {
+                return this.defaultMarkerColor;
             }
 
             var context = _.mapObject(_.extend({}, record.data, {
@@ -217,8 +218,8 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
             }), function (val, key) {
                 return (val instanceof Array) ? (_.last(val) || '') : val;
             });
-            for (var i = 0; i < this.colors.length; i++) {
-                var pair = this.colors[i];
+            for (var i = 0; i < this.markerColors.length; i++) {
+                var pair = this.markerColors[i];
                 var color = pair[0];
                 var expression = pair[1];
                 if (py.PY_isTrue(py.evaluate(expression, context))) {
@@ -247,7 +248,6 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
             var marker = new google.maps.Marker(options);
             this.markers.push(marker);
             this._clusterAddMarker(marker);
-            // google.maps.event.addListener(marker, 'click', this._markerInfoWindow(marker, record));
         },
         /**
          * Handle Multiple Markers present at the same coordinates
@@ -255,17 +255,17 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
         _clusterAddMarker: function (marker) {
             var _position;
             var markerInClusters = this.markerCluster.getMarkers();
-            var existing_records = [];
+            var existingRecords = [];
             if (markerInClusters.length > 0) {
                 markerInClusters.forEach(function (_cMarker) {
                     _position = _cMarker.getPosition();
                     if (marker.getPosition().equals(_position)) {
-                        existing_records.push(_cMarker._odooRecord);
+                        existingRecords.push(_cMarker._odooRecord);
                     }
                 });
             }
             this.markerCluster.addMarker(marker);
-            google.maps.event.addListener(marker, 'click', this._markerInfoWindow(marker, existing_records));
+            google.maps.event.addListener(marker, 'click', this._markerInfoWindow.bind(this, marker, existingRecords));
         },
         /**
          * Marker info window
@@ -273,29 +273,31 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
          * @param {any} record
          * @return function
          */
-        _markerInfoWindow: function (marker, current_records) {
+        _markerInfoWindow: function (marker, currentRecords) {
             var self = this;
             var _content = '';
-            var marker_records = [];
-            var div_content = document.createElement('div');
+            var markerRecords = [];
 
-            div_content.className = 'o_kanban_view';
-            div_content.style.cssText = 'display:block;overflow-y:auto;min-height:85px;max-height:400px;';
+            var markerDiv = document.createElement('div');
+            markerDiv.className = 'o_kanban_view o_kanban_grouped';
 
-            if (current_records.length > 0) {
-                current_records.forEach(function (_record) {
+            var markerContent = document.createElement('div');
+            markerContent.className = 'o_kanban_group';
+
+            if (currentRecords.length > 0) {
+                currentRecords.forEach(function (_record) {
                     _content = self._generateMarkerInfoWindow(_record);
-                    marker_records.push(_content);
-                    _content.appendTo(div_content);
+                    markerRecords.push(_content);
+                    _content.appendTo(markerContent);
                 });
             }
 
             var markerIwContent = this._generateMarkerInfoWindow(marker._odooRecord);
-            markerIwContent.appendTo(div_content);
-            return function () {
-                self.infoWindow.setContent(div_content);
-                self.infoWindow.open(self.gmap, marker);
-            };
+            markerIwContent.appendTo(markerContent);
+
+            markerDiv.appendChild(markerContent);
+            this.infoWindow.setContent(markerDiv);
+            this.infoWindow.open(this.gmap, marker);
         },
         /**
          * @private
@@ -310,8 +312,8 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
          * @param {Object} record
          */
         _renderMarkers: function () {
-            var is_grouped = !!this.state.groupedBy.length;
-            if (is_grouped) {
+            var isGrouped = !!this.state.groupedBy.length;
+            if (isGrouped) {
                 this._renderGrouped();
             } else {
                 this._renderUngrouped();
@@ -323,7 +325,8 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
             var latLng;
 
             _.each(this.state.data, function (record) {
-                record.markerColor = self._getGroupedMarkerColor();
+                color = self._getGroupedMarkerColor();
+                record.markerColor = color;
                 _.each(record.data, function (rec) {
                     latLng = new google.maps.LatLng(rec.data[self.fieldLat], rec.data[self.fieldLng]);
                     self._createMarker(latLng, rec, color);

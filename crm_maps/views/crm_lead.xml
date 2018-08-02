@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="action_crm_lead_map" model="ir.actions.act_window">
+        <field name="name">Map</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">map,tree,form</field>
+        <field name="domain">[('id', '=', active_id)]</field>
+    </record>
+    <record id="view_crm_leads_form" model="ir.ui.view">
+        <field name="name">view.crm.leads.form</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_form_view_leads"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page name="geolocalize" string="Geolocalize">
+                    <group colspan="2" col="2">
+                        <separator string="Geolocation" colspan="2"/>
+                        <button string="Geolocalize" name="geo_localize" type="object" icon="fa-check" colspan="2"/>
+                        <div>
+                            <span class="oe_inline"> ( </span>
+                            <span> Lat : </span>
+                            <field name="customer_latitude" class="oe_inline" no_label="1"/>
+                            <span> : Long : </span>
+                            <field name="customer_longitude" class="oe_inline" nolabel="1"/>
+                            <span>) </span>
+                        </div>
+                    </group>
+                </page>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="%(crm_maps.action_crm_lead_map)d" type="action" class="oe_stat_button"
+                context="{'search_default_name': name}" icon="fa-map-marker"
+                string="Map"
+                attrs="{'invisible': ['|',('customer_latitude', '=', 0.0), ('customer_longitude', '=', 0.0)]}"/>
+            </xpath>
+            <field name="street" position="attributes">
+                <attribute name="widget">gplaces_address_autocomplete</attribute>
+                <attribute name="options">{'lat': 'customer_latitude', 'lng': 'customer_longitude'}</attribute>
+            </field>
+            <field name="partner_name" position="attributes">
+                <attribute name="widget">gplaces_autocomplete</attribute>
+                <attribute name="options">{
+                'fillfields': {
+                    'general': {
+                        'phone': ['international_phone_number', 'formatted_phone_number']
+                    },
+                    'geolocation': {
+                        'customer_latitude': 'latitude',
+                        'customer_longitude': 'longitude'
+                    },
+                    'address': {
+                        'street': ['street_number', 'route'],
+                        'street2': ['administrative_area_level_3', 'administrative_area_level_4', 'administrative_area_level_5'],
+                        'city': ['locality', 'administrative_area_level_2'],
+                        'zip': 'postal_code',
+                        'state_id': 'administrative_area_level_1',
+                        'country_id': 'country'
+                    }
+                }}</attribute>
+            </field>
+        </field>
+    </record>
+    <record id="view_crm_opportunity_form" model="ir.ui.view">
+        <field name="name">view.crm.opportunity.form</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_form_view_oppor"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page name="geolocalize" string="Geolocalize">
+                    <group colspan="2" col="2">
+                        <separator string="Geolocation" colspan="2"/>
+                        <button string="Geolocalize" name="geo_localize" type="object" icon="fa-check" colspan="2"/>
+                        <div>
+                            <span class="oe_inline"> ( </span>
+                            <span> Lat : </span>
+                            <field name="customer_latitude" class="oe_inline" no_label="1"/>
+                            <span> : Long : </span>
+                            <field name="customer_longitude" class="oe_inline" nolabel="1"/>
+                            <span>) </span>
+                        </div>
+                    </group>
+                </page>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="%(crm_maps.action_crm_lead_map)d" type="action" class="oe_stat_button"
+                context="{'search_default_name': name}" icon="fa-map-marker"
+                string="Map"
+                attrs="{'invisible': ['|',('customer_latitude', '=', 0.0), ('customer_longitude', '=', 0.0)]}"/>
+            </xpath>
+            <field name="street" position="attributes">
+                <attribute name="widget">gplaces_address_autocomplete</attribute>
+                <attribute name="options">{'lat': 'customer_latitude', 'lng': 'customer_longitude'}</attribute>
+            </field>
+            <field name="partner_name" position="attributes">
+                <attribute name="widget">gplaces_autocomplete</attribute>
+                <attribute name="options">{
+                'fillfields': {
+                    'general': {
+                        'phone': ['international_phone_number', 'formatted_phone_number']
+                    },
+                    'geolocation': {
+                        'customer_latitude': 'latitude',
+                        'customer_longitude': 'longitude'
+                    },
+                    'address': {
+                        'street': ['street_number', 'route'],
+                        'street2': ['administrative_area_level_3', 'administrative_area_level_4', 'administrative_area_level_5'],
+                        'city': ['locality', 'administrative_area_level_2'],
+                        'zip': 'postal_code',
+                        'state_id': 'administrative_area_level_1',
+                        'country_id': 'country'
+                    }
+                }}</attribute>
+            </field>
+        </field>
+    </record>
+    <record id="view_crm_leads_map" model="ir.ui.view">
+        <field name="name">view.crm.leads.map</field>
+        <field name="model">crm.lead</field>
+        <field name="arch" type="xml">
+            <map string="Maps" lat="customer_latitude" lng="customer_longitude">
+                <field name="customer_latitude"/>
+                <field name="customer_longitude"/>
+                <field name="color"/>
+                <field name="name"/>
+                <field name="contact_name"/>
+                <field name="priority"/>
+                <field name="tag_ids"/>
+                <field name="user_id"/>
+                <field name="message_needaction_counter"/>
+                <field name="activity_ids"/>
+                <field name="activity_state"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_content oe_kanban_global_click">
+                            <div>
+                                <strong class="o_kanban_record_title">
+                                    <span>
+                                        <field name="name"/>
+                                    </span>
+                                </strong>
+                            </div>
+                            <div>
+                                <span class="o_kanban_record_subtitle">
+                                    <field name="contact_name"/>
+                                </span>
+                            </div>
+                            <div>
+                                <field name="tag_ids"/>
+                            </div>
+                            <div class="o_kanban_record_bottom">
+                                <div class="oe_kanban_bottom_left">
+                                    <field name="priority" widget="priority"/>
+                                    <t t-if="record.message_needaction_counter.raw_value">
+                                        <span class="oe_kanban_mail_new" title="Unread Messages">
+                                            <i class="fa fa-comments"/>
+                                            <t t-raw="record.message_needaction_counter.raw_value"/>
+                                        </span>
+                                    </t>
+                                    <div class="o_kanban_inline_block">
+                                        <field name="activity_ids" widget="kanban_activity"/>
+                                    </div>
+                                </div>
+                                <div class="oe_kanban_bottom_right">
+                                    <img t-att-src="kanban_image('res.users', 'image_small', record.user_id.raw_value)" t-att-title="record.user_id.value" width="24" height="24" class="oe_kanban_avatar pull-right"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </map>
+        </field>
+    </record>
+    <record id="crm.crm_lead_action_activities" model="ir.actions.act_window">
+        <field name="view_mode">tree,form,kanban,calendar,pivot,graph,map</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('crm.crm_lead_view_tree_activity')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('crm.crm_case_form_view_oppor')}),
+            (0, 0, {'view_mode': 'kanban'}),
+            (0, 0, {'view_mode': 'calendar'}),
+            (0, 0, {'view_mode': 'pivot'}),
+            (0, 0, {'view_mode': 'graph'}),
+            (0, 0, {'view_mode': 'map'})]"/>
+    </record>
+    <record id="crm.crm_lead_all_leads" model="ir.actions.act_window">
+        <field name="view_mode">tree,graph,pivot,calendar,form,map</field>
+    </record>
+    <record id="action_your_maps" model="ir.actions.act_window">
+        <field name="name">My Maps</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">map,tree,form</field>
+        <field name="view_type">form</field>
+        <field name="context">{'default_user_id': uid}</field>
+    </record>
+</odoo>
