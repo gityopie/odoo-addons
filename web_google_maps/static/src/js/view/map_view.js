@@ -1101,33 +1101,36 @@ odoo.define('web.MapView', function (require) {
                 });
             }
             this.marker_cluster.addMarker(marker);
-            google.maps.event.addListener(marker, 'click', this.marker_infowindow(marker, existing_records));
+            google.maps.event.addListener(marker, 'click', this.marker_infowindow.bind(this, marker, existing_records));
         },
         marker_infowindow: function (marker, current_records) {
             var self = this;
             var _content = '';
             var marker_records = [];
 
-            var div_content = document.createElement('div');
-            div_content.className = 'o_kanban_view';
-            div_content.style.cssText = 'display:block;max-height:400px;overflow-y:auto;width:350px;';
+            var marker_content = document.createElement('div');
+            marker_content.className = 'o_kanban_view o_kanban_grouped';
+
+            var content_body = document.createElement('div');
+            content_body.className = 'o_kanban_group';
 
             if (current_records.length > 0) {
                 current_records.forEach(function (_record) {
                     _content = self.marker_infowindow_content(_record);
                     marker_records.push(_content);
-                    _content.appendTo(div_content);
+                    _content.appendTo(content_body);
                 });
             }
 
             var marker_record = self.marker_infowindow_content(marker._odoo_record);
-            marker_record.appendTo(div_content);
+            marker_record.appendTo(content_body);
             marker_records.push(marker_record);
-            return function () {
-                self.infowindow.setContent(div_content);
-                self.infowindow.open(self.map, marker);
-                self.postprocess_m2m_tags(marker_records);
-            }
+
+            marker_content.appendChild(content_body);
+
+            this.infowindow.setContent(marker_content);
+            this.infowindow.open(this.map, marker);
+            this.postprocess_m2m_tags(marker_records);
         },
         marker_infowindow_content: function (record) {
             var options = _.clone(this.record_options);
