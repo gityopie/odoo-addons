@@ -119,53 +119,92 @@
         <field name="name">view.crm.leads.map</field>
         <field name="model">crm.lead</field>
         <field name="arch" type="xml">
-            <map string="Maps" lat="customer_latitude" lng="customer_longitude">
+            <map string="Maps" lat="customer_latitude" lng="customer_longitude" color="orange">
                 <field name="customer_latitude"/>
                 <field name="customer_longitude"/>
                 <field name="color"/>
-                <field name="name"/>
-                <field name="contact_name"/>
                 <field name="priority"/>
-                <field name="tag_ids"/>
+                <field name="planned_revenue"/>
+                <field name="kanban_state"/>
+                <field name="activity_date_deadline"/>
+                <field name="user_email"/>
                 <field name="user_id"/>
+                <field name="partner_address_email"/>
                 <field name="message_needaction_counter"/>
-                <field name="activity_ids"/>
-                <field name="activity_state"/>
+                <field name="partner_id"/>
+                <field name="activity_summary"/>
+                <field name="active"/>
+                <field name="company_currency"/>
+                <field name="activity_state" />
+                <field name="activity_ids" />
+                <progressbar field="activity_state" colors='{"planned": "success", "today": "warning", "overdue": "danger"}' sum_field="planned_revenue"/>
                 <templates>
+                    <field name="date_deadline"/>
                     <t t-name="kanban-box">
-                        <div t-attf-class="oe_kanban_content oe_kanban_global_click">
-                            <div>
-                                <strong class="o_kanban_record_title">
-                                    <span>
-                                        <field name="name"/>
-                                    </span>
-                                </strong>
-                            </div>
-                            <div>
-                                <span class="o_kanban_record_subtitle">
-                                    <field name="contact_name"/>
-                                </span>
-                            </div>
-                            <div>
-                                <field name="tag_ids"/>
-                            </div>
-                            <div class="o_kanban_record_bottom">
-                                <div class="oe_kanban_bottom_left">
-                                    <field name="priority" widget="priority"/>
-                                    <t t-if="record.message_needaction_counter.raw_value">
-                                        <span class="oe_kanban_mail_new" title="Unread Messages">
-                                            <i class="fa fa-comments"/>
-                                            <t t-raw="record.message_needaction_counter.raw_value"/>
-                                        </span>
+                        <div t-attf-class="#{kanban_color(record.color.raw_value)} oe_kanban_global_click">
+                            <div class="o_dropdown_kanban dropdown">
+
+                                <a class="dropdown-toggle btn" data-toggle="dropdown" href="#">
+                                    <span class="fa fa-ellipsis-v"/>
+                                </a>
+                                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                    <t t-if="widget.editable">
+                                        <li>
+                                            <a type="edit">Edit</a>
+                                        </li>
                                     </t>
-                                    <div class="o_kanban_inline_block">
+                                    <t t-if="widget.deletable">
+                                        <li>
+                                            <a type="delete">Delete</a>
+                                        </li>
+                                    </t>
+                                    <li t-if="! record.active.value">
+                                        <a name="action_set_active" type="object">Restore</a>
+                                    </li>
+                                    <li t-if="record.active.value">
+                                        <a name="action_set_unactive" type="object">Archive</a>
+                                    </li>
+                                    <li>
+                                        <ul class="oe_kanban_colorpicker" data-field="color"/>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="oe_kanban_content">
+                                <div>
+                                    <strong class="o_kanban_record_title">
+                                        <field name="name"/>
+                                    </strong>
+                                </div>
+                                <div>
+                                    <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                                </div>
+                                <div class="text-muted o_kanban_record_subtitle">
+                                    <t t-if="record.planned_revenue.raw_value">
+                                        <field name="planned_revenue" widget="monetary" options="{'currency_field': 'company_currency'}"/>
+                                        <span t-if="record.partner_id.value">,</span>
+                                    </t>
+                                    <span t-if="record.partner_id.value">
+                                        <t t-esc="record.partner_id.value"/>
+                                    </span>
+                                </div>
+
+                                <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_left">
+                                        <field name="priority" widget="priority" groups="base.group_user"/>
+                                        <t t-if="record.message_needaction_counter.raw_value">
+                                            <span class='oe_kanban_mail_new' title='Unread Messages'>
+                                                <i class='fa fa-comments'/>
+                                                <t t-raw="record.message_needaction_counter.raw_value"/>
+                                            </span>
+                                        </t>
                                         <field name="activity_ids" widget="kanban_activity"/>
                                     </div>
-                                </div>
-                                <div class="oe_kanban_bottom_right">
-                                    <img t-att-src="kanban_image('res.users', 'image_small', record.user_id.raw_value)" t-att-title="record.user_id.value" width="24" height="24" class="oe_kanban_avatar pull-right"/>
+                                    <div class="oe_kanban_bottom_right">
+                                        <img t-att-src="kanban_image('res.users', 'image_small', record.user_id.raw_value)" t-att-title="record.user_id.value" width="24" height="24" class="oe_kanban_avatar"/>
+                                    </div>
                                 </div>
                             </div>
+                            <div class="oe_clear"></div>
                         </div>
                     </t>
                 </templates>

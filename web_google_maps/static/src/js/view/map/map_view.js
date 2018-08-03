@@ -8,6 +8,7 @@ odoo.define('web_google_maps.MapView', function (require) {
 
     var MapModel = require('web_google_maps.MapModel');
     var MapRenderer = require('web_google_maps.MapRenderer');
+    var MapController = require('web_google_maps.MapController');
 
     var _lt = core._lt;
     var MAP_THEMES = {
@@ -796,7 +797,8 @@ odoo.define('web_google_maps.MapView', function (require) {
         jsLibs: [],
         config: _.extend({}, BasicView.prototype.config, {
             Model: MapModel,
-            Renderer: MapRenderer,
+            Controller: MapController,
+            Renderer: MapRenderer
         }),
         viewType: 'map',
         init: function (viewInfo, params) {
@@ -813,6 +815,7 @@ odoo.define('web_google_maps.MapView', function (require) {
             ];
             var iconUrl = '/web_google_maps/static/src/img/markers/';
             var colors = this._setMarkersColor(attrs.colors);
+            var activeActions = this.controllerParams.activeActions;
 
             this.loadParams.openGroupByDefault = true;
             this.loadParams.type = 'list';
@@ -832,8 +835,8 @@ odoo.define('web_google_maps.MapView', function (require) {
             this.rendererParams.iconColors = markerColors;
             this.rendererParams.iconUrl = iconUrl;
             this.rendererParams.record_options = {
-                editable: false,
-                deletable: false,
+                editable: activeActions.edit,
+                deletable: activeActions.delete,
                 read_only_mode: params.readOnlyMode,
             };
             this.rendererParams.mapThemes = MAP_THEMES;
