@@ -86,7 +86,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
     }
 
     var SidebarGroup = Widget.extend({
-        template: 'MapViewGroupInfo',
+        template: 'MapView.MapViewGroupInfo',
         init: function (parent, options) {
             this._super.apply(this, arguments);
             this.groups = options.groups;
@@ -95,7 +95,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
 
     var MapRenderer = BasicRenderer.extend({
         className: 'o_map_view',
-        template: 'MapView',
+        template: 'MapView.MapView',
         /**
          * @override
          */
