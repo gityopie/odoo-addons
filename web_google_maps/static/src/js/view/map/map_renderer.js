@@ -18,6 +18,792 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
         }
     });
 
+    var MAP_THEMES = {
+        'default': [],
+        'aubergine': [{
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#1d2c4d"
+                }]
+            },
+            {
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#8ec3b9"
+                }]
+            },
+            {
+                "elementType": "labels.text.stroke",
+                "stylers": [{
+                    "color": "#1a3646"
+                }]
+            },
+            {
+                "featureType": "administrative.country",
+                "elementType": "geometry.stroke",
+                "stylers": [{
+                    "color": "#4b6878"
+                }]
+            },
+            {
+                "featureType": "administrative.land_parcel",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#64779e"
+                }]
+            },
+            {
+                "featureType": "administrative.province",
+                "elementType": "geometry.stroke",
+                "stylers": [{
+                    "color": "#4b6878"
+                }]
+            },
+            {
+                "featureType": "landscape.man_made",
+                "elementType": "geometry.stroke",
+                "stylers": [{
+                    "color": "#334e87"
+                }]
+            },
+            {
+                "featureType": "landscape.natural",
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#023e58"
+                }]
+            },
+            {
+                "featureType": "poi",
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#283d6a"
+                }]
+            },
+            {
+                "featureType": "poi",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#6f9ba5"
+                }]
+            },
+            {
+                "featureType": "poi",
+                "elementType": "labels.text.stroke",
+                "stylers": [{
+                    "color": "#1d2c4d"
+                }]
+            },
+            {
+                "featureType": "poi.business",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            },
+            {
+                "featureType": "poi.park",
+                "elementType": "geometry.fill",
+                "stylers": [{
+                    "color": "#023e58"
+                }]
+            },
+            {
+                "featureType": "poi.park",
+                "elementType": "labels.text",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            },
+            {
+                "featureType": "poi.park",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#3C7680"
+                }]
+            },
+            {
+                "featureType": "road",
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#304a7d"
+                }]
+            },
+            {
+                "featureType": "road",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#98a5be"
+                }]
+            },
+            {
+                "featureType": "road",
+                "elementType": "labels.text.stroke",
+                "stylers": [{
+                    "color": "#1d2c4d"
+                }]
+            },
+            {
+                "featureType": "road.highway",
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#2c6675"
+                }]
+            },
+            {
+                "featureType": "road.highway",
+                "elementType": "geometry.stroke",
+                "stylers": [{
+                    "color": "#255763"
+                }]
+            },
+            {
+                "featureType": "road.highway",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#b0d5ce"
+                }]
+            },
+            {
+                "featureType": "road.highway",
+                "elementType": "labels.text.stroke",
+                "stylers": [{
+                    "color": "#023e58"
+                }]
+            },
+            {
+                "featureType": "transit",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#98a5be"
+                }]
+            },
+            {
+                "featureType": "transit",
+                "elementType": "labels.text.stroke",
+                "stylers": [{
+                    "color": "#1d2c4d"
+                }]
+            },
+            {
+                "featureType": "transit.line",
+                "elementType": "geometry.fill",
+                "stylers": [{
+                    "color": "#283d6a"
+                }]
+            },
+            {
+                "featureType": "transit.station",
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#3a4762"
+                }]
+            },
+            {
+                "featureType": "water",
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#0e1626"
+                }]
+            },
+            {
+                "featureType": "water",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#4e6d70"
+                }]
+            }
+        ],
+        'night': [{
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#242f3e"
+                }]
+            },
+            {
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#746855"
+                }]
+            },
+            {
+                "elementType": "labels.text.stroke",
+                "stylers": [{
+                    "color": "#242f3e"
+                }]
+            },
+            {
+                "featureType": "administrative.locality",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#d59563"
+                }]
+            },
+            {
+                "featureType": "poi",
+                "elementType": "labels.text",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            },
+            {
+                "featureType": "poi",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#d59563"
+                }]
+            },
+            {
+                "featureType": "poi.business",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            },
+            {
+                "featureType": "poi.park",
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#263c3f"
+                }]
+            },
+            {
+                "featureType": "poi.park",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#6b9a76"
+                }]
+            },
+            {
+                "featureType": "road",
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#38414e"
+                }]
+            },
+            {
+                "featureType": "road",
+                "elementType": "geometry.stroke",
+                "stylers": [{
+                    "color": "#212a37"
+                }]
+            },
+            {
+                "featureType": "road",
+                "elementType": "labels.icon",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            },
+            {
+                "featureType": "road",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#9ca5b3"
+                }]
+            },
+            {
+                "featureType": "road.highway",
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#746855"
+                }]
+            },
+            {
+                "featureType": "road.highway",
+                "elementType": "geometry.stroke",
+                "stylers": [{
+                    "color": "#1f2835"
+                }]
+            },
+            {
+                "featureType": "road.highway",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#f3d19c"
+                }]
+            },
+            {
+                "featureType": "transit",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            },
+            {
+                "featureType": "transit",
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#2f3948"
+                }]
+            },
+            {
+                "featureType": "transit.station",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#d59563"
+                }]
+            },
+            {
+                "featureType": "water",
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#17263c"
+                }]
+            },
+            {
+                "featureType": "water",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#515c6d"
+                }]
+            },
+            {
+                "featureType": "water",
+                "elementType": "labels.text.stroke",
+                "stylers": [{
+                    "color": "#17263c"
+                }]
+            }
+        ],
+        'dark': [{
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#212121"
+                }]
+            },
+            {
+                "elementType": "labels.icon",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            },
+            {
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#757575"
+                }]
+            },
+            {
+                "elementType": "labels.text.stroke",
+                "stylers": [{
+                    "color": "#212121"
+                }]
+            },
+            {
+                "featureType": "administrative",
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#757575"
+                }]
+            },
+            {
+                "featureType": "administrative.country",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#9e9e9e"
+                }]
+            },
+            {
+                "featureType": "administrative.land_parcel",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            },
+            {
+                "featureType": "administrative.locality",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#bdbdbd"
+                }]
+            },
+            {
+                "featureType": "poi",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#757575"
+                }]
+            },
+            {
+                "featureType": "poi.park",
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#181818"
+                }]
+            },
+            {
+                "featureType": "poi.park",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#616161"
+                }]
+            },
+            {
+                "featureType": "poi.park",
+                "elementType": "labels.text.stroke",
+                "stylers": [{
+                    "color": "#1b1b1b"
+                }]
+            },
+            {
+                "featureType": "road",
+                "elementType": "geometry.fill",
+                "stylers": [{
+                    "color": "#2c2c2c"
+                }]
+            },
+            {
+                "featureType": "road",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#8a8a8a"
+                }]
+            },
+            {
+                "featureType": "road.arterial",
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#373737"
+                }]
+            },
+            {
+                "featureType": "road.highway",
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#3c3c3c"
+                }]
+            },
+            {
+                "featureType": "road.highway.controlled_access",
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#4e4e4e"
+                }]
+            },
+            {
+                "featureType": "road.local",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#616161"
+                }]
+            },
+            {
+                "featureType": "transit",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#757575"
+                }]
+            },
+            {
+                "featureType": "water",
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#000000"
+                }]
+            },
+            {
+                "featureType": "water",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#3d3d3d"
+                }]
+            }
+        ],
+        'retro': [{
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#ebe3cd"
+                }]
+            },
+            {
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#523735"
+                }]
+            },
+            {
+                "elementType": "labels.text.stroke",
+                "stylers": [{
+                    "color": "#f5f1e6"
+                }]
+            },
+            {
+                "featureType": "administrative",
+                "elementType": "geometry.stroke",
+                "stylers": [{
+                    "color": "#c9b2a6"
+                }]
+            },
+            {
+                "featureType": "administrative.land_parcel",
+                "elementType": "geometry.stroke",
+                "stylers": [{
+                    "color": "#dcd2be"
+                }]
+            },
+            {
+                "featureType": "administrative.land_parcel",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#ae9e90"
+                }]
+            },
+            {
+                "featureType": "landscape.natural",
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#dfd2ae"
+                }]
+            },
+            {
+                "featureType": "poi",
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#dfd2ae"
+                }]
+            },
+            {
+                "featureType": "poi",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#93817c"
+                }]
+            },
+            {
+                "featureType": "poi.park",
+                "elementType": "geometry.fill",
+                "stylers": [{
+                    "color": "#a5b076"
+                }]
+            },
+            {
+                "featureType": "poi.park",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#447530"
+                }]
+            },
+            {
+                "featureType": "road",
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#f5f1e6"
+                }]
+            },
+            {
+                "featureType": "road.arterial",
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#fdfcf8"
+                }]
+            },
+            {
+                "featureType": "road.highway",
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#f8c967"
+                }]
+            },
+            {
+                "featureType": "road.highway",
+                "elementType": "geometry.stroke",
+                "stylers": [{
+                    "color": "#e9bc62"
+                }]
+            },
+            {
+                "featureType": "road.highway.controlled_access",
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#e98d58"
+                }]
+            },
+            {
+                "featureType": "road.highway.controlled_access",
+                "elementType": "geometry.stroke",
+                "stylers": [{
+                    "color": "#db8555"
+                }]
+            },
+            {
+                "featureType": "road.local",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#806b63"
+                }]
+            },
+            {
+                "featureType": "transit.line",
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#dfd2ae"
+                }]
+            },
+            {
+                "featureType": "transit.line",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#8f7d77"
+                }]
+            },
+            {
+                "featureType": "transit.line",
+                "elementType": "labels.text.stroke",
+                "stylers": [{
+                    "color": "#ebe3cd"
+                }]
+            },
+            {
+                "featureType": "transit.station",
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#dfd2ae"
+                }]
+            },
+            {
+                "featureType": "water",
+                "elementType": "geometry.fill",
+                "stylers": [{
+                    "color": "#b9d3c2"
+                }]
+            },
+            {
+                "featureType": "water",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#92998d"
+                }]
+            }
+        ],
+        'silver': [{
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#f5f5f5"
+                }]
+            },
+            {
+                "elementType": "labels.icon",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            },
+            {
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#616161"
+                }]
+            },
+            {
+                "elementType": "labels.text.stroke",
+                "stylers": [{
+                    "color": "#f5f5f5"
+                }]
+            },
+            {
+                "featureType": "administrative.land_parcel",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#bdbdbd"
+                }]
+            },
+            {
+                "featureType": "poi",
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#eeeeee"
+                }]
+            },
+            {
+                "featureType": "poi",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#757575"
+                }]
+            },
+            {
+                "featureType": "poi.park",
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#e5e5e5"
+                }]
+            },
+            {
+                "featureType": "poi.park",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#9e9e9e"
+                }]
+            },
+            {
+                "featureType": "road",
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#ffffff"
+                }]
+            },
+            {
+                "featureType": "road.arterial",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#757575"
+                }]
+            },
+            {
+                "featureType": "road.highway",
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#dadada"
+                }]
+            },
+            {
+                "featureType": "road.highway",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#616161"
+                }]
+            },
+            {
+                "featureType": "road.local",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#9e9e9e"
+                }]
+            },
+            {
+                "featureType": "transit.line",
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#e5e5e5"
+                }]
+            },
+            {
+                "featureType": "transit.station",
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#eeeeee"
+                }]
+            },
+            {
+                "featureType": "water",
+                "elementType": "geometry",
+                "stylers": [{
+                    "color": "#c9c9c9"
+                }]
+            },
+            {
+                "featureType": "water",
+                "elementType": "labels.text.fill",
+                "stylers": [{
+                    "color": "#9e9e9e"
+                }]
+            }
+        ]
+    }
+
+    var markerColors = [
+        'green', 'yellow', 'blue', 'light-green',
+        'red', 'magenta', 'black', 'purple', 'orange',
+        'pink', 'grey', 'brown', 'cyan', 'white'
+    ];
+    var mapViewLibrary = ['geometry', 'drawing'];
+
     function findInNode(node, predicate) {
         if (predicate(node)) {
             return node;
@@ -101,18 +887,9 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
          */
         init: function (parent, state, params) {
             this._super.apply(this, arguments);
-
-            this.defaultMarkerColor = 'red';
-            this.markerGroupedInfo = [];
-            this.fieldLat = params.fieldLat;
-            this.fieldLng = params.fieldLng;
-            this.markerColor = params.markerColor;
-            this.markerColors = params.markerColors;
-            this.iconColors = params.iconColors;
-            this.iconUrl = params.iconUrl;
-            this.markers = [];
+            this.mapLibrary = params.mapLibrary;
             this.widgets = [];
-            this.mapThemes = params.mapThemes;
+            this.mapThemes = MAP_THEMES;
 
             this.qweb = new QWeb(session.debug, {
                 _s: session.origin
@@ -126,8 +903,27 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
                 qweb: this.qweb,
                 viewType: 'map',
             });
-            this.groupedMarkerColors = _.extend([], params.iconColors);
             this.state = state;
+            this.shapesCache = {};
+            this._initLibraryProperties(params);
+        },
+        _initLibraryProperties: function (params) {
+            if (this.mapLibrary === 'drawing') {
+                this.drawingMode = params.drawingMode || 'shape_type';
+                this.drawingPath = params.drawingPath || 'shape_paths';
+                this.shapesLatLng = [];
+            } else if (this.mapLibrary === 'geometry') {
+                this.defaultMarkerColor = 'red';
+                this.markerGroupedInfo = [];
+                this.iconColors = markerColors;
+                this.markers = [];
+                this.iconUrl = '/web_google_maps/static/src/img/markers/';
+                this.fieldLat = params.fieldLat;
+                this.fieldLng = params.fieldLng;
+                this.markerColor = params.markerColor;
+                this.markerColors = params.markerColors;
+                this.groupedMarkerColors = _.extend([], params.iconColors);
+            }
         },
         /**
          * @override
@@ -141,7 +937,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
          */
         start: function () {
             this._initMap();
-            return this._super.apply(this, arguments);
+            return this._super();
         },
         /**
          * Style the map
@@ -151,7 +947,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
             var self = this;
             var update_map = function (style) {
                 var styledMapType = new google.maps.StyledMapType(self.mapThemes[style], {
-                    name: 'Styled map'
+                    name: style,
                 });
                 self.gmap.setOptions({
                     mapTypeControlOptions: {
@@ -184,19 +980,23 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
             this.$('.o_map_view').empty();
             this.gmap = new google.maps.Map(this.$('.o_map_view').get(0), {
                 mapTypeId: google.maps.MapTypeId.ROADMAP,
-                zoom: 3,
                 minZoom: 3,
                 maxZoom: 20,
                 fullscreenControl: true,
                 mapTypeControl: true
             });
             this._getMapTheme();
+            if (this.mapLibrary === 'geometry') {
+                this._initMarkerCluster();
+            }
+            this.$right_sidebar = this.$('.o_map_right_sidebar');
+        },
+        _initMarkerCluster: function () {
             this.markerCluster = new MarkerClusterer(this.gmap, [], {
                 imagePath: '/web_google_maps/static/src/img/m',
                 gridSize: 20,
                 maxZoom: 17
             });
-            this.$right_sidebar = this.$('.o_map_right_sidebar');
         },
         /**
          * Compute marker color
@@ -299,6 +1099,21 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
             this.infoWindow.setContent(markerDiv);
             this.infoWindow.open(this.gmap, marker);
         },
+        _shapeInfoWindow: function (record, event) {
+            var markerDiv = document.createElement('div');
+            markerDiv.className = 'o_kanban_view o_kanban_grouped';
+
+            var markerContent = document.createElement('div');
+            markerContent.className = 'o_kanban_group';
+
+            var markerIwContent = this._generateMarkerInfoWindow(record);
+            markerIwContent.appendTo(markerContent);
+
+            markerDiv.appendChild(markerContent);
+            this.infoWindow.setContent(markerDiv);
+            this.infoWindow.setPosition(event.latLng);
+            this.infoWindow.open(this.gmap);
+        },
         /**
          * @private
          */
@@ -364,18 +1179,130 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
             }
             return color;
         },
+        _drawPolygon: function (record) {
+            var polygon;
+            var path = record.data[this.drawingPath];
+            var value = JSON.parse(path);
+            if (this.shapesCache[record.data.id] === undefined) {
+                polygon = new google.maps.Polygon({
+                    strokeColor: '#FF0000',
+                    strokeOpacity: 0.85,
+                    strokeWeight: 0.5,
+                    fillColor: '#FF0000',
+                    fillOpacity: 0.35,
+                    map: this.gmap
+                });
+                polygon.setOptions(value.options);
+                this.shapesCache[record.data.id] = polygon;
+            } else {
+                polygon = this.shapesCache[record.data.id];
+                polygon.setMap(this.gmap);
+            }
+            this.shapesLatLng = this.shapesLatLng.concat(value.options.paths);
+            polygon.addListener('click', this._shapeInfoWindow.bind(this, record));
+        },
+        _drawCircle: function (record) {
+            var circle;
+            var value = record.data[this.drawingPath];
+            var value = JSON.parse(value);
+            if (this.shapesCache[record.data.id] === undefined) {
+                circle = new google.maps.Circle({
+                    strokeColor: '#FF0000',
+                    strokeOpacity: 0.85,
+                    strokeWeight: 0.5,
+                    fillColor: '#FF0000',
+                    fillOpacity: 0.35,
+                    map: this.gmap
+                });
+                circle.setOptions(value.options);
+                this.shapesCache[record.data.id] = circle;
+            } else {
+                circle = this.shapesCache[record.data.id];
+                circle.setMap(this.gmap);
+            }
+            this.shapesBounds.union(circle.getBounds());
+            circle.addListener('click', this._shapeInfoWindow.bind(this, record));
+        },
+        /**
+         * Draw rectangle
+         * @param {Object} record
+         */
+        _drawRectangle: function (record) {
+            var rectangle;
+            var value = record.data[this.drawingPath];
+            var shapeOptions = JSON.parse(value).options;
+            if (this.shapesCache[record.data.id] === undefined) {
+                rectangle = new google.maps.Rectangle({
+                    strokeColor: '#FF0000',
+                    strokeOpacity: 0.85,
+                    strokeWeight: 0.5,
+                    fillColor: '#FF0000',
+                    fillOpacity: 0.35,
+                    map: this.gmap
+                });
+                rectangle.setOptions(shapeOptions);
+                this.shapesCache[record.data.id] = rectangle;
+            } else {
+                rectangle = this.shapesCache[record.data.id];
+                rectangle.setMap(this.gmap);
+            }
+
+            this.shapesBounds.union(rectangle.getBounds());
+            rectangle.addListener('click', this._shapeInfoWindow.bind(this, record));
+        },
+        /**
+         * Draw shape into the map
+         */
+        _renderShapes: function () {
+            var self = this;
+            var shapesToKeep = [];
+            this.shapesBounds = new google.maps.LatLngBounds();
+            _.each(this.state.data, function (record) {
+                if (record.data.hasOwnProperty('id')) {
+                    shapesToKeep.push((record.data.id).toString());
+                }
+                if (record.data[self.drawingMode] === 'polygon') {
+                    self._drawPolygon(record);
+                } else if (record.data[self.drawingMode] === 'rectangle') {
+                    self._drawRectangle(record);
+                } else if (record.data[self.drawingMode] === 'circle') {
+                    self._drawCircle(record);
+                }
+            });
+            this._cleanShapesInCache(shapesToKeep);
+        },
+        /**
+         * @private
+         * @param {Array} ShapesToKeep contains list of id
+         * Remove shapes from the maps without deleting the shape
+         * will keep those shapes in cache
+         */
+        _cleanShapesInCache: function (shapesToKeep) {
+            _.each(this.shapesCache, function(shape, id) {
+                if (shapesToKeep.indexOf(id) === -1) {
+                    shape.setMap(null);
+                }
+            });
+        },
         /**
          * @override
          */
         _renderView: function () {
             var self = this;
-            this.markerGroupedInfo.length = 0;
-            this._clearMarkerClusters();
-            this._renderMarkers();
-            return this._super.apply(this, arguments)
-                .then(self._renderSidebarGroup.bind(self))
-                .then(self._clusterMarkers.bind(self))
-                .then(self._mapCentered.bind(self));
+            if (this.mapLibrary === 'geometry') {
+                this.markerGroupedInfo.length = 0;
+                this._clearMarkerClusters();
+                this._renderMarkers();
+                return this._super.apply(this, arguments)
+                    .then(self._renderSidebarGroup.bind(self))
+                    .then(self._clusterMarkers.bind(self))
+                    .then(self.mapGeometryCentered.bind(self));
+            } else if (this.mapLibrary === 'drawing') {
+                this.shapesLatLng.length = 0;
+                this._renderShapes();
+                return this._super.apply(this, arguments).then(this.mapShapesCentered.bind(this));
+            }
+            return this._super.apply(this, arguments);
         },
         /**
          * Cluster markers
@@ -385,10 +1312,22 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
             this.markerCluster.addMarkers(this.markers);
         },
         /**
-         * Center map
-         * @private
+         * Centering map
          */
-        _mapCentered: function () {
+        mapShapesCentered: function () {
+            var mapBounds = new google.maps.LatLngBounds();
+            if (!this.shapesBounds.isEmpty()) {
+                mapBounds.union(this.shapesBounds);
+            }
+            _.each(this.shapesLatLng, function (latLng) {
+                mapBounds.extend(latLng);
+            });
+            this.gmap.fitBounds(mapBounds);
+        },
+        /**
+         * Centering map
+         */
+        mapGeometryCentered: function () {
             var self = this;
             var mapBounds = new google.maps.LatLngBounds();
 

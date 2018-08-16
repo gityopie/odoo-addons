@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 {
-    'name': 'Web Google Maps',
-    'version': '11.0.1.0.1',
+    'name': 'Web Google Maps Drawing',
+    'version': '11.0.1.0.0',
     'author': "Yopi Angi",
     'maintainer': 'Yopi Angi<yopiangi@gmail.com>',
     'category': 'Web',
@@ -16,18 +16,16 @@ This module brings three features:
 form view, it provide autocomplete feature when typing address of partner
 """,
     'depends': [
-        'base_setup',
-        'base_geolocalize',
+        'web_google_maps',
+        'sale'
     ],
     'website': '',
     'data': [
-        'data/google_maps_libraries.xml',
-        'views/google_places_template.xml',
+        'views/template.xml',
+        'views/res_config.xml',
         'views/res_partner.xml',
-        'views/res_config.xml'
+        'views/res_partner_area.xml'
     ],
-    'images': ['static/description/thumbnails.png'],
-    'qweb': ['static/src/xml/widget_places.xml'],
-    'installable': True,
-    'uninstall_hook': 'uninstall_hook',
+    'qweb': ['static/src/xml/drawing.xml'],
+    'installable': True
 }
