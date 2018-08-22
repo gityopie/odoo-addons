@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
-# License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 {
     'name': 'Sale Maps',
-    'version': '10.0.1.0.0',
-    'author': "Yopi Angi",
-    'maintainer': 'Yopi Angi<yopiangi@gmail.com>',
+    'version': '10.0.1.0.1',
+    'author': 'Yopi Angi',
+    'license': 'LGPL-3.0',
+    'maintainer': 'yopiangi@gmail.com',
     'category': 'Sale',
     'description': """
 Sale Maps
 =========
 
+- Added map view on Customers    
+- Added smart button 'Map' on Customer form view
 """,
     'depends': ['sale', 'web_google_maps'],
     'website': '',
