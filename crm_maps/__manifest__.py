@@ -13,7 +13,6 @@ CRM Maps
 
 Show your leads and pipelines on map
 """,
-    'license': 'LGPL-3.0',
     'depends': [
         'crm',
         'web_google_maps'

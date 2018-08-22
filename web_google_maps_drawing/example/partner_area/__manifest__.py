@@ -11,7 +11,6 @@
 Partner Area
 ============
 """,
-    'license': 'LGPL-3.0',
     'depends': [
         'web_google_maps_drawing',
         'sale'

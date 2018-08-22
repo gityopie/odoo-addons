@@ -20,7 +20,6 @@ form view, it provide autocomplete feature when typing address of partner
         'base_setup',
         'base_geolocalize',
     ],
-    'license': 'LGPL-3.0',
     'website': '',
     'data': [
         'data/google_maps_libraries.xml',
