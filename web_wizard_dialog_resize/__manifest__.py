@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Wizard Window Options',
-    'version': '10.0.1.0.0',
+    'version': '10.0.1.0.1',
     'author': 'Yopi Angi',
-    'maintainer': 'Yopi Angi<yopiangi@gmail.com>',
+    'license': 'LGPL-3.0',
+    'maintainer': 'yopiangi@gmail.com',
     'category': 'web',
     'summary': "Wizard window options",
     'description': "Enable to maximize and minimize wizard window",
