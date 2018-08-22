@@ -2,7 +2,7 @@
 # License LGPL-3.0
 {
     'name': 'Web Google Maps Drawing',
-    'version': '11.0.1.0.0',
+    'version': '11.0.1.0.1',
     'author': "Yopi Angi",
     'maintainer': 'Yopi Angi<yopiangi@gmail.com>',
     'support': 'yopiangi@gmail.com',

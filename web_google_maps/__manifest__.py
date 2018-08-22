@@ -2,7 +2,7 @@
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 {
     'name': 'Web Google Maps',
-    'version': '11.0.1.0.2',
+    'version': '11.0.1.0.3',
     'author': "Yopi Angi",
     'maintainer': 'Yopi Angi<yopiangi@gmail.com>',
     'support': 'yopiangi@gmail.com',
