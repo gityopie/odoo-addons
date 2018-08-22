@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-# License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 {
     'name': 'Website Google Address Form',
-    'version': '11.0.1.0.1',
+    'version': '11.0.1.0.2',
     'author': 'Yopi Angi',
     'maintainer': 'Yopi Angi<yopiangi@gmail.com>',
     'category': 'Website',
