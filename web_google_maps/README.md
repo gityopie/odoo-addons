@@ -19,7 +19,8 @@ There are four available attributes that you can customize:
  - `lat` : an attritube to tell the map the latitude field on the object (mandatory)
  - `lng` : an attritute to tell the map the longitude field on the object (mandatory)
  - `color` : an attribute to modify marker color (optional) any given color will set all markers color.
- - `colors` : work like attribute `color` but more configurable (you can set marker color depends on it's value) this attribute works similar to `colors` of tree view on Odoo 9.0
+ - `colors` : work like attribute `color` but more configurable (you can set marker color depends on it's value) this attribute works   - `library` : an attribute to tell map which map that will be loaded (there are two library `geometry` and `drawing`) 
+  similar to `colors` of tree view on Odoo 9.0
  
 How to create the view?    
 Example
@@ -29,7 +30,7 @@ Example
         <field name="name">view.res.partner.map</field>
         <field name="model">res.partner</field>
         <field name="arch" type="xml">
-            <map class="o_res_partner_map" string="Map" lat="partner_latitude" lng="partner_longitude" colors="blue:company_type=='person';green:company_type=='company';">
+            <map class="o_res_partner_map" library='geometry' string="Map" lat="partner_latitude" lng="partner_longitude" colors="blue:company_type=='person';green:company_type=='company';">
                 <field name="id"/>
                 <field name="partner_latitude"/>
                 <field name="partner_longitude"/>

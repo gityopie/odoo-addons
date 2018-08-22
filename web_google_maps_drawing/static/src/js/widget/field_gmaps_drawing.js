@@ -7,10 +7,10 @@ odoo.define('widget_google_maps_drawing.FieldMapDrawingShape', function (require
     var qweb = core.qweb;
 
     var FieldMapDrawingShape = BasicFields.InputField.extend({
-        class: 'o_field_char o_field_map_drawing',
+        class: 'o_field_text o_field_map_drawing',
         tagName: 'div',
         template: 'WidgetDrawing.Map',
-        supportedFieldTypes: ['char'],
+        supportedFieldTypes: ['text'],
         init: function () {
             this._super.apply(this, arguments);
             this.selectedShapes = {};
@@ -69,7 +69,6 @@ odoo.define('widget_google_maps_drawing.FieldMapDrawingShape', function (require
                 zIndex: 1
             };
             this.gmapDrawingManager = new google.maps.drawing.DrawingManager({
-                drawingMode: google.maps.drawing.OverlayType.POLYGON,
                 drawingControl: true,
                 drawingControlOptions: {
                     position: google.maps.ControlPosition.BOTTOM_CENTER,
@@ -105,6 +104,10 @@ odoo.define('widget_google_maps_drawing.FieldMapDrawingShape', function (require
                         strokeColor: this.editModeColor,
                         fillColor: this.editModeColor,
                     });
+                    var selectedShape = polygon;
+                    selectedShape.type = 'polygon';
+                    this._setSelectedShape(selectedShape);
+                    google.maps.event.addListener(selectedShape, 'click', this._setSelectedShape.bind(this, selectedShape));
                 } else if (value.type === 'rectangle') {
                     var rectangle = this._drawRectangle(value.options);
                     rectangle.setOptions({
@@ -113,6 +116,10 @@ odoo.define('widget_google_maps_drawing.FieldMapDrawingShape', function (require
                         strokeColor: this.editModeColor,
                         fillColor: this.editModeColor,
                     });
+                    var selectedShape = rectangle;
+                    selectedShape.type = 'rectangle';
+                    this._setSelectedShape(selectedShape);
+                    google.maps.event.addListener(selectedShape, 'click', this._setSelectedShape.bind(this, selectedShape));
                 } else if (value.type === 'circle') {
                     var circle = this._drawCircle(value.options);
                     circle.setOptions({
@@ -121,6 +128,10 @@ odoo.define('widget_google_maps_drawing.FieldMapDrawingShape', function (require
                         strokeColor: this.editModeColor,
                         fillColor: this.editModeColor,
                     });
+                    var selectedShape = circle;
+                    selectedShape.type = 'circle';
+                    this._setSelectedShape(selectedShape);
+                    google.maps.event.addListener(selectedShape, 'click', this._setSelectedShape.bind(this, selectedShape));
                 }
             }
         },
@@ -184,11 +195,6 @@ odoo.define('widget_google_maps_drawing.FieldMapDrawingShape', function (require
                 draggable: false
             });
             circle.setOptions(options);
-            google.maps.event.addListener(circle, 'center_changed', function (event) {
-                console.log(event);
-                console.log(circle.getRadius());
-                console.log(circle.getCenter());
-            });
             window.setTimeout(function () {
                 self._mapCenterMap(false, circle.getBounds());
             }, 1000);
@@ -198,14 +204,17 @@ odoo.define('widget_google_maps_drawing.FieldMapDrawingShape', function (require
          * @override
          */
         _renderReadonly: function () {
-            var value = JSON.parse(this._formatValue(this.value));
-            var shapeOptions = value.options;
-            if (value.type === 'polygon') {
-                this._drawPolygon(shapeOptions);
-            } else if (value.type === 'rectangle') {
-                this._drawRectangle(shapeOptions);
-            } else if (value.type === 'circle') {
-                this._drawCircle(shapeOptions);
+            var value = this._formatValue(this.value);
+            if (value) {
+                var shapePath = JSON.parse(value);
+                var shapeOptions = shapePath.options;
+                if (shapePath.type === 'polygon') {
+                    this._drawPolygon(shapeOptions);
+                } else if (shapePath.type === 'rectangle') {
+                    this._drawRectangle(shapeOptions);
+                } else if (shapePath.type === 'circle') {
+                    this._drawCircle(shapeOptions);
+                }
             }
         },
         /**
@@ -227,7 +236,7 @@ odoo.define('widget_google_maps_drawing.FieldMapDrawingShape', function (require
             var uniqueId = new Date().getTime();
 
             newShape.type = event.type;
-            newShape._drawId = uniqueId
+            newShape._drawId = uniqueId;
 
             this.selectedShapes[uniqueId] = newShape;
             google.maps.event.addListener(newShape, 'click', this._setSelectedShape.bind(this, newShape));
@@ -283,9 +292,10 @@ odoo.define('widget_google_maps_drawing.FieldMapDrawingShape', function (require
             var shape_paths = {};
             if (this.selectedShape.type === 'rectangle') {
                 var bounds = this.selectedShape.getBounds();
+                var directions = bounds.toJSON();
                 shape_paths['type'] = this.selectedShape.type;
                 shape_paths['options'] = {
-                    bounds: bounds.toJSON()
+                    bounds: directions
                 };
             } else if (this.selectedShape.type == 'circle') {
                 var radius = this.selectedShape.getRadius();

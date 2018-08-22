@@ -39,6 +39,8 @@
                                 <group>
                                     <group>
                                         <field name="shape_name"/>
+                                        <!-- the widget needs this field to be loaded -->
+                                        <field name="shape_type" invisible="1"/> 
                                     </group>
                                     <group>
                                         <field name="shape_area"/>

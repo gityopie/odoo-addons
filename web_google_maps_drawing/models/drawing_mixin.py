@@ -19,6 +19,6 @@ class GoogleMapsDrawingShapeMixin(models.AbstractModel):
     shape_paths = fields.Text(string='Paths')
 
     @api.multi
-    def _convert_paths(self):
+    def decode_shape_paths(self):
         self.ensure_one()
         return safe_eval(self.shape_paths)

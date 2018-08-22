@@ -119,7 +119,7 @@
         <field name="name">view.crm.leads.map</field>
         <field name="model">crm.lead</field>
         <field name="arch" type="xml">
-            <map string="Maps" lat="customer_latitude" lng="customer_longitude" color="orange">
+            <map string="Maps" library="geometry" lat="customer_latitude" lng="customer_longitude" color="orange">
                 <field name="customer_latitude"/>
                 <field name="customer_longitude"/>
                 <field name="color"/>

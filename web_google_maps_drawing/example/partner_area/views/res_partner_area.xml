@@ -82,5 +82,4 @@
 
     <menuitem id="menu_partner_area" string="Partner Area" action="action_res_partner_area" parent="sale.sale_order_menu"/>
 
-        
 </odoo>

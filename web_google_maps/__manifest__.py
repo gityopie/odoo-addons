@@ -2,9 +2,10 @@
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 {
     'name': 'Web Google Maps',
-    'version': '11.0.1.0.1',
+    'version': '11.0.1.0.2',
     'author': "Yopi Angi",
     'maintainer': 'Yopi Angi<yopiangi@gmail.com>',
+    'support': 'yopiangi@gmail.com',
     'category': 'Web',
     'description': """
 Web Google Map and google places autocomplete address form
@@ -19,6 +20,7 @@ form view, it provide autocomplete feature when typing address of partner
         'base_setup',
         'base_geolocalize',
     ],
+    'license': 'LGPL-3.0',
     'website': '',
     'data': [
         'data/google_maps_libraries.xml',

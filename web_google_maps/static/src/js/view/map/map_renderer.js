@@ -802,7 +802,6 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
         'red', 'magenta', 'black', 'purple', 'orange',
         'pink', 'grey', 'brown', 'cyan', 'white'
     ];
-    var mapViewLibrary = ['geometry', 'drawing'];
 
     function findInNode(node, predicate) {
         if (predicate(node)) {
@@ -1183,45 +1182,49 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
             var polygon;
             var path = record.data[this.drawingPath];
             var value = JSON.parse(path);
-            if (this.shapesCache[record.data.id] === undefined) {
-                polygon = new google.maps.Polygon({
-                    strokeColor: '#FF0000',
-                    strokeOpacity: 0.85,
-                    strokeWeight: 0.5,
-                    fillColor: '#FF0000',
-                    fillOpacity: 0.35,
-                    map: this.gmap
-                });
-                polygon.setOptions(value.options);
-                this.shapesCache[record.data.id] = polygon;
-            } else {
-                polygon = this.shapesCache[record.data.id];
-                polygon.setMap(this.gmap);
+            if (Object.keys(value).length > 0) {
+                if (this.shapesCache[record.data.id] === undefined) {
+                    polygon = new google.maps.Polygon({
+                        strokeColor: '#FF0000',
+                        strokeOpacity: 0.85,
+                        strokeWeight: 0.5,
+                        fillColor: '#FF0000',
+                        fillOpacity: 0.35,
+                        map: this.gmap
+                    });
+                    polygon.setOptions(value.options);
+                    this.shapesCache[record.data.id] = polygon;
+                } else {
+                    polygon = this.shapesCache[record.data.id];
+                    polygon.setMap(this.gmap);
+                }
+                this.shapesLatLng = this.shapesLatLng.concat(value.options.paths);
+                polygon.addListener('click', this._shapeInfoWindow.bind(this, record));
             }
-            this.shapesLatLng = this.shapesLatLng.concat(value.options.paths);
-            polygon.addListener('click', this._shapeInfoWindow.bind(this, record));
         },
         _drawCircle: function (record) {
             var circle;
-            var value = record.data[this.drawingPath];
-            var value = JSON.parse(value);
-            if (this.shapesCache[record.data.id] === undefined) {
-                circle = new google.maps.Circle({
-                    strokeColor: '#FF0000',
-                    strokeOpacity: 0.85,
-                    strokeWeight: 0.5,
-                    fillColor: '#FF0000',
-                    fillOpacity: 0.35,
-                    map: this.gmap
-                });
-                circle.setOptions(value.options);
-                this.shapesCache[record.data.id] = circle;
-            } else {
-                circle = this.shapesCache[record.data.id];
-                circle.setMap(this.gmap);
+            var path = record.data[this.drawingPath];
+            var value = JSON.parse(path);
+            if (Object.keys(value).length > 0) {
+                if (this.shapesCache[record.data.id] === undefined) {
+                    circle = new google.maps.Circle({
+                        strokeColor: '#FF0000',
+                        strokeOpacity: 0.85,
+                        strokeWeight: 0.5,
+                        fillColor: '#FF0000',
+                        fillOpacity: 0.35,
+                        map: this.gmap
+                    });
+                    circle.setOptions(value.options);
+                    this.shapesCache[record.data.id] = circle;
+                } else {
+                    circle = this.shapesCache[record.data.id];
+                    circle.setMap(this.gmap);
+                }
+                this.shapesBounds.union(circle.getBounds());
+                circle.addListener('click', this._shapeInfoWindow.bind(this, record));
             }
-            this.shapesBounds.union(circle.getBounds());
-            circle.addListener('click', this._shapeInfoWindow.bind(this, record));
         },
         /**
          * Draw rectangle
@@ -1229,26 +1232,29 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
          */
         _drawRectangle: function (record) {
             var rectangle;
-            var value = record.data[this.drawingPath];
-            var shapeOptions = JSON.parse(value).options;
-            if (this.shapesCache[record.data.id] === undefined) {
-                rectangle = new google.maps.Rectangle({
-                    strokeColor: '#FF0000',
-                    strokeOpacity: 0.85,
-                    strokeWeight: 0.5,
-                    fillColor: '#FF0000',
-                    fillOpacity: 0.35,
-                    map: this.gmap
-                });
-                rectangle.setOptions(shapeOptions);
-                this.shapesCache[record.data.id] = rectangle;
-            } else {
-                rectangle = this.shapesCache[record.data.id];
-                rectangle.setMap(this.gmap);
-            }
+            var path = record.data[this.drawingPath];
+            var value = JSON.parse(path);
+            if (Object.keys(value).length > 0) {
+                var shapeOptions = value.options;
+                if (this.shapesCache[record.data.id] === undefined) {
+                    rectangle = new google.maps.Rectangle({
+                        strokeColor: '#FF0000',
+                        strokeOpacity: 0.85,
+                        strokeWeight: 0.5,
+                        fillColor: '#FF0000',
+                        fillOpacity: 0.35,
+                        map: this.gmap
+                    });
+                    rectangle.setOptions(shapeOptions);
+                    this.shapesCache[record.data.id] = rectangle;
+                } else {
+                    rectangle = this.shapesCache[record.data.id];
+                    rectangle.setMap(this.gmap);
+                }
 
-            this.shapesBounds.union(rectangle.getBounds());
-            rectangle.addListener('click', this._shapeInfoWindow.bind(this, record));
+                this.shapesBounds.union(rectangle.getBounds());
+                rectangle.addListener('click', this._shapeInfoWindow.bind(this, record));
+            }
         },
         /**
          * Draw shape into the map
@@ -1278,7 +1284,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
          * will keep those shapes in cache
          */
         _cleanShapesInCache: function (shapesToKeep) {
-            _.each(this.shapesCache, function(shape, id) {
+            _.each(this.shapesCache, function (shape, id) {
                 if (shapesToKeep.indexOf(id) === -1) {
                     shape.setMap(null);
                 }
