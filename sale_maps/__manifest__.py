@@ -12,7 +12,6 @@ Sale Maps
 =========
 
 """,
-    'license': 'LGPL-3.0',
     'depends': ['sale', 'web_google_maps'],
     'website': '',
     'data': [
