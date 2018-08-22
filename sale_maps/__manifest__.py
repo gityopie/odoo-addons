@@ -5,12 +5,14 @@
     'version': '11.0.1.0.0',
     'author': "Yopi Angi",
     'maintainer': 'Yopi Angi<yopiangi@gmail.com>',
+    'support': 'yopiangi@gmail.com',
     'category': 'Sale',
     'description': """
 Sale Maps
 =========
 
 """,
+    'license': 'LGPL-3.0',
     'depends': ['sale', 'web_google_maps'],
     'website': '',
     'data': [

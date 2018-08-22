@@ -5,6 +5,7 @@
     'version': '11.0.1.0.0',
     'author': "Yopi Angi",
     'maintainer': 'Yopi Angi<yopiangi@gmail.com>',
+    'support': 'yopiangi@gmail.com',
     'category': 'CRM',
     'description': """
 CRM Maps
@@ -12,6 +13,7 @@ CRM Maps
 
 Show your leads and pipelines on map
 """,
+    'license': 'LGPL-3.0',
     'depends': [
         'crm',
         'web_google_maps'
