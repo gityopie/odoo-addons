@@ -3,9 +3,9 @@
     'name': 'CRM Maps',
     'version': '11.0.1.0.2',
     'author': 'Yopi Angi',
-    'license': 'LGPL-3.0',
+    'license': 'AGPL-3',
     'support': 'yopiangi@gmail.com',
-    'category': 'CRM',
+    'category': 'Sales',
     'description': """
 CRM Maps
 ========

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-# License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
-
+# License AGPL-3
 
 def uninstall_hook(cr, registry):
     cr.execute("UPDATE ir_act_window "

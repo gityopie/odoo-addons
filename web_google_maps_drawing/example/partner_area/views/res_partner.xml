@@ -20,15 +20,17 @@
                             <field name="shape_paths"/>
                             <templates>
                                 <t t-name="kanban-box">
-                                    <div class="oe_kanban_details">
-                                        <strong class="o_kanban_record_title oe_partner_heading">
-                                            <field name="shape_name"/>
-                                        </strong>
-                                        <div>
-                                            <field name="shape_description"/>
-                                        </div>
-                                        <div>
-                                            Area: <field name="shape_area"/>
+                                    <div class="oe_kanban_global_click">
+                                        <div class="oe_kanban_details">
+                                            <strong class="o_kanban_record_title oe_partner_heading">
+                                                <field name="shape_name"/>
+                                            </strong>
+                                            <div>
+                                                <field name="shape_description"/>
+                                            </div>
+                                            <div>
+                                                Area: <field name="shape_area"/>
+                                            </div>
                                         </div>
                                     </div>
                                 </t>
