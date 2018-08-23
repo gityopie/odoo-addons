@@ -1,5 +1,4 @@
 # -*- encoding: utf-8 -*-
-import json
 from odoo import api, fields, models
 from odoo.tools import safe_eval
 

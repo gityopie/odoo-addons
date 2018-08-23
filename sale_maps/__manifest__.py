@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Sale Maps',
-    'version': '11.0.1.0.2',
+    'version': '11.0.1.0.3',
     'author': 'Yopi Angi',
-    'license': 'LGPL-3.0',
+    'license': 'AGPL-3',
     'support': 'yopiangi@gmail.com',
-    'category': 'Sale',
+    'category': 'Sales',
     'description': """
 Sale Maps
 =========

@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Website Google Address Form',
-    'version': '11.0.1.0.2',
+    'version': '11.0.1.0.3',
     'author': 'Yopi Angi',
     'maintainer': 'Yopi Angi<yopiangi@gmail.com>',
-    'category': 'Website',
+    'category': 'Extra Tools',
     'depends': [
         'website_sale',
         'web_google_maps'

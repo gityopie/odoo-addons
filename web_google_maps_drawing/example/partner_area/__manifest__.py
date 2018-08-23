@@ -5,7 +5,7 @@
     'author': 'Yopi Angi',
     'license': 'AGPL-3',
     'support': 'yopiangi@gmail.com',
-    'category': 'Web',
+    'category': 'Hidden',
     'description': """
 Partner Area
 ============
@@ -16,6 +16,7 @@ Partner Area
     ],
     'website': '',
     'data': [
+        'security/ir.model.access.csv',
         'views/res_partner.xml',
         'views/res_partner_area.xml'
     ],

@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Web Google Maps',
-    'version': '11.0.1.0.4',
+    'version': '11.0.1.0.5',
     'author': 'Yopi Angi',
-    'license': 'LGPL-3.0',
+    'license': 'AGPL-3',
     'maintainer': 'Yopi Angi<yopiangi@gmail.com>',
     'support': 'yopiangi@gmail.com',
-    'category': 'Web',
+    'category': 'Extra Tools',
     'description': """
 Web Google Map and google places autocomplete address form
 ==========================================================
