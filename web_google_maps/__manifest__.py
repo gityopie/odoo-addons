@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-# License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
+# License AGPL-3
 {
     'name': 'Web Google Maps',
     'version': '10.0.1.0.5',
     'author': 'Yopi Angi',
-    'license': 'LGPL-3.0',
+    'license': 'AGPL-3',
     'maintainer': 'yopiangi@gmail.com',
     'category': 'Web',
     'description': """
