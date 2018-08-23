@@ -3,7 +3,7 @@
     'name': 'Sale Maps',
     'version': '10.0.1.0.1',
     'author': 'Yopi Angi',
-    'license': 'LGPL-3.0',
+    'license': 'AGPL-3',
     'maintainer': 'yopiangi@gmail.com',
     'category': 'Sale',
     'description': """
