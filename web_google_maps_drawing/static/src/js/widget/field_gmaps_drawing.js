@@ -143,9 +143,9 @@ odoo.define('widget_google_maps_drawing.FieldMapDrawingShape', function (require
             var self = this;
             var polygon = new google.maps.Polygon({
                 strokeColor: '#FF0000',
-                strokeOpacity: 1,
-                strokeWeight: 0.5,
-                fillColor: '#FF0000',
+                strokeOpacity: 0.85,
+                strokeWeight: 1.0,
+                fillColor: '#FF9999',
                 fillOpacity: 0.35,
                 editable: false,
                 map: this.gmap,
@@ -165,8 +165,8 @@ odoo.define('widget_google_maps_drawing.FieldMapDrawingShape', function (require
             var rectangle = new google.maps.Rectangle({
                 strokeColor: '#FF0000',
                 strokeOpacity: 0.85,
-                strokeWeight: 0.5,
-                fillColor: '#FF0000',
+                strokeWeight: 1.0,
+                fillColor: '#FF9999',
                 fillOpacity: 0.35,
                 map: this.gmap,
                 editable: false,
@@ -187,8 +187,8 @@ odoo.define('widget_google_maps_drawing.FieldMapDrawingShape', function (require
             var circle = new google.maps.Circle({
                 strokeColor: '#FF0000',
                 strokeOpacity: 0.85,
-                strokeWeight: 0.5,
-                fillColor: '#FF0000',
+                strokeWeight: 1.0,
+                fillColor: '#FF9999',
                 fillOpacity: 0.35,
                 map: this.gmap,
                 editable: false,
