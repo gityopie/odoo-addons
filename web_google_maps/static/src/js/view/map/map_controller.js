@@ -150,11 +150,6 @@ odoo.define('web_google_maps.MapController', function (require) {
                     });
             }
         },
-        autofocus: function () {
-            this._super.apply(this, arguments);
-            console.log('MapRenderer:autofocus');
-            console.log(this);
-        },
         renderButtons: function ($node) {
             if (this.hasButtons) {
                 this.$buttons = $(qweb.render('MapView.buttons', {
