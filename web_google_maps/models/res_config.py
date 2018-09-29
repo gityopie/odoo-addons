@@ -61,14 +61,15 @@ GMAPS_LANG_LOCALIZATION = [
 ]
 
 
-class WebsiteConfigSettings(models.TransientModel):
-    _inherit = 'website.config.settings'
+class BaseConfigSettings(models.TransientModel):
+    _inherit = 'base.config.settings'
 
     def get_region_selection(self):
         country_ids = self.env['res.country'].search([])
         values = [(country.code, country.name) for country in country_ids]
         return values
 
+    api_key_geocode = fields.Char(String='Google API Key')
     google_maps_lang_localization = fields.Selection(
         selection=GMAPS_LANG_LOCALIZATION,
         string='Google Maps Language Localization')
@@ -87,6 +88,21 @@ class WebsiteConfigSettings(models.TransientModel):
         string='Map theme'
     )
 
+    def set_api_key_geocode(self):
+        ir_config_obj = self.env['ir.config_parameter']
+        ir_config_obj.set_param('google.api_key_geocode',
+                                self.api_key_geocode,
+                                groups=['base.group_system'])
+
+    def get_default_api_key_geocode(self, fields):
+        ir_config_obj = self.env['ir.config_parameter']
+        previous_google_api_key = ir_config_obj.get_param(
+            'google_maps_api_key', default='')
+        api_key_geocode = ir_config_obj.get_param('google.api_key_geocode',
+                                                 default='')
+        api_key = previous_google_api_key or api_key_geocode
+        return dict(api_key_geocode=api_key)
+
     def set_google_maps_lang_localization(self):
         ir_config_obj = self.env['ir.config_parameter']
         if self.google_maps_lang_localization:
@@ -94,14 +110,14 @@ class WebsiteConfigSettings(models.TransientModel):
                 self.google_maps_lang_localization
         else:
             lang_localization = ''
-        ir_config_obj.set_param('google_maps_lang_localization',
+        ir_config_obj.set_param('google.lang_localization',
                                 lang_localization,
                                 groups=['base.group_system'])
 
     def get_default_google_maps_lang_localization(self, fields):
         ir_config_obj = self.env['ir.config_parameter']
         google_maps_lang = ir_config_obj.get_param(
-            'google_maps_lang_localization', default='')
+            'google.lang_localization', default='')
         val = google_maps_lang.split('=')
         if val:
             lang = val[-1]
@@ -117,14 +133,14 @@ class WebsiteConfigSettings(models.TransientModel):
         else:
             region_localization = ''
 
-        ir_config_obj.set_param('google_maps_region_localization',
+        ir_config_obj.set_param('google.region_localization',
                                 region_localization,
                                 groups=['base.group_system'])
 
     def get_default_google_maps_region_localization(self, fields):
         ir_config_obj = self.env['ir.config_parameter']
         google_maps_region = ir_config_obj.get_param(
-            'google_maps_region_localization', default='')
+            'google.region_localization', default='')
         val = google_maps_region.split('=')
         if val:
             region = val[-1]
@@ -135,11 +151,11 @@ class WebsiteConfigSettings(models.TransientModel):
     def set_google_maps_theme(self):
         ir_config_obj = self.env['ir.config_parameter']
         theme = self.google_maps_theme or 'default'
-        ir_config_obj.set_param('google_maps_theme',
+        ir_config_obj.set_param('google.maps_theme',
                                 theme,
                                 groups=['base.group_system'])
 
     def get_default_google_maps_theme(self, fields):
         ir_config_obj = self.env['ir.config_parameter']
-        theme = ir_config_obj.get_param('google_maps_theme', default='default')
+        theme = ir_config_obj.get_param('google.maps_theme', default='default')
         return dict(google_maps_theme=theme)

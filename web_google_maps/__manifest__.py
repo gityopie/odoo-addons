@@ -2,7 +2,7 @@
 # License AGPL-3
 {
     'name': 'Web Google Maps',
-    'version': '10.0.1.0.5',
+    'version': '10.0.1.0.6',
     'author': 'Yopi Angi',
     'license': 'AGPL-3',
     'maintainer': 'yopiangi@gmail.com',
@@ -18,7 +18,7 @@ For example, on customer form view, the widget provide autocomplete feature
 when typing address of partner
 3. Routes information
 """,
-    'depends': ['website_google_map'],
+    'depends': ['base_geolocalize', 'base_setup'],
     'website': '',
     'data': [
         'views/google_places_template.xml',
