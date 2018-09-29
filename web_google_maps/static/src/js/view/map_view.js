@@ -815,10 +815,11 @@ odoo.define('web.MapView', function (require) {
         defaults: _.extend(View.prototype.defaults, {
             quick_creatable: true,
             creatable: true,
-            create_text: undefined,
+            create_text: _lt('Create'),
             read_only_mode: false,
             confirm_on_delete: true,
         }),
+        action_buttons: true,
         icon: 'fa-map-o',
         mobile_friendly: true,
         custom_events: {
@@ -1036,6 +1037,7 @@ odoo.define('web.MapView', function (require) {
             this.record_options = {
                 editable: this.is_action_enabled('edit'),
                 deletable: this.is_action_enabled('delete'),
+                addable: this.is_action_enabled('create'),
                 fields: this.fields_view.fields,
                 qweb: this.qweb,
                 model: this.model,
@@ -1509,22 +1511,21 @@ odoo.define('web.MapView', function (require) {
             this.load_markers();
         },
         render_buttons: function ($node) {
-            var self = this;
-            this.$buttons = $('<div/>');
-            var $footer = this.$('footer');
-            if (this.options.action_buttons !== false || this.options.footer_to_buttons && $footer.children().length === 0) {
-                this.$buttons.append(qweb.render("MapView.buttons", {
-                    'widget': this
-                }));
+            if (!this.$buttons) {
+                this.$buttons = $('<div/>');
+                var $footer = this.$('footer');
+                if (this.options.action_buttons !== false || this.options.footer_to_buttons && $footer.children().length === 0) {
+                    this.$buttons.append(qweb.render("MapView.buttons", {
+                        'widget': this
+                    }));
+                }
+                if (this.options.footer_to_buttons) {
+                    $footer.appendTo(this.$buttons);
+                }
+                this.$buttons.on('click', '.o_map_button_reload', this.proxy('map_centered'));
+                this.$buttons.on('click', '.o_map_button_add', this.proxy('do_add_record'));
+                this.$buttons.appendTo($node);
             }
-            if (this.options.footer_to_buttons) {
-                $footer.appendTo(this.$buttons);
-            }
-            this.$buttons.on('click', '.o_map_button_reload', function (ev) {
-                ev.preventDefault();
-                self.map_centered();
-            });
-            this.$buttons.appendTo($node);
         },
         add_record: function () {
             this.dataset.index = null;
@@ -1629,7 +1630,19 @@ odoo.define('web.MapView', function (require) {
                     data.callback();
                 }
             });
-        }
+        },
+        /**
+         * Handles signal for the addition of a new record (can be a creation,
+         * can be the addition from a remote source, ...)
+         *
+         * The default implementation is to switch to a new record on the form view
+         */
+        do_add_record: function () {
+            this.dataset.index = null;
+            _.delay(_.bind(function () {
+                this.do_switch_view('form');
+            }, this));
+        },
     });
 
     // The two functions below are adopted from kanban view
