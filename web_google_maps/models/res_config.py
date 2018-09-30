@@ -96,12 +96,9 @@ class BaseConfigSettings(models.TransientModel):
 
     def get_default_api_key_geocode(self, fields):
         ir_config_obj = self.env['ir.config_parameter']
-        previous_google_api_key = ir_config_obj.get_param(
-            'google_maps_api_key', default='')
         api_key_geocode = ir_config_obj.get_param('google.api_key_geocode',
-                                                 default='')
-        api_key = previous_google_api_key or api_key_geocode
-        return dict(api_key_geocode=api_key)
+                                                  default='')
+        return dict(api_key_geocode=api_key_geocode)
 
     def set_google_maps_lang_localization(self):
         ir_config_obj = self.env['ir.config_parameter']
