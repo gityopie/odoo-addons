@@ -179,10 +179,17 @@
         </div>
     </t>
     <t t-name="MapView.buttons">
-        <div class="o_map_buttons_view">
-            <button type="button" class="btn btn-primary btn-sm o_map_button_reload">
-                Reload
-            </button>
-        </div>
+        <t t-if="!widget.no_leaf and widget.options.action_buttons !== false">
+            <div class="o_list_buttons">
+                <t t-if="widget.is_action_enabled('create')">
+                    <button type="button" class="btn btn-primary btn-sm o_map_button_add" accesskey="c">
+                        <t t-esc="widget.options.create_text || _t('Create')"/>
+                    </button>
+                </t>
+                <button type="button" class="btn btn-default btn-sm o_map_button_reload">
+                    Center Map
+                </button>
+            </div>
+        </t>
     </t>
 </templates>

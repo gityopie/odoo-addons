@@ -271,7 +271,7 @@ By default this options are configured like following value:
     };
 
 # Technical:
-This module will install `website_google_maps`.    
+This module will install `base_geolocalize` and `base_setup`.       
 *I recommend you to add Google Maps Key API into Odoo Website Admin settings when you installed this module*
 
 
