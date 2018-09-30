@@ -12,7 +12,7 @@ class ResConfigSettings(models.TransientModel):
         super(ResConfigSettings, self).set_values()
         ICPSudo = self.env['ir.config_parameter'].sudo()
         libraries = self._set_google_maps_drawing()
-        ICPSudo.set_param('google_maps_libraries', libraries)
+        ICPSudo.set_param('google.maps_libraries', libraries)
 
     @api.model
     def get_values(self):
@@ -25,7 +25,7 @@ class ResConfigSettings(models.TransientModel):
     def _get_google_maps_drawing(self):
         ICPSudo = self.env['ir.config_parameter'].sudo()
         google_maps_libraries = ICPSudo.get_param(
-            'google_maps_libraries', default='')
+            'google.maps_libraries', default='')
         libraries = google_maps_libraries.split(',')
         return 'drawing' in libraries
 
@@ -33,7 +33,7 @@ class ResConfigSettings(models.TransientModel):
     def _set_google_maps_drawing(self):
         ICPSudo = self.env['ir.config_parameter'].sudo()
         google_maps_libraries = ICPSudo.get_param(
-            'google_maps_libraries', default='')
+            'google.maps_libraries', default='')
         libraries = google_maps_libraries.split(',')
         if self.google_maps_drawing:
             libraries.append('drawing')
