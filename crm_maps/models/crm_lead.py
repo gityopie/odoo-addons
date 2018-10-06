@@ -23,21 +23,25 @@ class CrmLead(models.Model):
 
     @api.multi
     def geo_localize(self):
+        google_api_key = self.env['ir.config_parameter'].sudo().get_param(
+            'google.api_key_geocode', default='')
         for lead in self.with_context(lang='en_US'):
-            result = geo_find(geo_query_address(
-                street=lead.street,
-                zip=lead.zip,
-                city=lead.city,
-                state=lead.state_id.name,
-                country=lead.country_id.name
-            ))
-
-            if result is None:
-                result = geo_find(geo_query_address(
+            result = geo_find(
+                addr=geo_query_address(
+                    street=lead.street,
+                    zip=lead.zip,
                     city=lead.city,
                     state=lead.state_id.name,
-                    country=lead.country_id.name
-                ))
+                    country=lead.country_id.name),
+                apikey=google_api_key)
+
+            if result is None:
+                result = geo_find(
+                    addr=geo_query_address(
+                        city=lead.city,
+                        state=lead.state_id.name,
+                        country=lead.country_id.name),
+                    apikey=google_api_key)
 
             if result:
                 lead.write({
