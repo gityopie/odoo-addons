@@ -9,14 +9,14 @@
 }
 
 .o_map_container {
-    min-height: 400px;
-    min-width: 100%;
+    display: flex;
+    align-content: stretch;
+    overflow-x: visible;
+    min-height: 450px;
     height: 100%;
-    .o-flex-display();
 
     .o_map_view {
-        .o-flex(1, 1, auto);
-        min-width: 0;
+        width: 100%;
     }
 
     .o_map_left_sidenav {

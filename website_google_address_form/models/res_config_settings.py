@@ -15,8 +15,7 @@ class ResConfigSettings(models.TransientModel):
         super(ResConfigSettings, self).set_values()
         ICPSudo = self.env['ir.config_parameter'].sudo()
         country_restriction = self._set_google_maps_country_restriction()
-        ICPSudo.set_param('google_maps_country_restriction',
-                          country_restriction)
+        ICPSudo.set_param('google.country_restriction', country_restriction)
 
     @api.multi
     def get_values(self):
@@ -34,7 +33,7 @@ class ResConfigSettings(models.TransientModel):
     @api.multi
     def _get_google_maps_country_restriction(self):
         ICPSudo = self.env['ir.config_parameter'].sudo()
-        countries = ICPSudo.get_param('google_maps_country_restriction', 
+        countries = ICPSudo.get_param('google.country_restriction', 
                                       default='[]')
         list_countries = safe_eval(countries)
         if list_countries:

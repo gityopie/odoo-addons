@@ -9,7 +9,7 @@ class CrmLead(models.Model):
     _inherit = 'crm.lead'
 
     customer_longitude = fields.Float(
-        string='Customer Latitude',
+        string='Customer Longitude',
         digits=(16, 5))
     customer_latitude = fields.Float(
         string='Customer Latitude',
