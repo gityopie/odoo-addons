@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="WidgetDrawing.BtnCommit">
+        <div class="o_map_button" style="background-color:blue;color:white;">
+            <span title="Press this button to commit the shape you draw">
+                Commit
+            </span>
+        </div>
+    </t>
+    <t t-name="WidgetDrawing.BtnDelete">
+        <div class="o_map_button" style="background-color:red;color:white;">
+            <span title="Press this button to delete the selected shape">
+                Delete
+            </span>
+        </div>
+    </t>
+    <t t-name="WidgetDrawing.Map">
+        <div class="o_map_container">
+            <div class="o_map_view"></div>
+        </div>
+    </t>
+</templates>
