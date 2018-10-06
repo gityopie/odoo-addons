@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Web Google Maps',
-    'version': '11.0.1.0.5',
+    'version': '12.0.1.0.0',
     'author': 'Yopi Angi',
     'license': 'AGPL-3',
     'maintainer': 'Yopi Angi<yopiangi@gmail.com>',
@@ -25,7 +25,7 @@ form view, it provide autocomplete feature when typing address of partner
         'data/google_maps_libraries.xml',
         'views/google_places_template.xml',
         'views/res_partner.xml',
-        'views/res_config.xml'
+        # 'views/res_config.xml'
     ],
     'demo': [],
     'images': ['static/description/thumbnails.png'],

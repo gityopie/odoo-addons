@@ -976,6 +976,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
          */
         _initMap: function () {
             this.infoWindow = new google.maps.InfoWindow();
+            console.log(this.$('.o_map_view'));
             this.$('.o_map_view').empty();
             this.gmap = new google.maps.Map(this.$('.o_map_view').get(0), {
                 mapTypeId: google.maps.MapTypeId.ROADMAP,
