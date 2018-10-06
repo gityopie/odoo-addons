@@ -25,7 +25,7 @@ class WebsiteGoogleAddressForm(http.Controller):
     @http.route('/gplaces/country_restrictions', type='json', auth='public')
     def get_gmap_country_restriction(self):
         countries = request.env['ir.config_parameter'].sudo().get_param(
-            'google_maps_country_restriction', default='[]')
+            'google.country_restriction', default='[]')
         list_countries = safe_eval(countries)
         if list_countries:
             countries_code = [country[1] for country in list_countries]

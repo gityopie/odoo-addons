@@ -4,6 +4,7 @@
     'version': '11.0.1.0.2',
     'author': 'Yopi Angi',
     'license': 'AGPL-3',
+    'maintainer': 'Yopi Angi<yopiangi@gmail.com>',
     'support': 'yopiangi@gmail.com',
     'category': 'Sales',
     'description': """

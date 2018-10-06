@@ -25,7 +25,7 @@ form view, it provide autocomplete feature when typing address of partner
         'data/google_maps_libraries.xml',
         'views/google_places_template.xml',
         'views/res_partner.xml',
-        # 'views/res_config.xml'
+        'views/res_config_settings.xml'
     ],
     'demo': [],
     'images': ['static/description/thumbnails.png'],

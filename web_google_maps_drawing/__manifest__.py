@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Web Google Maps Drawing',
-    'version': '11.0.1.0.3',
+    'version': '12.0.1.0.0',
     'author': 'Yopi Angi',
     'license': 'AGPL-3',
     'maintainer': 'Yopi Angi',
@@ -21,7 +21,7 @@ Allows users to draw polygons, rectangles, and circles on the map.
     'data': [
         'data/google_maps_library.xml',
         'views/template.xml',
-        'views/res_config.xml',
+        'views/res_config_settings.xml',
     ],
     'qweb': ['static/src/xml/drawing.xml'],
     'installable': True
