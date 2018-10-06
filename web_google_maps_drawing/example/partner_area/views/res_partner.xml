@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_res_partner_form_inherit" model="ir.ui.view">
+        <field name="name">view.res.partner.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[1]" position="attributes">
+                <attribute name="autofocus"/>
+            </xpath>
+            <xpath expr="//notebook/page[1]" position="before">
+                <page string="Area" autofocus="autofocus">
+                    <field name="shape_line_ids" mode="map">
+                        <map library="drawing" string="Shape">
+                            <field name="shape_name"/>
+                            <field name="shape_description"/>
+                            <field name="shape_type"/>
+                            <field name="shape_radius"/>
+                            <field name="shape_area"/>
+                            <field name="shape_paths"/>
+                            <templates>
+                                <t t-name="kanban-box">
+                                    <div class="oe_kanban_global_click">
+                                        <div class="oe_kanban_details">
+                                            <strong class="o_kanban_record_title oe_partner_heading">
+                                                <field name="shape_name"/>
+                                            </strong>
+                                            <div>
+                                                <field name="shape_description"/>
+                                            </div>
+                                            <div>
+                                                Area: <field name="shape_area"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                            </templates>
+                        </map>
+                        <form>
+                            <sheet>
+                                <group>
+                                    <group>
+                                        <field name="shape_name"/>
+                                        <!-- the widget needs this field to be loaded -->
+                                        <field name="shape_type" invisible="1"/> 
+                                    </group>
+                                    <group>
+                                        <field name="shape_area"/>
+                                        <field name="shape_radius"/>
+                                    </group>
+                                </group>
+                                <field name="shape_description"/>
+                                <separator string="Draw Shape"/>
+                                <field name="shape_paths" widget="map_drawing_shape"/>
+                            </sheet>
+                        </form>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

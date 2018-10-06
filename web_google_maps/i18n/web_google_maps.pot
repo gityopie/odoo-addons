@@ -1,0 +1,785 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* web_google_maps
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 10.0\n"
+"Report-Msgid-Bugs-To: \n"
+<<<<<<< HEAD
+"POT-Creation-Date: 2017-08-12 07:08+0000\n"
+"PO-Revision-Date: 2017-08-12 07:08+0000\n"
+=======
+"POT-Creation-Date: 2018-07-23 11:14+0000\n"
+"PO-Revision-Date: 2018-07-23 11:14+0000\n"
+>>>>>>> master
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:70
+#, python-format
+msgid "Addresses"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:66
+#, python-format
+msgid "All"
+msgstr ""
+
+#. module: web_google_maps
+<<<<<<< HEAD
+=======
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Arabic"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/js/view/map_view.js:1559
+#, python-format
+msgid "Are you sure you want to delete this record ?"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_theme:0
+msgid "Aubergine"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Basque"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Bengali"
+msgstr ""
+
+#. module: web_google_maps
+>>>>>>> master
+#. openerp-web
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:145
+#, python-format
+msgid "Bicycle"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:171
+#, python-format
+msgid "Bicycling"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:145
+#, python-format
+msgid "Bike"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Bulgarian"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Catalan"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Chinese (Simplified)"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Chinese (Traditional)"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:83
+#, python-format
+msgid "Create Partner"
+msgstr ""
+
+#. module: web_google_maps
+<<<<<<< HEAD
+#. openerp-web
+#: code:addons/web_google_maps/static/src/js/view/map_view.js:283
+=======
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Croatian"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Czech"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Danish"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_theme:0
+msgid "Dark"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_theme:0
+msgid "Default"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/js/view/map_view.js:388
+#: code:addons/web_google_maps/static/src/js/view/map_view.js:1361
+>>>>>>> master
+#, python-format
+msgid "Directions request failed due to "
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:165
+#, python-format
+msgid "Driving"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Dutch"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "English"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "English (Australian)"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "English (Great Britain)"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:75
+#, python-format
+msgid "Enter a location"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+<<<<<<< HEAD
+#: code:addons/web_google_maps/static/src/js/view/map_view.js:48
+=======
+#: code:addons/web_google_maps/static/src/js/view/map_view.js:104
+#: code:addons/web_google_maps/static/src/js/view/map_view.js:944
+>>>>>>> master
+#, python-format
+msgid "Error: cannot display locations"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:68
+#, python-format
+msgid "Establishments"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+<<<<<<< HEAD
+#: code:addons/web_google_maps/static/src/js/view/map_view_places_autocomplete.js:365
+#: code:addons/web_google_maps/static/src/js/view/map_view_places_autocomplete.js:371
+#: code:addons/web_google_maps/static/src/js/view/map_view_places_autocomplete.js:374
+=======
+#: code:addons/web_google_maps/static/src/js/view/map_view_places_autocomplete.js:353
+#: code:addons/web_google_maps/static/src/js/view/map_view_places_autocomplete.js:359
+#: code:addons/web_google_maps/static/src/js/view/map_view_places_autocomplete.js:362
+>>>>>>> master
+#, python-format
+msgid "Fail to create new partner!"
+msgstr ""
+
+#. module: web_google_maps
+<<<<<<< HEAD
+=======
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Farsi"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Filipino"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Finnish"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "French"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Galician"
+msgstr ""
+
+#. module: web_google_maps
+>>>>>>> master
+#. openerp-web
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:72
+#, python-format
+msgid "Geocodes"
+msgstr ""
+
+#. module: web_google_maps
+<<<<<<< HEAD
+=======
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "German"
+msgstr ""
+
+#. module: web_google_maps
+>>>>>>> master
+#: model:ir.model.fields,field_description:web_google_maps.field_website_config_settings_google_maps_lang_localization
+msgid "Google Maps Language Localization"
+msgstr ""
+
+#. module: web_google_maps
+#: model:ir.ui.view,arch_db:web_google_maps.view_website_config_settings_inherit
+msgid "Google Maps Localization"
+msgstr ""
+
+#. module: web_google_maps
+#: model:ir.model.fields,field_description:web_google_maps.field_website_config_settings_google_maps_region_localization
+msgid "Google Maps Region Localization"
+msgstr ""
+
+#. module: web_google_maps
+<<<<<<< HEAD
+#. openerp-web
+#: code:addons/web_google_maps/static/src/js/widget/google_places_autocomplete_widget.js:14
+=======
+#: model:ir.ui.view,arch_db:web_google_maps.view_website_config_settings_inherit
+msgid "Google Maps Theme"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/js/widget/google_places_autocomplete_widget.js:13
+>>>>>>> master
+#, python-format
+msgid "Google Places"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/js/widget/google_places_widget.js:14
+#, python-format
+msgid "Google Places Form Address"
+msgstr ""
+
+#. module: web_google_maps
+<<<<<<< HEAD
+=======
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Greek"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Gujarati"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Hebrew"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Hindi"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Hungarian"
+msgstr ""
+
+#. module: web_google_maps
+>>>>>>> master
+#: model:ir.ui.view,arch_db:web_google_maps.view_website_config_settings_inherit
+msgid "If you set the language of the map, it's important to consider setting the region too."
+msgstr ""
+
+#. module: web_google_maps
+<<<<<<< HEAD
+=======
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Indonesian"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Italian"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Japanese"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Kannada"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Korean"
+msgstr ""
+
+#. module: web_google_maps
+>>>>>>> master
+#: model:ir.ui.view,arch_db:web_google_maps.view_website_config_settings_inherit
+msgid "Language"
+msgstr ""
+
+#. module: web_google_maps
+<<<<<<< HEAD
+=======
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Latvian"
+msgstr ""
+
+#. module: web_google_maps
+>>>>>>> master
+#. openerp-web
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:130
+#, python-format
+msgid "Layers"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Lithuanian"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Malayalam"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+<<<<<<< HEAD
+#: code:addons/web_google_maps/models/ir_actions_act_window.py:8
+#: code:addons/web_google_maps/models/ir_ui_view.py:8
+#: code:addons/web_google_maps/models/res_partner.py:25
+#: code:addons/web_google_maps/static/src/js/view/map_view.js:16
+#: model:ir.actions.act_window,name:web_google_maps.act_res_partner_map
+#: model:ir.ui.view,arch_db:web_google_maps.view_partner_form
+=======
+#: code:addons/web_google_maps/models/ir_actions_act_window.py:9
+#: code:addons/web_google_maps/models/ir_actions_act_window_view.py:9
+#: code:addons/web_google_maps/models/ir_ui_view.py:9
+#: code:addons/web_google_maps/models/res_partner.py:26
+#: code:addons/web_google_maps/static/src/js/view/map_view.js:26
+#: code:addons/web_google_maps/static/src/js/view/map_view.js:814
+>>>>>>> master
+#: model:ir.ui.view,arch_db:web_google_maps.view_partner_map
+#, python-format
+msgid "Map"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:38
+#, python-format
+msgid "Map Layers"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+<<<<<<< HEAD
+#: code:addons/web_google_maps/static/src/js/view/map_view_places_autocomplete.js:281
+=======
+#: code:addons/web_google_maps/static/src/js/view/map_view.js:112
+#, python-format
+msgid "Map View Attributes"
+msgstr ""
+
+#. module: web_google_maps
+#: model:ir.model.fields,field_description:web_google_maps.field_website_config_settings_google_maps_theme
+msgid "Map theme"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Marathi"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_theme:0
+msgid "Night"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/js/view/map_view_places_autocomplete.js:262
+>>>>>>> master
+#, python-format
+msgid "No details available for input: ''"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+<<<<<<< HEAD
+#: code:addons/web_google_maps/static/src/js/view/map_view.js:64
+=======
+#: code:addons/web_google_maps/static/src/js/view/map_view.js:169
+#: code:addons/web_google_maps/static/src/js/view/map_view.js:992
+>>>>>>> master
+#, python-format
+msgid "No geolocation is found!"
+msgstr ""
+
+#. module: web_google_maps
+<<<<<<< HEAD
+=======
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Norwegian"
+msgstr ""
+
+#. module: web_google_maps
+>>>>>>> master
+#: model:ir.model,name:web_google_maps.model_res_partner
+msgid "Partner"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:57
+#, python-format
+msgid "Places"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+<<<<<<< HEAD
+#: code:addons/web_google_maps/static/src/js/view/map_view.js:48
+=======
+#: code:addons/web_google_maps/static/src/js/view/map_view.js:104
+#: code:addons/web_google_maps/static/src/js/view/map_view.js:944
+>>>>>>> master
+#, python-format
+msgid "Please define alias name for geolocations fields for map view!"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Polish"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Portuguese"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Portuguese (Brazil)"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Portuguese (Portugal)"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:50
+#, python-format
+msgid "Redirect to Google maps website"
+msgstr ""
+
+#. module: web_google_maps
+#: model:ir.ui.view,arch_db:web_google_maps.view_website_config_settings_inherit
+msgid "Region"
+<<<<<<< HEAD
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:183
+#, python-format
+msgid "Reload"
+=======
+>>>>>>> master
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+<<<<<<< HEAD
+#: code:addons/web_google_maps/static/src/js/view/map_view.js:362
+=======
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:183
+#, python-format
+msgid "Reload"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_theme:0
+msgid "Retro"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/js/view/map_view.js:470
+#: code:addons/web_google_maps/static/src/js/view/map_view.js:1443
+>>>>>>> master
+#, python-format
+msgid "Reverse geocoding is failed!"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Romanian"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Russian"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Serbian"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_theme:0
+msgid "Silver"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Slovak"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Slovenian"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Spanish"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:78
+#, python-format
+msgid "Strict Bounds"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+<<<<<<< HEAD
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:78
+#, python-format
+msgid "Strict Bounds"
+=======
+#: code:addons/web_google_maps/static/src/js/view/map_view_places_autocomplete.js:347
+#, python-format
+msgid "Successfully created new partner"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Swedish"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Tagalog"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Tamil"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Telugu"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Thai"
+>>>>>>> master
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+<<<<<<< HEAD
+#: code:addons/web_google_maps/static/src/js/view/map_view_places_autocomplete.js:359
+#, python-format
+msgid "Successfully created new partner"
+=======
+#: code:addons/web_google_maps/static/src/js/view/map_view.js:112
+#, python-format
+msgid "The field for marker title needs to be loaded into view!"
+>>>>>>> master
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+<<<<<<< HEAD
+#: code:addons/web_google_maps/static/src/js/widget/google_places_autocomplete_widget.js:152
+#: code:addons/web_google_maps/static/src/js/widget/google_places_widget.js:159
+=======
+#: code:addons/web_google_maps/static/src/js/widget/google_places_autocomplete_widget.js:155
+#: code:addons/web_google_maps/static/src/js/widget/google_places_autocomplete_widget.js:168
+#: code:addons/web_google_maps/static/src/js/widget/google_places_widget.js:159
+#: code:addons/web_google_maps/static/src/js/widget/google_places_widget.js:166
+>>>>>>> master
+#, python-format
+msgid "The following fields are invalid:"
+msgstr ""
+
+#. module: web_google_maps
+#: model:ir.ui.view,arch_db:web_google_maps.view_website_config_settings_inherit
+<<<<<<< HEAD
+=======
+msgid "Theme"
+msgstr ""
+
+#. module: web_google_maps
+#: model:ir.ui.view,arch_db:web_google_maps.view_website_config_settings_inherit
+>>>>>>> master
+msgid "This helps ensure that your application complies with local laws."
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:139
+#, python-format
+msgid "Traffic"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:142
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:174
+#, python-format
+msgid "Transit"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:156
+#, python-format
+msgid "Travel Mode"
+msgstr ""
+
+#. module: web_google_maps
+<<<<<<< HEAD
+=======
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Turkish"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Ukrainian"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:website.config.settings,google_maps_lang_localization:0
+msgid "Vietnamese"
+msgstr ""
+
+#. module: web_google_maps
+>>>>>>> master
+#: model:ir.ui.view,arch_db:web_google_maps.view_website_config_settings_inherit
+msgid "Visit the"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/xml/widget_places.xml:168
+#, python-format
+msgid "Walking"
+msgstr ""
+
+#. module: web_google_maps
+#: code:addons/web_google_maps/models/res_partner.py:15
+#, python-format
+msgid "You have not defined your geolocation"
+msgstr ""
+
+#. module: web_google_maps
+#: model:ir.ui.view,arch_db:web_google_maps.view_website_config_settings_inherit
+msgid "about Localizing the Map"
+msgstr ""
+
+#. module: web_google_maps
+<<<<<<< HEAD
+#: model:ir.ui.view,arch_db:web_google_maps.view_website_config_settings_inherit
+msgid "page"
+msgstr ""
+=======
+#: model:ir.ui.view,arch_db:web_google_maps.view_partner_map
+msgid "at"
+msgstr ""
+
+#. module: web_google_maps
+#: model:ir.model,name:web_google_maps.model_ir_actions_act_window
+msgid "ir.actions.act_window"
+msgstr ""
+
+#. module: web_google_maps
+#: model:ir.model,name:web_google_maps.model_ir_actions_act_window_view
+msgid "ir.actions.act_window.view"
+msgstr ""
+
+#. module: web_google_maps
+#: model:ir.model,name:web_google_maps.model_ir_ui_view
+msgid "ir.ui.view"
+msgstr ""
+
+#. module: web_google_maps
+#: model:ir.ui.view,arch_db:web_google_maps.view_website_config_settings_inherit
+msgid "page"
+msgstr ""
+
+#. module: web_google_maps
+#: model:ir.model,name:web_google_maps.model_website_config_settings
+msgid "website.config.settings"
+msgstr ""
+
+>>>>>>> master
