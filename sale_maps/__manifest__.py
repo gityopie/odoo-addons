@@ -11,8 +11,6 @@
 Sale Maps
 =========
 
-- Added map view on Customers
-- Added smart button 'Map' on Customer form view
 """,
     'depends': ['sale', 'web_google_maps'],
     'website': '',
