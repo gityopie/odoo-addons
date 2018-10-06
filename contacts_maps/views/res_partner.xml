@@ -9,7 +9,7 @@
     <record id="action_contacts_view_maps" model="ir.actions.act_window.view">
         <field name="sequence" eval="2"/>
         <field name="view_mode">map</field>
-        <field name="view_id" ref="web_google_maps.view_partner_map"/>
+        <field name="view_id" ref="web_google_maps.view_res_partner_map"/>
         <field name="act_window_id" ref="contacts.action_contacts"/>
     </record>
 </odoo>

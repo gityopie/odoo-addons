@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Contacts Maps',
-    'version': '10.0.1.0.1',
+    'version': '11.0.1.0.3',
     'author': 'Yopi Angi',
     'license': 'AGPL-3',
-    'maintainer': 'yopiangi@gmail.com',
-    'category': 'Contacts',
+    'maintainer': 'Yopi Angi',
+    'category': 'Tools',
     'description': """
 Contacts Maps
 =============

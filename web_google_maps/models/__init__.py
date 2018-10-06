@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-import ir_ui_view
-import ir_actions_act_window
-import ir_actions_act_window_view
-import res_partner
-import res_config
+# License AGPL-3
+from . import ir_act_window_view
+from . import ir_ui_view
+from . import res_config

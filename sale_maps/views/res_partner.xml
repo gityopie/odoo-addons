@@ -15,14 +15,18 @@
         <field name="arch" type="xml">
             <field name="name" position="attributes">
                 <attribute name="widget">gplaces_autocomplete</attribute>
+                <attribute name="options">{'lat': 'partner_latitude', 'lng': 'partner_longitude'}</attribute>
             </field>
             <field name="street" position="attributes">
-                <attribute name="widget">gplaces_address_form</attribute>
+                <attribute name="widget">gplaces_address_autocomplete</attribute>
                 <attribute name="options">{'lat': 'partner_latitude', 'lng': 'partner_longitude'}</attribute>
             </field>
             <div name="button_box" position="inside">
-                <button name="%(sale_maps.act_res_partner_map)d" type="action" class="oe_stat_button" icon="fa-map-marker" string="Map" attrs="{'invisible': ['|',('partner_latitude', '=', 0.0), ('partner_longitude', '=', 0.0)]}"/>
-                <button name="action_map_route" type="object" class="oe_stat_button" context="{'route_direction': True}" icon="fa-map-signs" string="Route" attrs="{'invisible': ['|',('partner_latitude', '=', 0.0), ('partner_longitude', '=', 0.0)]}"/>
+                <button name="%(sale_maps.act_res_partner_map)d" 
+                type="action" 
+                class="oe_stat_button" 
+                icon="fa-map-marker" string="Map" 
+                attrs="{'invisible': ['|',('partner_latitude', '=', 0.0), ('partner_longitude', '=', 0.0)]}"/>
             </div>
         </field>
     </record>
@@ -32,7 +36,7 @@
         <field name="inherit_id" ref="base.view_partner_address_form"/>
         <field name="arch" type="xml">
             <field name="street" position="attributes">
-                <attribute name="widget">gplaces_address_form</attribute>
+                <attribute name="widget">gplaces_address_autocomplete</attribute>
                 <attribute name="options">{'lat': 'partner_latitude', 'lng': 'partner_longitude'}</attribute>
             </field>
         </field>
@@ -41,7 +45,7 @@
     <record model="ir.ui.view" id="view_crm_lead_res_partner_map">
         <field name="name">res.partner.map.saleorder.inherit</field>
         <field name="model">res.partner</field>
-        <field name="inherit_id" ref="web_google_maps.view_partner_map"/>
+        <field name="inherit_id" ref="web_google_maps.view_res_partner_map"/>
         <field name="priority" eval="20"/>
         <field name="groups_id" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
         <field name="arch" type="xml">

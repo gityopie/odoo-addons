@@ -1,4 +1,4 @@
 # -*- coding: utf-8 -*-
 # License AGPL-3
-import crm_lead
-import crm_team
+from . import crm_lead
+from . import crm_team

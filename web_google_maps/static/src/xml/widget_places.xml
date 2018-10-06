@@ -1,188 +1,30 @@
-<?xml version="1.0" encoding="utf-8"?>
-<templates id="template" xml:space="preserve">
-    <t t-name="web_google_maps.FieldGooglePlaces">
-        <input t-if="!widget.get('effective_readonly')" class="o_form_input"
-            t-att-type="widget.password ? 'password' : 'text'"
-            t-att-barcode_events="widget.options.barcode_events"
-            t-att-id="widget.id_for_label"
-            t-att-tabindex="widget.node.attrs.tabindex"
-            autofocus="off"
-            t-att-placeholder="widget.node.attrs.placeholder"
-            t-att-maxlength="widget.field.size"/>
-        <span t-if="widget.get('effective_readonly')"/>
-    </t>
-    <t t-name="web_google_maps.FieldGooglePlacesAutocomplete">
-        <input t-if="!widget.get('effective_readonly')" class="o_form_input"
-            t-att-type="widget.password ? 'password' : 'text'"
-            t-att-barcode_events="widget.options.barcode_events"
-            t-att-id="widget.id_for_label"
-            t-att-tabindex="widget.node.attrs.tabindex"
-            autofocus="off"
-            t-att-placeholder="widget.node.attrs.placeholder"
-            t-att-maxlength="widget.field.size"/>
-        <span t-if="widget.get('effective_readonly')"/>
-    </t>
-    <t t-name="MapView">
-        <div class="o_map">
-            <div class="o_map_sidenav closed">
-                <div class="sidenav-body">
-                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                    </div>
-                </div>
-            </div>
-            <div class="o_map_view"></div>
-        </div>
-    </t>
-    <t t-name="MapViewControl">
-        <div class="o_map_control">
-            <div class="btn_map_control" title="Map Layers">
-                <i class="fa fa-bars" aria-hidden="true"></i>
-            </div>
-        </div>
-    </t>
-    <t t-name="MapViewRoutes">
-        <div class="o_map_routes_window">
-            <span/>
-        </div>
-    </t>
-    <t t-name="MapRedirectToGoogle">
-        <div class="o_map_redirect_google">
-            <i class="fa fa-external-link-square" aria-hidden="true" title="Redirect to Google maps website"></i>
-        </div>
-    </t>
-    <t t-name="MapPlacesAutomcomplete">
-        <div class="panel panel-default">
-            <div class="panel-heading" role="tab" id="headingPac">
-                <h3 class="panel-title">
-                    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapsePac" aria-expanded="true" aria-controls="collapsePac">Places</a>
-                </h3>
-            </div>
-            <div id="collapsePac" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingPac">
-                <div class="o_map_places_control">
-                    <div class="panel-body">
-                        <div class="pac-card" id="pac-card">
-                            <div id="type-selector" class="pac-controls">
-                                <input type="radio" name="type" id="changetype-all" checked="checked"/>
-                                <label for="changetype-all">All</label>
-                                <input type="radio" name="type" id="changetype-establishment"/>
-                                <label for="changetype-establishment">Establishments</label>
-                                <input type="radio" name="type" id="changetype-address"/>
-                                <label for="changetype-address">Addresses</label>
-                                <input type="radio" name="type" id="changetype-geocode"/>
-                                <label for="changetype-geocode">Geocodes</label>
-                            </div>
-                            <div id="pac-container">
-                                <input id="pac-input" type="text" placeholder="Enter a location"/>
-                                <div id="strict-bounds-selector">
-                                    <input type="checkbox" id="use-strict-bounds" value=""/>
-                                    <label for="use-strict-bounds" style="font-weight: normal;">Strict Bounds</label>
-                                </div>
-                                <div id="pac-result" style="display:none;">
-                                </div>
-                                <div id="pac-button" style="display: none;">
-                                    <button type="button" class="btn btn-sm btn-primary" id="pac-button-create">Create Partner</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </t>
-    <t t-name="MapPacMarkerContent">
-        <div id="infowindow-content">
-            <img t-if="places.icon" t-att-src="places.icon" width="16" height="16" id="place-icon"/>
-            <span class="title"><t t-esc="places.name"/></span>
-            <br/>
-            <span><t t-esc="places.formatted_address"/></span>
-        </div>
-    </t>
-    <t t-name="MapPlacesQueryResult">
-        <div class="o_map_place_result">
-            <h3 if="place.name">
-                <t t-if="place.name">
-                    <input type="text" id="place-input-name" name="place_name" t-att-value="place.name"/>
-                </t>
-                <t t-if="! place.name">
-                    <input type="text" id="place-input-name" name="place_name" t-att-value="place.formatted_address"/>
-                </t>
-            </h3>
-            <ul>
-                <li t-if="place.formatted_address">
-                    <i class="fa fa-map-marker fa-lg" aria-hidden="true"></i>
-                    <span><t t-esc="place.formatted_address"/></span>
+<?xml version="1.0" encoding="UTF-8"?>
+<template>
+    <div t-name="MapView.MapView" class="o_map_container">
+        <div class="o_map_view"></div>
+        <div class="o_map_right_sidebar closed"></div>
+    </div>
+    <t t-name="MapView.MapViewGroupInfo">
+        <ul t-if="widget.groups">
+            <t t-foreach="widget.groups" t-as="group">
+                <li>
+                    <img t-att-src="group.marker"/>
+                    <span class="title"><t t-esc="group.title"/></span>
+                    <span class="total"><t t-esc="group.count"/></span>
                 </li>
-                <li t-if="place.international_phone_number">
-                    <i class="fa fa-phone fa-lg" aria-hidden="true"></i>
-                    <span><t t-esc="place.international_phone_number"/></span>
-                </li>
-                <li t-if="place.website">
-                    <i class="fa fa-globe fa-lg" aria-hidden="true"></i>
-                    <span><t t-esc="place.website"/></span>
-                </li>
-            </ul>
-        </div>
-    </t>
-    <t t-name="MapControlLayers">
-        <div class="panel panel-default">
-            <div class="panel-heading" role="tab" id="headingControlLayer">
-                <h4 class="panel-title">
-                    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseControlLayers" aria-expanded="true" aria-controls="collapseControlLayers">
-                    Layers
-                    </a>
-                </h4>
-            </div>
-            <div id="collapseControlLayers" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingControlLayer">
-                <div class="panel-body">
-                    <div class="layers">      
-                        <span id="map_layer" data-layer="traffic">
-                            <img src="/web_google_maps/static/src/img/layer_traffic.png" alt="Traffic"/> Traffic
-                        </span>
-                        <span id="map_layer" data-layer="transit">
-                            <img src="/web_google_maps/static/src/img/layer_transit.png" alt="Transit"/> Transit
-                        </span>
-                        <span id="map_layer" data-layer="bicycle">
-                            <img src="/web_google_maps/static/src/img/layer_bike.png" alt="Bike"/> Bicycle
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </t>
-    <t t-name="MapControlTravelMode">
-        <div class="panel panel-default">
-            <div class="panel-heading" role="tab" id="headingTravelMode">
-                <h4 class="panel-title">
-                    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTravelMode" aria-expanded="true" aria-controls="collapseTravelMode">
-                    Travel Mode
-                    </a>
-                </h4>
-            </div>
-            <div id="collapseTravelMode" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTravelMode">
-                <div class="panel-body">
-                    <div class="controls">      
-                        <span id="travel_mode" class="active" data-mode="DRIVING">
-                            <img src="/web_google_maps/static/src/img/mode_driving.png" alt="Driving" title="Driving"/> Driving
-                        </span>
-                        <span id="travel_mode" data-mode="WALKING">
-                            <img src="/web_google_maps/static/src/img/mode_walking.png" alt="Walking" title="Walking"/> Walking
-                        </span>
-                        <span id="travel_mode" data-mode="BICYCLING">
-                            <img src="/web_google_maps/static/src/img/mode_bicycling.png" alt="Bicycling" title="Bicycling"/> Bicycling
-                        </span>
-                        <span id="travel_mode" data-mode="TRANSIT">
-                            <img src="/web_google_maps/static/src/img/mode_transit.png" alt="Transit" title="Transit"/>Transit
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
+            </t>
+        </ul>
     </t>
     <t t-name="MapView.buttons">
-        <div class="o_map_buttons_view">
-            <button type="button" class="btn btn-primary btn-sm o_map_button_reload">
-                Reload
+        <div class="o_list_buttons">
+            <t t-if="(widget.is_action_enabled !== undefined ? widget.is_action_enabled('create') : false) || !widget.isReadonly">
+                <button type="button" class="btn btn-primary btn-sm o-map-button-new" accesskey="c">
+                    <t t-esc="create_text || _t('Create')"/>
+                </button>
+            </t>
+            <button type="button" class="btn btn-default btn-sm o-map-button-center-map">
+                <t t-esc="_t('Center Map')"/>
             </button>
         </div>
     </t>
-</templates>
+</template>

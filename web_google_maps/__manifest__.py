@@ -1,33 +1,35 @@
 # -*- coding: utf-8 -*-
-# License AGPL-3
 {
     'name': 'Web Google Maps',
-    'version': '10.0.1.0.5',
+    'version': '11.0.1.0.5',
     'author': 'Yopi Angi',
     'license': 'AGPL-3',
-    'maintainer': 'yopiangi@gmail.com',
-    'category': 'Web',
+    'maintainer': 'Yopi Angi<yopiangi@gmail.com>',
+    'support': 'yopiangi@gmail.com',
+    'category': 'Extra Tools',
     'description': """
 Web Google Map and google places autocomplete address form
 ==========================================================
 
 This module brings three features:
-1. A new view 'map'
-2. Enabled google places autocomplete address form
-For example, on customer form view, the widget provide autocomplete feature
-when typing address of partner
-3. Routes information
+1. Allows user to view all partners addresses on google maps.
+2. Enabled google places autocomplete address form into partner
+form view, it provide autocomplete feature when typing address of partner
 """,
-    'depends': ['website_google_map'],
+    'depends': [
+        'base_setup',
+        'base_geolocalize',
+    ],
     'website': '',
     'data': [
+        'data/google_maps_libraries.xml',
         'views/google_places_template.xml',
         'views/res_partner.xml',
         'views/res_config.xml'
     ],
     'demo': [],
-    'qweb': ['static/src/xml/widget_places.xml'],
     'images': ['static/description/thumbnails.png'],
+    'qweb': ['static/src/xml/widget_places.xml'],
     'installable': True,
     'uninstall_hook': 'uninstall_hook',
 }

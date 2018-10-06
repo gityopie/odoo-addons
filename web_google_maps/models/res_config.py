@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # License AGPL-3
-from odoo import fields, models
-
+from odoo import api, fields, models
 
 GMAPS_LANG_LOCALIZATION = [
     ('ar', 'Arabic'),
@@ -61,14 +60,16 @@ GMAPS_LANG_LOCALIZATION = [
 ]
 
 
-class WebsiteConfigSettings(models.TransientModel):
-    _inherit = 'website.config.settings'
+class ResConfigSettings(models.TransientModel):
+    _inherit = 'res.config.settings'
 
+    @api.model
     def get_region_selection(self):
         country_ids = self.env['res.country'].search([])
         values = [(country.code, country.name) for country in country_ids]
         return values
 
+    google_maps_view_api_key = fields.Char(string='Google Maps View Api Key')
     google_maps_lang_localization = fields.Selection(
         selection=GMAPS_LANG_LOCALIZATION,
         string='Google Maps Language Localization')
@@ -76,70 +77,123 @@ class WebsiteConfigSettings(models.TransientModel):
         selection=get_region_selection,
         string='Google Maps Region Localization')
     google_maps_theme = fields.Selection(
-        selection=[
-            ('default', 'Default'),
-            ('aubergine', 'Aubergine'),
-            ('night', 'Night'),
-            ('dark', 'Dark'),
-            ('retro', 'Retro'),
-            ('silver', 'Silver')],
-        default='default',
-        string='Map theme'
-    )
+        selection=[('default', 'Default'),
+                   ('aubergine', 'Aubergine'),
+                   ('night', 'Night'),
+                   ('dark', 'Dark'),
+                   ('retro', 'Retro'),
+                   ('silver', 'Silver')],
+        string='Map theme')
+    google_maps_places = fields.Boolean(string='Places', default=True)
+    google_maps_geometry = fields.Boolean(string='Geometry', default=True)
 
-    def set_google_maps_lang_localization(self):
-        ir_config_obj = self.env['ir.config_parameter']
+    @api.onchange('google_maps_lang_localization')
+    def onchange_lang_localization(self):
+        if not self.google_maps_lang_localization:
+            self.google_maps_region_localization = ''
+
+    @api.multi
+    def set_values(self):
+        super(ResConfigSettings, self).set_values()
+        ICPSudo = self.env['ir.config_parameter'].sudo()
+        lang_localization = self._set_google_maps_lang_localization()
+        region_localization = self._set_google_maps_region_localization()
+
+        lib_places = self._set_google_maps_places()
+        lib_geometry = self._set_google_maps_geometry()
+
+        active_libraries = '%s,%s' % (lib_geometry, lib_places)
+
+        ICPSudo.set_param('google.api_key_geocode',
+                          self.google_maps_view_api_key)
+        ICPSudo.set_param('google.lang_localization',
+                          lang_localization)
+        ICPSudo.set_param('google.region_localization',
+                          region_localization)
+        ICPSudo.set_param('google.maps_theme', self.google_maps_theme)
+        ICPSudo.set_param('google.maps_libraries', active_libraries)
+
+    @api.model
+    def get_values(self):
+        res = super(ResConfigSettings, self).get_values()
+        ICPSudo = self.env['ir.config_parameter'].sudo()
+
+        lang_localization = self._get_google_maps_lang_localization()
+        region_localization = self._get_google_maps_region_localization()
+
+        lib_places = self._get_google_maps_places()
+        lib_geometry = self._get_google_maps_geometry()
+
+        res.update({
+            'google_maps_view_api_key': ICPSudo.get_param(
+                'google.api_key_geocode', default=''),
+            'google_maps_lang_localization': lang_localization,
+            'google_maps_region_localization': region_localization,
+            'google_maps_theme': ICPSudo.get_param(
+                'google.maps_theme', default='default'),
+            'google_maps_places': lib_places,
+            'google_maps_geometry': lib_geometry
+        })
+        return res
+
+    @api.multi
+    def _set_google_maps_lang_localization(self):
         if self.google_maps_lang_localization:
             lang_localization = '&language=%s' % \
-                self.google_maps_lang_localization
+                                self.google_maps_lang_localization
         else:
             lang_localization = ''
-        ir_config_obj.set_param('google_maps_lang_localization',
-                                lang_localization,
-                                groups=['base.group_system'])
 
-    def get_default_google_maps_lang_localization(self, fields):
-        ir_config_obj = self.env['ir.config_parameter']
-        google_maps_lang = ir_config_obj.get_param(
-            'google_maps_lang_localization', default='')
+        return lang_localization
+
+    @api.model
+    def _get_google_maps_lang_localization(self):
+        ICPSudo = self.env['ir.config_parameter'].sudo()
+        google_maps_lang = ICPSudo.get_param(
+            'google.lang_localization', default='')
         val = google_maps_lang.split('=')
-        if val:
-            lang = val[-1]
-        else:
-            lang = ''
-        return dict(google_maps_lang_localization=lang)
+        lang = val and val[-1] or ''
+        return lang
 
-    def set_google_maps_region_localization(self):
-        ir_config_obj = self.env['ir.config_parameter']
+    @api.multi
+    def _set_google_maps_region_localization(self):
         if self.google_maps_region_localization:
             region_localization = '&region=%s' % \
-                self.google_maps_region_localization
+                                  self.google_maps_region_localization
         else:
             region_localization = ''
 
-        ir_config_obj.set_param('google_maps_region_localization',
-                                region_localization,
-                                groups=['base.group_system'])
+        return region_localization
 
-    def get_default_google_maps_region_localization(self, fields):
-        ir_config_obj = self.env['ir.config_parameter']
-        google_maps_region = ir_config_obj.get_param(
-            'google_maps_region_localization', default='')
+    @api.model
+    def _get_google_maps_region_localization(self):
+        ICPSudo = self.env['ir.config_parameter'].sudo()
+        google_maps_region = ICPSudo.get_param(
+            'google.region_localization', default='')
         val = google_maps_region.split('=')
-        if val:
-            region = val[-1]
-        else:
-            region = ''
-        return dict(google_maps_region_localization=region)
+        region = val and val[-1] or ''
+        return region
 
-    def set_google_maps_theme(self):
-        ir_config_obj = self.env['ir.config_parameter']
-        theme = self.google_maps_theme or 'default'
-        ir_config_obj.set_param('google_maps_theme',
-                                theme,
-                                groups=['base.group_system'])
+    @api.model
+    def _get_google_maps_geometry(self):
+        ICPSudo = self.env['ir.config_parameter'].sudo()
+        google_maps_libraries = ICPSudo.get_param(
+            'google.maps_libraries', default='')
+        libraries = google_maps_libraries.split(',')
+        return 'geometry' in libraries
 
-    def get_default_google_maps_theme(self, fields):
-        ir_config_obj = self.env['ir.config_parameter']
-        theme = ir_config_obj.get_param('google_maps_theme', default='default')
-        return dict(google_maps_theme=theme)
+    @api.multi
+    def _set_google_maps_geometry(self):
+        return 'geometry' if self.google_maps_geometry else ''
+
+    @api.model
+    def _get_google_maps_places(self):
+        ICPSudo = self.env['ir.config_parameter'].sudo()
+        google_maps_libraries = ICPSudo.get_param(
+            'google.maps_libraries', default='')
+        libraries = google_maps_libraries.split(',')
+        return 'places' in libraries
+
+    @api.multi
+    def _set_google_maps_places(self):
+        return 'places' if self.google_maps_places else ''
