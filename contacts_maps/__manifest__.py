@@ -11,6 +11,7 @@
 Contacts Maps
 =============
 
+Added map view on contacts
 """,
     'depends': ['contacts', 'web_google_maps'],
     'website': '',
