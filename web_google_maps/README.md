@@ -5,22 +5,25 @@ Web Google Maps
 
 
 This module contains three new features:
- - New view type and mode (`map`)
- - New widget (`gplaces_address_autocomplete`)
- - New widget (`gplaces_autocomplete`)
+ - New view type and mode `map`
+ - New widget `gplaces_address_autocomplete`
+ - New widget `gplaces_autocomplete`
  
 
-## Map view (`map`)
-Basically, this new view(`map`) will integrate Google Maps into Odoo.    
-Enable you to display a partner location or all your partners location around the world on a map.   
+# Map view  `"map"`
+Basically, this new view `map`  will integrate Google Maps into Odoo.    
+Enable you to display `res.partner` geolocation on map or any model contains geolocation.   
 This feature will work seamlessly with Odoo means you can search your partner location using Odoo search feature.     
 
-There are four available attributes that you can customize:
- - `lat` : an attritube to tell the map the latitude field on the object (mandatory)
- - `lng` : an attritute to tell the map the longitude field on the object (mandatory)
- - `color` : an attribute to modify marker color (optional) any given color will set all markers color.
- - `colors` : work like attribute `color` but more configurable (you can set marker color depends on it's value) this attribute works   - `library` : an attribute to tell map which map that will be loaded (there are two library `geometry` and `drawing`) 
-  similar to `colors` of tree view on Odoo 9.0
+There are five available attributes that you can customize
+ - `lat` : an attritube to tell the map the latitude field on the object __[mandatory]__
+ - `lng` : an attritute to tell the map the longitude field on the object __[mandatory]__
+ - `color` : an attribute to modify marker color (optional) any given color will set all markers color __[optional]__.
+ - `colors` : work like attribute `color` but more configurable (you can set marker color depends on it's value) this attribute works similar to `colors` of tree view on Odoo 9.0 __[optional]__
+ - `library` : an attribute to tell map which map that will be loaded __[mandatory]__.    
+    This options has two values:   
+    1. `geometry`
+    2. `drawing`
  
 How to create the view?    
 Example
@@ -133,8 +136,7 @@ Yes, you're right.
 The marker infowindow will use `kanban-box` kanban card style.    
 
 
-##  How to setup color for marker on map?
-
+### How to setup color for marker on map?
 There are two attributes:
  - `colors` 
  - `color` 
@@ -152,21 +154,19 @@ Example:
     </map>
 
 
-## New widget (`gplaces_address_form`)
+# New widget `"gplaces_address_autocomplete"`
 
-Basically this new widget will integrate another cool feature of Google Maps which is "Place Autocomplete Address Form" (go and visit this [site](https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete-addressform) if you don't know yet how this cool feature work) 
-
+New widget to integrate [Place Autocomplete Address Form](https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete-addressform) in Odoo.  
 The widget has four options that can be modify:
  - `component_form`
  - `fillfields`
  - `lat`
  - `lng`
 
-### Component form (`component_form`)
+### Component form `component_form`
 Is an option used to modify which value you want to take from an objects returned by the geocoder.    
 Full documentation about Google component types can be found [here](https://developers.google.com/maps/documentation/geocoding/intro#Types)
-
-By default this option are configured like following value:
+By default this option are configured like the following value
 >
     {
         'street_number': 'long_name',
@@ -208,11 +208,11 @@ Example:
     </record>
 
 
-### Fill fields (`fillfields`)
-Is an option that will be influenced by `gplaces_address_form` widget.    
-This options should contains known `fields` that you want to set a value for each field automatically.    
+### Fill fields `fillfields`
+Is an option that will be influenced by `gplaces_address_autocomplete` widget.    
+This options should contains known `fields` that you want the widget to fulfill a value for each given field automatically.    
 A field can contains one or multiple elements of component form    
-By default this options are configured like following value:
+By default this options are configured like the following
 >
     {
         'street': ['street_number', 'route'],
@@ -236,22 +236,20 @@ Example:
         </field>
     </record>
 
-### Latitude (`lat`) and Longitude (`lng`)
+### Latitude `lat` and Longitude `lng`
 This options tell the widget the fields geolocation, in order to have this fields filled automatically.
 
 
-## New widget (`gplaces_autocomplete`)
+# New widget `"gplaces_autocomplete"`
 
-Basically this new widget will integrate another cool feature of Google Maps which is "Place Autocomplete" (go and visit this [site](https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete) if you don't know yet how this cool feature work) 
+New widget to integrate [Place Autocomplete](https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete) in Odoo.
+This widget have similar configuration to `gplaces_address_autocomplete`.
 
-This widget have similar configuration to `gplaces_address_form`.
+### Component form `component_form` ###
+Same configuration of `gplaces_address_autocomplete` component form
 
-### Component form (`component_form`)
-Same configuration of `gplaces_address_form` component form
-
-### Fill fields (`fillfields`)
-This configuration works similar to `gplace_address_form`.
-
+### Fill fields `fillfields`
+This configuration works similar to `gplaces_address_autocomplete`.
 By default this options are configured like following value:
 >
     {
@@ -274,17 +272,18 @@ By default this options are configured like following value:
         }
     };
 
-# Technical:
-This module will install `base_setup` and `base_geolocalize` (no more `website_google_maps`).    
-*I recommend you to add Google Maps Key API into Odoo Settings > General Settings when you installed this module*
+# Technical
+This module will install `base_setup` and `base_geolocalize`.    
+*I recommend you to setup __Google Maps Key API__ and add it into Odoo `Settings > General` Settings when you installed this module*
+
+*__List of Google APIs & services required in order to make all features works__*
+- Geocoding API
+- Maps JavaScript API
+- Places API for Web
 
 
 The goal of this module is to bring the power of Google Maps into Odoo    
-This module has tested on Odoo Version 11.0c    
+This module has tested on Odoo Version 12.0c    
 
-[![ko-fi](https://www.ko-fi.com/img/donate_sm.png)](https://ko-fi.com/P5P4FOM0),    
-if you want to support me to keep this project maintained. Thanks :)
-
-Regards,  
-Yopi  
-yopiangi@gmail.com
+[![ko-fi](https://www.ko-fi.com/img/donate_sm.png)](https://ko-fi.com/P5P4FOM0)    
+*if you want to support me to keep this project maintained. Thanks :)*
