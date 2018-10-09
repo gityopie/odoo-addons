@@ -274,7 +274,7 @@ By default this options are configured like following value:
 This module will install `base_setup` and `base_geolocalize`.    
 *I recommend you to setup __Google Maps Key API__ and add it into Odoo `Settings > General` Settings when you installed this module*
 
-*__List of Google APIs & services required in order to make all features function:__*
+*__List of Google APIs & services required in order to make all features works__*
 - Geocoding API
 - Maps JavaScript API
 - Places API for Web
@@ -283,5 +283,5 @@ This module will install `base_setup` and `base_geolocalize`.
 The goal of this module is to bring the power of Google Maps into Odoo    
 This module has tested on Odoo Version 12.0c    
 
-[![ko-fi](https://www.ko-fi.com/img/donate_sm.png)](https://ko-fi.com/P5P4FOM0)
+[![ko-fi](https://www.ko-fi.com/img/donate_sm.png)](https://ko-fi.com/P5P4FOM0)    
 *if you want to support me to keep this project maintained. Thanks :)*
