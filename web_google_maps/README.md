@@ -283,7 +283,7 @@ This module will install `base_setup` and `base_geolocalize`.
 
 
 The goal of this module is to bring the power of Google Maps into Odoo    
-This module has tested on Odoo Version 12.0c    
+This module has tested on Odoo Version 11.0c    
 
 [![ko-fi](https://www.ko-fi.com/img/donate_sm.png)](https://ko-fi.com/P5P4FOM0)    
 *if you want to support me to keep this project maintained. Thanks :)*
