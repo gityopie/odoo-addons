@@ -161,7 +161,7 @@ odoo.define('web_google_maps.MapController', function (require) {
             }
         },
         _onButtonMapCenter: function (event) {
-            event.preventDefault();
+            event.stopPropagation();
             if (this.renderer.mapLibrary === 'geometry') {
                 this.renderer.mapGeometryCentered();
             } else if (this.renderer.mapLibrary === 'drawing') {
@@ -169,7 +169,7 @@ odoo.define('web_google_maps.MapController', function (require) {
             }
         },
         _onButtonNew: function (event) {
-            event.preventDefault();
+            event.stopPropagation();
             this.trigger_up('switch_view', {
                 view_type: 'form',
                 res_id: undefined
