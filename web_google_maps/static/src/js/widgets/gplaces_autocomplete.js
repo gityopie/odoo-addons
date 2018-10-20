@@ -311,6 +311,9 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
                     if (this.attrs.options.fillfields.hasOwnProperty('general')) {
                         this.fillfields['general'] = _.defaults({}, this.attrs.options.fillfields.general, this.fillfields.general);
                     }
+                    if (this.attrs.options.fillfields.hasOwnProperty('geolocation')) {
+                        this.fillfields['geolocation'] = this.attrs.options.fillfields.geolocation;
+                    }
                 }
             }
             this._super();
@@ -342,6 +345,23 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
             }
             return res;
         },
+        _setGeolocation: function (lat, lng) {
+            var res = {};
+            if (this.lat && this.lng) {
+                var _res = this._super(lat, lng);
+                return _res;
+            } else if (this.fillfields.geolocation) {
+                _.each(this.fillfields.geolocation, function (alias, field) {
+                    if (alias === 'latitude') {
+                        res[field] = lat;
+                    }
+                    if (alias === 'longitude') {
+                        res[field] = lng;
+                    }
+                });
+            }
+            return res;
+        },
         initGplacesAutocomplete: function () {
             var self = this,
                 place, requests = [];
@@ -363,9 +383,7 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
                     _.extend(values, google_place);
                     // Get place geolocation
                     var google_geolocation = self._setGeolocation(place.geometry.location.lat(), place.geometry.location.lng());
-                    _.each(google_geolocation, function (val, field) {
-                        requests.push(self._prepareValue(false, field, val));
-                    });
+                    _.extend(values, google_geolocation);
 
                     _.each(self.target_fields, function (field) {
                         requests.push(self._prepareValue(field.relation, field.name, values[field.name]));

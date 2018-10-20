@@ -20,15 +20,20 @@
                 <!-- if the format is different in your country for example, street name followed by number -->
                 <!-- you can modify the widget via options -->
                 <!-- <attribute name="options">{ -->
-                    <!-- 'lat': 'partner_latitude',  -->
-                    <!-- 'lng': 'partner_longitude', -->
                     <!-- 'fillfields': { -->
                         <!-- 'address': { -->
                             <!-- 'street': ['route', 'street_number'] -->
                         <!-- } -->
                     <!-- } -->
                 <!-- }</attribute> -->
-                <attribute name="options">{'lat': 'partner_latitude', 'lng': 'partner_longitude'}</attribute>
+                <attribute name="options">{
+                    'fillfields': {
+                        'geolocation': {
+                            'partner_latitude': 'latitude',
+                            'partner_longitude': 'longitude'
+                        }
+                    }
+                }</attribute>
             </field>
             <field name="street" position="attributes">
                 <attribute name="widget">gplaces_address_autocomplete</attribute>
