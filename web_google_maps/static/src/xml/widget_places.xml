@@ -18,11 +18,11 @@
     <t t-name="MapView.buttons">
         <div class="o_list_buttons">
             <t t-if="(widget.is_action_enabled !== undefined ? widget.is_action_enabled('create') : false) || !widget.isReadonly">
-                <button type="button" class="btn btn-primary btn-sm o-map-button-new" accesskey="c">
+                <button type="button" class="btn btn-primary o-map-button-new" accesskey="c">
                     <t t-esc="create_text || _t('Create')"/>
                 </button>
             </t>
-            <button type="button" class="btn btn-default btn-sm o-map-button-center-map">
+            <button type="button" class="btn btn-secondary o-map-button-center-map">
                 <t t-esc="_t('Center Map')"/>
             </button>
         </div>
