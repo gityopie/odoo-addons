@@ -14,13 +14,13 @@ odoo.define('web_google_maps.MapView', function (require) {
         accesskey: 'm',
         display_name: _lt('Map'),
         icon: 'fa-map-o',
-        jsLibs: [],
         config: _.extend({}, BasicView.prototype.config, {
             Model: MapModel,
             Renderer: MapRenderer,
             Controller: MapController
         }),
         viewType: 'map',
+        mobile_friendly: true,
         init: function (viewInfo, params) {
             this._super.apply(this, arguments);
 
