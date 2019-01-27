@@ -15,10 +15,29 @@
         <field name="arch" type="xml">
             <field name="name" position="attributes">
                 <attribute name="widget">gplaces_autocomplete</attribute>
-                <attribute name="options">{'lat': 'partner_latitude', 'lng': 'partner_longitude'}</attribute>
+                <!-- by default address format for street is formatted by number followed by street name -->
+                <!-- if the format is different in your country for example, street name followed by number -->
+                <!-- you can modify the widget via options -->
+                <!-- <attribute name="options">{ -->
+                    <!-- 'fillfields': { -->
+                        <!-- 'address': { -->
+                            <!-- 'street': ['route', 'street_number'] -->
+                        <!-- } -->
+                    <!-- } -->
+                <!-- }</attribute> -->
+                <attribute name="options">{
+                    'fillfields': {
+                        'geolocation': {
+                            'partner_latitude': 'latitude',
+                            'partner_longitude': 'longitude'
+                        }
+                    }
+                }</attribute>
             </field>
             <field name="street" position="attributes">
                 <attribute name="widget">gplaces_address_autocomplete</attribute>
+                <!-- the same for address_form widget -->
+                <!-- <attribute name="options">{'lat': 'partner_latitude', 'lng': 'partner_longitude', 'fillfields': {'street': ['route', 'street_number']}}</attribute> -->
                 <attribute name="options">{'lat': 'partner_latitude', 'lng': 'partner_longitude'}</attribute>
             </field>
             <div name="button_box" position="inside">
