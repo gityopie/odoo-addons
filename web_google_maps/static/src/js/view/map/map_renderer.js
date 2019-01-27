@@ -992,7 +992,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
         },
         _initMarkerCluster: function () {
             this.markerCluster = new MarkerClusterer(this.gmap, [], {
-                imagePath: '/web_google_maps/static/src/img/m',
+                imagePath: '/web_google_maps/static/lib/markercluster/img/m',
                 gridSize: 20,
                 maxZoom: 17
             });
