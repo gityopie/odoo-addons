@@ -9,7 +9,7 @@ odoo.define('web_google_maps.Utils', function (require) {
         intersection: 'short_name',
         political: 'short_name',
         country: 'short_name',
-        administrative_area_level_1: 'long_name',
+        administrative_area_level_1: 'short_name',
         administrative_area_level_2: 'short_name',
         administrative_area_level_3: 'short_name',
         administrative_area_level_4: 'short_name',
@@ -28,6 +28,19 @@ odoo.define('web_google_maps.Utils', function (require) {
         airport: 'short_name',
         park: 'short_name',
         point_of_interest: 'long_name'
+    };
+    /**
+     * Mapping field with an alias
+     * key: alias
+     * value: field
+     */
+    var ADDRESS_FORM = {
+        street: 'street',
+        street2: 'street2',
+        city: 'city',
+        zip: 'zip',
+        state_id: 'state_id',
+        country_id: 'country_id'
     };
 
     function fetchValues(model, field_name, value) {
@@ -49,6 +62,24 @@ odoo.define('web_google_maps.Utils', function (require) {
         }
         return def;
     }
+
+    function fetchCountryState(model, country, state) {
+        var def = $.Deferred();
+
+        if (country && state) {
+            rpc.query({
+                model: model,
+                method: 'search_read',
+                args: [[['country_id', '=', country], ['code', '=', state]], ['display_name']]
+            }).then(function(record) {
+                def.resolve(record);
+            });
+        } else {
+            def.resolve([]);
+        }
+        return def;
+    }
+
 
     function gmaps_get_geolocation(place, options) {
         if (!place) return {};
@@ -125,9 +156,11 @@ odoo.define('web_google_maps.Utils', function (require) {
     }
     return {
         'GOOGLE_PLACES_COMPONENT_FORM': GOOGLE_PLACES_COMPONENT_FORM,
+        'ADDRESS_FORM': ADDRESS_FORM,
         'gmaps_populate_address': gmaps_populate_address,
         'gmaps_populate_places': gmaps_populate_places,
         'gmaps_get_geolocation': gmaps_get_geolocation,
-        'fetchValues': fetchValues
+        'fetchValues': fetchValues,
+        'fetchCountryState': fetchCountryState
     }
 });
