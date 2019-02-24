@@ -946,7 +946,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
             var self = this;
             var update_map = function (style) {
                 var styledMapType = new google.maps.StyledMapType(self.mapThemes[style], {
-                    name: style,
+                    name: 'Theme',
                 });
                 self.gmap.setOptions({
                     mapTypeControlOptions: {
@@ -956,6 +956,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
                     }
                 });
                 //Associate the styled map with the MapTypeId and set it to display.
+                if (self.theme === 'default') return;
                 self.gmap.mapTypes.set('styled_map', styledMapType);
                 self.gmap.setMapTypeId('styled_map');
             }
