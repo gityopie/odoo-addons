@@ -5,9 +5,7 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">res.partner</field>
         <field name="view_type">form</field>
-        <field name="domain">[('id', '=', active_id)]</field>
-        <field name="view_mode">map,tree,form</field>
-        <field name="target">current</field>
+        <field name="view_mode">map,form</field>
     </record>
     <record id="view_partner_form" model="ir.ui.view">
         <field name="name">Google Places Partner Form</field>
