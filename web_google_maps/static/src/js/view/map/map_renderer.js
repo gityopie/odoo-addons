@@ -950,8 +950,6 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
                 self.gmap.setOptions({
                     mapTypeControlOptions: {
                         mapTypeIds: ['roadmap', 'satellite', 'hybrid', 'terrain', 'styled_map'],
-                        style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
-                        position: google.maps.ControlPosition.TOP_CENTER
                     }
                 });
                 //Associate the styled map with the MapTypeId and set it to display.
