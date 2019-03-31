@@ -11,6 +11,7 @@
 Contacts Maps
 =============
 
+Added map view on contacts
 """,
     'depends': ['contacts', 'base_geolocalize', 'google_marker_icon_picker'],
     'website': '',

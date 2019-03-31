@@ -120,7 +120,7 @@ class ResConfigSettings(models.TransientModel):
 
         lang_localization = self._get_google_maps_lang_localization()
         region_localization = self._get_google_maps_region_localization()
-        
+
         lib_places = self._get_google_maps_places()
         lib_geometry = self._get_google_maps_geometry()
 
