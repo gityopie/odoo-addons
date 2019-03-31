@@ -916,6 +916,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
                 this.defaultMarkerColor = 'red';
                 this.markerGroupedInfo = [];
                 this.markers = [];
+                this.iconUrl = '/web_google_maps/static/src/img/markers/';
                 this.fieldLat = params.fieldLat;
                 this.fieldLng = params.fieldLng;
                 this.markerColor = params.markerColor;
@@ -1040,7 +1041,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
                 _odooRecord: record
             };
             if (color) {
-                options.icon = ICON_URL + color.trim() + '.png';
+                options.icon = this.iconUrl + color.trim() + '.png';
             }
             var marker = new google.maps.Marker(options);
             this.markers.push(marker);
@@ -1146,7 +1147,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
                 self.markerGroupedInfo.push({
                     'title': record.value || 'Undefined',
                     'count': record.count,
-                    'marker': ICON_URL + record.markerColor.trim() + '.png'
+                    'marker': self.iconUrl + record.markerColor.trim() + '.png'
                 });
             });
         },
