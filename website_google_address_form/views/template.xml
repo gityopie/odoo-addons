@@ -5,10 +5,10 @@
             <t t-set="google_maps_api_key" t-value="request.env['ir.config_parameter'].sudo().get_param('google.api_key_geocode')"/>
             <t t-set="google_maps_libraries" t-value="request.env['ir.config_parameter'].sudo().get_param('google.maps_libraries')"/>
             <t t-if="google_maps_api_key">
-                <script type="text/javascript" t-attf-src="https://maps.googleapis.com/maps/api/js?v=3.33&amp;key=#{google_maps_api_key}&amp;libraries=#{google_maps_libraries}"/>
+                <script type="text/javascript" t-attf-src="https://maps.googleapis.com/maps/api/js?v=quarterly&amp;key=#{google_maps_api_key}&amp;libraries=#{google_maps_libraries}"/>
             </t>
             <t t-if="not google_maps_api_key">
-                <script type="text/javascript" t-attf-src="https://maps.googleapis.com/maps/api/js?v=3.31&amp;libraries=#{google_maps_libraries}"/>
+                <script type="text/javascript" t-attf-src="https://maps.googleapis.com/maps/api/js?v=quarterly&amp;libraries=#{google_maps_libraries}"/>
             </t>
         </xpath>
     </template>

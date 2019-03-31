@@ -5,9 +5,8 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">res.partner</field>
         <field name="view_type">form</field>
+        <field name="view_mode">map,form</field>
         <field name="domain">[('id', '=', active_id)]</field>
-        <field name="view_mode">map,tree,form</field>
-        <field name="target">current</field>
     </record>
     <record id="view_partner_form" model="ir.ui.view">
         <field name="name">Google Places Partner Form</field>
@@ -16,8 +15,8 @@
         <field name="arch" type="xml">
             <field name="name" position="attributes">
                 <attribute name="widget">gplaces_autocomplete</attribute>
-                <!-- by default address format for street is formatted by number followed by street name -->
-                <!-- if the format is different in your country for example, street name followed by number -->
+                <!-- by default address format for street is formatted by street number followed by street name -->
+                <!-- if the format is different in your country for example, street name followed by street number -->
                 <!-- you can modify the widget via options -->
                 <!-- <attribute name="options">{ -->
                     <!-- 'fillfields': { -->
@@ -61,7 +60,7 @@
             </field>
         </field>
     </record>
-    <!-- Partner kanban view inherte -->
+    <!-- Partner kanban view inherit -->
     <record model="ir.ui.view" id="view_crm_lead_res_partner_map">
         <field name="name">res.partner.map.saleorder.inherit</field>
         <field name="model">res.partner</field>
@@ -79,5 +78,14 @@
                 </span>
             </xpath>
         </field>
+    </record>
+    <record id="base.action_partner_customer_form" model="ir.actions.act_window">
+        <field name="view_mode">kanban,tree,form,map</field>
+    </record>
+    <record id="action_view_partner_customer_map" model="ir.actions.act_window.view">
+        <field name="sequence" eval="4"/>
+        <field name="view_mode">map</field>
+        <field name="view_id" ref="web_google_maps.view_res_partner_map"/>
+        <field name="act_window_id" ref="base.action_partner_customer_form"/>
     </record>
 </odoo>
