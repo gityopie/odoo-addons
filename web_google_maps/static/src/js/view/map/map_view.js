@@ -30,7 +30,7 @@ odoo.define('web_google_maps.MapView', function (require) {
             var activeActions = this.controllerParams.activeActions;
             var mode = arch.attrs.editable && !params.readonly ? "edit" : "readonly";
 
-            this.loadParams.limit = this.loadParams.limit || 40;
+            this.loadParams.limit = this.loadParams.limit || 80;
             this.loadParams.openGroupByDefault = true;
             this.loadParams.type = 'list';
 
