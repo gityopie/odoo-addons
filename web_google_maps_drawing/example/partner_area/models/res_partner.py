@@ -5,7 +5,7 @@ from odoo import fields, models
 class ResPartnerArea(models.Model):
     """ Inherit Drawing mixins model 'google_maps.drawing.shape.mixin' """
     _name = 'res.partner.area'
-    _inherit = 'google_maps.drawing.shape.mixin'
+    _inherit = ['mail.thread', 'google_maps.drawing.shape.mixin']
     _description = 'Partner Area'
 
     partner_id = fields.Many2one(

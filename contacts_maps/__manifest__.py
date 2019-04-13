@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Contacts Maps',
-    'version': '12.0.1.0.0',
+    'version': '12.0.1.0.1',
     'author': 'Yopi Angi',
     'license': 'AGPL-3',
     'maintainer': 'Yopi Angi<yopiangi@gmail.com>',
@@ -11,8 +11,9 @@
 Contacts Maps
 =============
 
+Added map view on contacts
 """,
-    'depends': ['contacts', 'web_google_maps'],
+    'depends': ['contacts', 'base_geolocalize', 'google_marker_icon_picker'],
     'website': '',
     'data': [
         'views/res_partner.xml',

@@ -39,10 +39,10 @@ odoo.define('widget_google_maps_drawing.FieldMapDrawingShape', function (require
                 maxZoom: 20,
                 fullscreenControl: true,
                 mapTypeControl: true,
+                gestureHandling: 'cooperative',
                 mapTypeControlOptions: {
                     mapTypeIds: ['roadmap', 'satellite', 'hybrid', 'terrain'],
                     style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-                    position: google.maps.ControlPosition.TOP_CENTER
                 }
             });
         },
@@ -140,7 +140,6 @@ odoo.define('widget_google_maps_drawing.FieldMapDrawingShape', function (require
          * Draw polygon
          */
         _drawPolygon: function (options) {
-            var self = this;
             var polygon = new google.maps.Polygon({
                 strokeColor: '#FF0000',
                 strokeOpacity: 0.85,
@@ -151,9 +150,7 @@ odoo.define('widget_google_maps_drawing.FieldMapDrawingShape', function (require
                 map: this.gmap,
             });
             polygon.setOptions(options);
-            window.setTimeout(function () {
-                self._mapCenterMap(options.paths);
-            }, 1000);
+            this._mapCenterMap(polygon.getPath());
             return polygon;
         },
         /**
@@ -161,7 +158,6 @@ odoo.define('widget_google_maps_drawing.FieldMapDrawingShape', function (require
          * Draw rectangle
          */
         _drawRectangle: function (options) {
-            var self = this;
             var rectangle = new google.maps.Rectangle({
                 strokeColor: '#FF0000',
                 strokeOpacity: 0.85,
@@ -173,9 +169,7 @@ odoo.define('widget_google_maps_drawing.FieldMapDrawingShape', function (require
                 draggable: false
             });
             rectangle.setOptions(options);
-            window.setTimeout(function () {
-                self._mapCenterMap(false, rectangle.getBounds());
-            }, 1000);
+            this._mapCenterMap(false, rectangle.getBounds());
             return rectangle;
         },
         /**
@@ -195,9 +189,7 @@ odoo.define('widget_google_maps_drawing.FieldMapDrawingShape', function (require
                 draggable: false
             });
             circle.setOptions(options);
-            window.setTimeout(function () {
-                self._mapCenterMap(false, circle.getBounds());
-            }, 1000);
+            this._mapCenterMap(false, circle.getBounds());
             return circle;
         },
         /**
@@ -335,6 +327,7 @@ odoo.define('widget_google_maps_drawing.FieldMapDrawingShape', function (require
                     changes: values,
                     viewType: this.viewType
                 });
+                this.do_notify(_t(this.selectedShape.type + ' is saved'));
             }
         },
         _deleteSelectedShaped: function (event) {
@@ -345,12 +338,12 @@ odoo.define('widget_google_maps_drawing.FieldMapDrawingShape', function (require
             }
         },
         _mapCenterMap: function (paths, bounds) {
-            paths = paths || false;
+            paths = paths || [];
             bounds = bounds || false;
             var mapBounds = new google.maps.LatLngBounds();
-            if (paths) {
-                _.each(paths, function (latLng) {
-                    mapBounds.extend(latLng);
+            if (paths.length > 0) {
+                paths.forEach(function(item) {
+                    mapBounds.extend({lat: item.lat(), lng: item.lng()});
                 });
             } else if (bounds) {
                 mapBounds.union(bounds);

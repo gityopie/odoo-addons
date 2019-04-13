@@ -40,7 +40,7 @@ class CrmLead(models.Model):
                     addr=geo_query_address(
                         city=lead.city,
                         state=lead.state_id.name,
-                        country=lead.country_id.name), 
+                        country=lead.country_id.name),
                     apikey=google_api_key)
 
             if result:
