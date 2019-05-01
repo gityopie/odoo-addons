@@ -41,7 +41,7 @@ odoo.define('widget_google_maps_drawing.FieldMapDrawingShape', function (require
                 mapTypeControl: true,
                 gestureHandling: 'cooperative',
                 mapTypeControlOptions: {
-                    mapTypeIds: ['roadmap', 'satellite', 'hybrid', 'terrain'],
+                    mapTypeIds: ['satellite', 'hybrid', 'terrain'],
                     style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
                 }
             });
@@ -107,7 +107,10 @@ odoo.define('widget_google_maps_drawing.FieldMapDrawingShape', function (require
                     var selectedShape = polygon;
                     selectedShape.type = 'polygon';
                     this._setSelectedShape(selectedShape);
-                    google.maps.event.addListener(selectedShape, 'click', this._setSelectedShape.bind(this, selectedShape));
+                    google.maps.event.addListener(selectedShape, 'dblclick', this._setSelectedShape.bind(this, selectedShape));
+                    // event to handle when user editing polygon
+                    google.maps.event.addListener(polygon.getPath(), 'set_at', this._onPolygonCommit.bind(this));
+                    google.maps.event.addListener(polygon.getPath(), 'insert_at', this._onPolygonCommit.bind(this));
                 } else if (value.type === 'rectangle') {
                     var rectangle = this._drawRectangle(value.options);
                     rectangle.setOptions({
@@ -119,7 +122,9 @@ odoo.define('widget_google_maps_drawing.FieldMapDrawingShape', function (require
                     var selectedShape = rectangle;
                     selectedShape.type = 'rectangle';
                     this._setSelectedShape(selectedShape);
+                    // event to handle when user editing rectangle
                     google.maps.event.addListener(selectedShape, 'click', this._setSelectedShape.bind(this, selectedShape));
+                    google.maps.event.addListener(rectangle, 'bounds_changed', this._onRectangleCommit.bind(this));
                 } else if (value.type === 'circle') {
                     var circle = this._drawCircle(value.options);
                     circle.setOptions({
@@ -132,6 +137,9 @@ odoo.define('widget_google_maps_drawing.FieldMapDrawingShape', function (require
                     selectedShape.type = 'circle';
                     this._setSelectedShape(selectedShape);
                     google.maps.event.addListener(selectedShape, 'click', this._setSelectedShape.bind(this, selectedShape));
+                    // event to handle when user editing circle
+                    google.maps.event.addListener(circle, 'radius_changed', this._onCircleCommit.bind(this));
+                    google.maps.event.addListener(circle, 'center_changed', this._onCircleCommit.bind(this));
                 }
             }
         },
@@ -177,7 +185,6 @@ odoo.define('widget_google_maps_drawing.FieldMapDrawingShape', function (require
          * Draw circle
          */
         _drawCircle: function (options) {
-            var self = this;
             var circle = new google.maps.Circle({
                 strokeColor: '#FF0000',
                 strokeOpacity: 0.85,
@@ -233,6 +240,7 @@ odoo.define('widget_google_maps_drawing.FieldMapDrawingShape', function (require
             this.selectedShapes[uniqueId] = newShape;
             google.maps.event.addListener(newShape, 'click', this._setSelectedShape.bind(this, newShape));
             this._setSelectedShape(newShape);
+            this._commitShapeDraw();
         },
         /**
          * @private
@@ -257,13 +265,6 @@ odoo.define('widget_google_maps_drawing.FieldMapDrawingShape', function (require
          * Load action buttons into the map
          */
         _loadDrawingActionButton: function () {
-            if (this.$btnDrawingCommit === undefined) {
-                this.$btnDrawingCommit = $(qweb.render('WidgetDrawing.BtnCommit', {
-                    widget: this
-                }));
-                this.gmap.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(this.$btnDrawingCommit.get(0));
-                this.$btnDrawingCommit.on('click', this._commitShapeDraw.bind(this));
-            }
             if (this.$btnDrawingClear === undefined) {
                 this.$btnDrawingClear = $(qweb.render('WidgetDrawing.BtnDelete', {
                     widget: this
@@ -274,60 +275,87 @@ odoo.define('widget_google_maps_drawing.FieldMapDrawingShape', function (require
         },
         /**
          * @private
+         * Polygon 
          */
-        _commitShapeDraw: function (event) {
-            event.preventDefault();
-            event.stopPropagation();
+        _onPolygonCommit: function () {
+            var paths = this.selectedShape.getPath();
+            var area = google.maps.geometry.spherical.computeArea(paths);
+            var paths_latLng = [];
+            paths.forEach(function (item) {
+                paths_latLng.push({
+                    'lat': item.lat(),
+                    'lng': item.lng()
+                });
+            });
+            var values = {
+                'shape_type': this.selectedShape.type,
+                'shape_area': area,
+            };
+            var shape_paths = {
+                'type': this.selectedShape.type,
+                'options': {
+                    paths: paths_latLng
+                }
+            };
+            this._onTriggerUp(values, shape_paths);
+        },
+        _onRectangleCommit: function () {
             var values = {
                 'shape_type': this.selectedShape.type,
             };
-            var shape_paths = {};
-            if (this.selectedShape.type === 'rectangle') {
-                var bounds = this.selectedShape.getBounds();
-                var directions = bounds.toJSON();
-                shape_paths['type'] = this.selectedShape.type;
-                shape_paths['options'] = {
-                    bounds: directions
-                };
-            } else if (this.selectedShape.type == 'circle') {
-                var radius = this.selectedShape.getRadius();
-                var center = this.selectedShape.getCenter();
-                values['shape_radius'] = radius;
-
-                shape_paths['type'] = this.selectedShape.type;
-                shape_paths['options'] = {
+            var bounds = this.selectedShape.getBounds();
+            var directions = bounds.toJSON();
+            var shape_paths = {
+                'type': this.selectedShape.type,
+                'options': {
+                    'bounds': directions
+                }
+            };
+            this._onTriggerUp(values, shape_paths);
+        },
+        _onCircleCommit: function () {
+            var radius = this.selectedShape.getRadius();
+            var center = this.selectedShape.getCenter();
+            var values = {
+                'shape_type': this.selectedShape.type,
+                'shape_radius': radius
+            };
+            var shape_paths = {
+                'type': this.selectedShape.type,
+                'options': {
                     radius: radius,
                     center: {
                         'lat': center.lat(),
                         'lng': center.lng()
                     }
-                };
-            } else {
-                var paths = this.selectedShape.getPath();
-                var area = google.maps.geometry.spherical.computeArea(paths);
-                var paths_latLng = [];
-                paths.forEach(function (item) {
-                    paths_latLng.push({
-                        'lat': item.lat(),
-                        'lng': item.lng()
-                    });
-                });
-                values['shape_area'] = area;
-                shape_paths['type'] = this.selectedShape.type;
-                shape_paths['options'] = {
-                    paths: paths_latLng
-                };
+                }
             };
+            this._onTriggerUp(values, shape_paths);
+        },
+        _onTriggerUp: function (values, shape_paths) {
+            var values = values || {};
+            var shape_paths = shape_paths || {};
+            values['shape_paths'] = JSON.stringify(shape_paths);
+            this.trigger_up('field_changed', {
+                dataPointID: this.dataPointID,
+                changes: values,
+                viewType: this.viewType
+            });
+        },
+        /**
+         * @private
+         */
+        _commitShapeDraw: function () {
             if (Object.keys(this.selectedShapes).length > 1) {
                 this.do_warn(_t('Only one shape is allowed!'));
-            } else {
-                values['shape_paths'] = JSON.stringify(shape_paths);
-                this.trigger_up('field_changed', {
-                    dataPointID: this.dataPointID,
-                    changes: values,
-                    viewType: this.viewType
-                });
-                this.do_notify(_t(this.selectedShape.type + ' is saved'));
+                return;
+            }
+            if (this.selectedShape.type === 'polygon') {
+                this._onPolygonCommit();
+            } else if (this.selectedShape.type === 'rectangle') {
+                this._onRectangleCommit();
+            } else if (this.selectedShape.type === 'circle') {
+                this._onCircleCommit();
             }
         },
         _deleteSelectedShaped: function (event) {
@@ -335,6 +363,7 @@ odoo.define('widget_google_maps_drawing.FieldMapDrawingShape', function (require
             if (this.selectedShape) {
                 delete this.selectedShapes[this.selectedShape._drawId];
                 this.selectedShape.setMap(null);
+                this._onTriggerUp();
             }
         },
         _mapCenterMap: function (paths, bounds) {
@@ -342,8 +371,8 @@ odoo.define('widget_google_maps_drawing.FieldMapDrawingShape', function (require
             bounds = bounds || false;
             var mapBounds = new google.maps.LatLngBounds();
             if (paths.length > 0) {
-                paths.forEach(function(item) {
-                    mapBounds.extend({lat: item.lat(), lng: item.lng()});
+                paths.forEach(function (item) {
+                    mapBounds.extend({ lat: item.lat(), lng: item.lng() });
                 });
             } else if (bounds) {
                 mapBounds.union(bounds);
