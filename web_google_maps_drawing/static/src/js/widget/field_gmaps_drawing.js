@@ -207,7 +207,6 @@ odoo.define('widget_google_maps_drawing.FieldMapDrawingShape', function (require
             if (value) {
                 var shapePath = JSON.parse(value);
                 var shapeOptions = shapePath.options;
-                console.log(' [shapePath.type] ', shapePath.type);
                 if (shapePath.type === 'polygon') {
                     this._drawPolygon(shapeOptions);
                 } else if (shapePath.type === 'rectangle') {
