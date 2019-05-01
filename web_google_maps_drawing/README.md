@@ -17,7 +17,7 @@ This module will support three kind of shapes:
 
 ## Drawing Mixin    
 To ease the implementation of this feature, I defined a mixin class that you can use in your model
-.. code-block:: python
+```python
     class GoogleMapsDrawingShapeMixin(models.AbstractModel):
         _name = 'google_maps.drawing.shape.mixin'
         _description = 'Google Maps Shape Mixin'
@@ -37,14 +37,14 @@ To ease the implementation of this feature, I defined a mixin class that you can
         def decode_shape_paths(self):
             self.ensure_one()
             return safe_eval(self.shape_paths)
-
+```
 How to use the widget
-.. code-block:: xml
+```xml
      <field name="shape_paths" widget="map_drawing_shape"/>
-
+```
 
 How to load shape(s) on `map` view
-.. code:block:: xml
+```xml
     <record id="view_res_partner_area_map" model="ir.ui.view">
         <field name="name">view.res.partner.area.map</field>
         <field name="model">res.partner.area</field>
@@ -80,7 +80,7 @@ How to load shape(s) on `map` view
             </map>
         </field>
     </record>
-
+```
 _I have created a simple use case (custom module) to show you how to use the widget_
 
 # Module Dependency:
