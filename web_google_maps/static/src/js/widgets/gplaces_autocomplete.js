@@ -17,7 +17,6 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
          */
         init: function () {
             this._super.apply(this, arguments);
-            this._type_relations = ['one2many', 'many2one', 'many2many'];
             this.places_autocomplete = false;
             this.component_form = Utils.GOOGLE_PLACES_COMPONENT_FORM;
             this.address_form = Utils.ADDRESS_FORM;
@@ -246,9 +245,9 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
             if (place.hasOwnProperty('address_components')) {
                 var requests = [];
                 var google_address = this._populateAddress(place);
-                var indexOfState = _.findIndex(this.target_fields, function (f) { return f.name === self.address_form.state_id });
+                var index_of_state = _.findIndex(this.target_fields, function (f) { return f.name === self.address_form.state_id });
                 var target_fields = this.target_fields.slice();
-                var field_state = indexOfState > -1 ? target_fields.splice(indexOfState, 1)[0] : false;
+                var field_state = index_of_state > -1 ? target_fields.splice(index_of_state, 1)[0] : false;
 
                 _.each(target_fields, function (field) {
                     requests.push(self._prepareValue(field.relation, field.name, google_address[field.name]));
