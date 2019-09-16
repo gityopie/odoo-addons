@@ -9,7 +9,7 @@ odoo.define('web_google_maps.Utils', function (require) {
         intersection: 'short_name',
         political: 'short_name',
         country: 'short_name',
-        administrative_area_level_1: 'short_name',
+        administrative_area_level_1: 'long_name',
         administrative_area_level_2: 'short_name',
         administrative_area_level_3: 'short_name',
         administrative_area_level_4: 'short_name',
@@ -54,7 +54,7 @@ odoo.define('web_google_maps.Utils', function (require) {
                 args: [['|', ['name', '=', value], ['code', '=', value]], ['display_name',]],
                 limit: 1,
             }).then(function (record) {
-                res[field_name] = record.length === 1 ? record[0] : {};
+                res[field_name] = record.length === 1 ? record[0] : false;
                 def.resolve(res);
             });
         } else {
@@ -71,7 +71,7 @@ odoo.define('web_google_maps.Utils', function (require) {
             rpc.query({
                 model: model,
                 method: 'search_read',
-                args: [[['country_id', '=', country], '|', ['code', '=', state], ['name', '=', state]], ['display_name']],
+                args: [[['country_id', '=', country], '|', ['code', '=', state], ['name', 'ilike', state]], ['display_name']],
                 limit: 1,
             }).then(function (record) {
                 var record = record.length === 1 ? record[0] : {};
@@ -124,7 +124,7 @@ odoo.define('web_google_maps.Utils', function (require) {
                 street2: ", "
             },
             fields_to_fill = {},
-            options, temp, dlmter, result = {};
+            temp, dlmter, result = {};
 
         // initialize object key and value
         _.each(address_options, function (value, key) {
