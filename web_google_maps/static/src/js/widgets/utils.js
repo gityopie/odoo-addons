@@ -9,7 +9,7 @@ odoo.define('web_google_maps.Utils', function (require) {
         intersection: 'short_name',
         political: 'short_name',
         country: 'short_name',
-        administrative_area_level_1: 'long_name',
+        administrative_area_level_1: 'short_name',
         administrative_area_level_2: 'short_name',
         administrative_area_level_3: 'short_name',
         administrative_area_level_4: 'short_name',
@@ -71,7 +71,7 @@ odoo.define('web_google_maps.Utils', function (require) {
             rpc.query({
                 model: model,
                 method: 'search_read',
-                args: [[['country_id', '=', country], '|', ['code', '=', state], ['name', 'ilike', state]], ['display_name']],
+                args: [[['country_id', '=', country], '|', ['code', '=', state], ['name', '=', state]], ['display_name']],
                 limit: 1,
             }).then(function (record) {
                 var record = record.length === 1 ? record[0] : {};
