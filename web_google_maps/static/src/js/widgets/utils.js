@@ -49,11 +49,12 @@ odoo.define('web_google_maps.Utils', function (require) {
 
         if (model && value) {
             rpc.query({
-                'model': model,
-                'method': 'search_read',
-                'args': [['|', ['name', '=', value], ['code', '=', value]], ['display_name', ]]
+                model: model,
+                method: 'search_read',
+                args: [['|', ['name', '=', value], ['code', '=', value]], ['display_name',]],
+                limit: 1,
             }).then(function (record) {
-                res[field_name] = _.first(record) || false;
+                res[field_name] = record.length === 1 ? record[0] : false;
                 def.resolve(res);
             });
         } else {
@@ -66,12 +67,14 @@ odoo.define('web_google_maps.Utils', function (require) {
     function fetchCountryState(model, country, state) {
         var def = $.Deferred();
 
-        if (country && state) {
+        if (model && country && state) {
             rpc.query({
                 model: model,
                 method: 'search_read',
-                args: [[['country_id', '=', country], ['code', '=', state]], ['display_name']]
-            }).then(function(record) {
+                args: [[['country_id', '=', country], '|', ['code', '=', state], ['name', '=', state]], ['display_name']],
+                limit: 1,
+            }).then(function (record) {
+                var record = record.length === 1 ? record[0] : {};
                 def.resolve(record);
             });
         } else {
@@ -79,7 +82,6 @@ odoo.define('web_google_maps.Utils', function (require) {
         }
         return def;
     }
-
 
     function gmaps_get_geolocation(place, options) {
         if (!place) return {};
@@ -122,7 +124,7 @@ odoo.define('web_google_maps.Utils', function (require) {
                 street2: ", "
             },
             fields_to_fill = {},
-            options, temp, dlmter, result = {};
+            temp, dlmter, result = {};
 
         // initialize object key and value
         _.each(address_options, function (value, key) {
