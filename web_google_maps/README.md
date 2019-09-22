@@ -143,8 +143,8 @@ There are two attributes:
 
 
 Example:
-```xml 
-	<!-- colors -->
+```xml
+    <!-- colors -->
     <map string="Map" lat="partner_latitude" lng="partner_longitude" colors="green:company_type=='person';blue:company_type=='company';">
         ...
     </map>
@@ -227,7 +227,7 @@ By default this options are configured like the following
         
 This configuration can be modify into view field definition as well    
 Example:
->
+```xml
     <record id="view_res_partner_form" model="ir.ui.view">
         ...
         <field name="arch" type="xml">
@@ -236,7 +236,7 @@ Example:
             ...
         </field>
     </record>
-
+```
 ### Latitude `lat` and Longitude `lng`
 This options tell the widget the fields geolocation, in order to have this fields filled automatically.
 
@@ -282,7 +282,7 @@ This module will install `base_setup` and `base_geolocalize`.
 - Maps JavaScript API
 - Places API
 
-Visit this [page](https://developers.google.com/maps/documentation/javascript/get-api-key) of how to get an Google API Key
+Visit this [page](https://developers.google.com/maps/documentation/javascript/get-api-key) of how to get Google API Key
 
 
 [![ko-fi](https://www.ko-fi.com/img/donate_sm.png)](https://ko-fi.com/P5P4FOM0)    
