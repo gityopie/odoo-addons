@@ -240,8 +240,9 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
         /**
          * @param {*} place 
          */
-        handlePopulateAddress: function (place) {
+        handlePopulateAddress: function () {
             var self = this;
+            var place = this.places_autocomplete.getPlace();
             if (place.hasOwnProperty('address_components')) {
                 var requests = [];
                 var google_address = this._populateAddress(place);
@@ -282,16 +283,15 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
         },
         initGplacesAutocomplete: function () {
             var self = this;
-            if (!this.places_autocomplete) {
-                this.places_autocomplete = new google.maps.places.Autocomplete(this.$input.get(0), {
-                    types: ['address']
-                });
-            }
-            // When the user selects an address from the dropdown, populate the address fields in the form.
-            this.place_listener = google.maps.event.addListener(this.places_autocomplete, 'place_changed', function () {
-                var place = this.getPlace();
-                self.handlePopulateAddress(place);
-            });
+            setTimeout(function () {
+                if (!self.places_autocomplete) {
+                    self.places_autocomplete = new google.maps.places.Autocomplete(self.$input.get(0), {
+                        types: ['address']
+                    });
+                }
+                // When the user selects an address from the dropdown, populate the address fields in the form.
+                self.places_autocomplete.addListener('place_changed', self.handlePopulateAddress.bind(self));
+            }, 300);
         },
         /**
          * @override
@@ -315,7 +315,6 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
          */
         destroy: function () {
             if (this.places_autocomplete) {
-                google.maps.event.removeListener(this.place_listener);
                 google.maps.event.clearInstanceListeners(this.places_autocomplete);
             }
             return this._super();
@@ -390,8 +389,9 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
             }
             return res;
         },
-        handlePopulateAddress: function (place) {
+        handlePopulateAddress: function () {
             var self = this;
+            var place = this.places_autocomplete.getPlace();
             if (place.hasOwnProperty('address_components')) {
                 var values = {};
                 var requests = [];
@@ -435,16 +435,15 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
         },
         initGplacesAutocomplete: function () {
             var self = this;
-            if (!this.places_autocomplete) {
-                this.places_autocomplete = new google.maps.places.Autocomplete(this.$input.get(0), {
-                    types: ['establishment']
-                });
-            }
-            // When the user selects an address from the dropdown, populate the address fields in the form.
-            this.place_listener = google.maps.event.addListener(this.places_autocomplete, 'place_changed', function () {
-                var place = this.getPlace();
-                self.handlePopulateAddress(place);
-            });
+            setTimeout(function () {
+                if (!self.places_autocomplete) {
+                    self.places_autocomplete = new google.maps.places.Autocomplete(self.$input.get(0), {
+                        types: ['establishment']
+                    });
+                }
+                // When the user selects an address from the dropdown, populate the address fields in the form.
+                self.places_autocomplete.addListener('place_changed', self.handlePopulateAddress.bind(self));
+            }, 300);
         },
         /**
          * @override
@@ -469,7 +468,6 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
          */
         destroy: function () {
             if (this.places_autocomplete) {
-                google.maps.event.removeListener(this.place_listener);
                 google.maps.event.clearInstanceListeners(this.places_autocomplete);
             }
             return this._super();

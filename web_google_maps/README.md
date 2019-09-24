@@ -1,11 +1,11 @@
-Web Google Maps
-===============   
+# Web Google Maps
+
 [![Demo](https://i.ytimg.com/vi/2UdG5ILDtiY/3.jpg)](https://youtu.be/5hvAubXgUnc "Demo")    
 
 This module contains three new features:
- - New view type and mode `map`
- - New widget `gplaces_address_autocomplete`
- - New widget `gplaces_autocomplete`
+ - New view type and mode `"map"`
+ - New widget `"gplaces_address_autocomplete"`
+ - New widget `"gplaces_autocomplete"`
  
 
 # Map view  `"map"`
@@ -23,9 +23,9 @@ There are five available attributes that you can customize
     1. `geometry`
     2. `drawing`
  
-How to create the view?    
+### How to create the view?    
 Example
->
+```xml
     <!-- View -->
     <record id="view_res_partner_map" model="ir.ui.view">
         <field name="name">view.res.partner.map</field>
@@ -127,7 +127,7 @@ Example
         <field name="view_mode">tree,form,map</field>
         ...
     </record>
-
+```
 
 The view looks familiar?    
 Yes, you're right.    
@@ -136,12 +136,15 @@ The marker infowindow will use `kanban-box` kanban card style.
 
 ### How to setup color for marker on map?
 There are two attributes:
- - `colors` 
- - `color` 
+ - `colors`     
+ Allow you to display different marker color to represent a record on map
+ - `color`    
+ One marker color for all records on map
+
 
 Example:
-> 
-	<!-- colors -->
+```xml
+    <!-- colors -->
     <map string="Map" lat="partner_latitude" lng="partner_longitude" colors="green:company_type=='person';blue:company_type=='company';">
         ...
     </map>
@@ -150,7 +153,7 @@ Example:
     <map string="Map" lat="partner_latitude" lng="partner_longitude" color="orange">
         ...
     </map>
-
+```
 
 # New widget `"gplaces_address_autocomplete"`
 
@@ -165,7 +168,7 @@ The widget has four options that can be modify:
 Is an option used to modify which value you want to take from an objects returned by the geocoder.    
 Full documentation about Google component types can be found [here](https://developers.google.com/maps/documentation/geocoding/intro#Types)
 By default this option are configured like the following value
->
+```javascript
     {
         'street_number': 'long_name',
         'route': 'long_name',
@@ -192,10 +195,10 @@ By default this option are configured like the following value
         'park': 'short_name',
         'point_of_interest': 'long_name'
     }
-
+```
 This configuration can be modify into view field definition.    
 Example:
-> 
+```xml
     <record id="view_res_partner_form" model="ir.ui.view">
        ...
        <field name="arch" type="xml">
@@ -204,14 +207,14 @@ Example:
             ...
         </field>
     </record>
-
+```
 
 ### Fill fields `fillfields`
 Is an option that will be influenced by `gplaces_address_autocomplete` widget.    
 This options should contains known `fields` that you want the widget to fulfill a value for each given field automatically.    
 A field can contains one or multiple elements of component form    
 By default this options are configured like the following
->
+```javascript
     {
         'street': ['street_number', 'route'],
         'street2': ['administrative_area_level_3', 'administrative_area_level_4', 'administrative_area_level_5'],
@@ -220,11 +223,11 @@ By default this options are configured like the following
         'state_id': 'administrative_area_level_1',
         'country_id': 'country',
     }
-
+```
         
 This configuration can be modify into view field definition as well    
 Example:
->
+```xml
     <record id="view_res_partner_form" model="ir.ui.view">
         ...
         <field name="arch" type="xml">
@@ -233,7 +236,7 @@ Example:
             ...
         </field>
     </record>
-
+```
 ### Latitude `lat` and Longitude `lng`
 This options tell the widget the fields geolocation, in order to have this fields filled automatically.
 
@@ -249,7 +252,7 @@ Same configuration of `gplaces_address_autocomplete` component form
 ### Fill fields `fillfields`
 This configuration works similar to `gplaces_address_autocomplete`.
 By default this options are configured like following value:
->
+```javascript
     {
         general: {
             name: 'name',
@@ -269,7 +272,7 @@ By default this options are configured like following value:
             country_id: 'country'
         }
     };
-
+```
 # Technical
 This module will install `base_setup` and `base_geolocalize`.    
 *I recommend you to setup __Google Maps Key API__ and add it into Odoo `Settings > General` Settings when you installed this module*
@@ -277,11 +280,10 @@ This module will install `base_setup` and `base_geolocalize`.
 *__List of Google APIs & services required in order to make all features works__*
 - Geocoding API
 - Maps JavaScript API
-- Places API for Web
+- Places API
 
+Visit this [page](https://developers.google.com/maps/documentation/javascript/get-api-key) of how to get Google API Key
 
-The goal of this module is to bring the power of Google Maps into Odoo    
-This module has tested on Odoo Version 12.0c    
 
 [![ko-fi](https://www.ko-fi.com/img/donate_sm.png)](https://ko-fi.com/P5P4FOM0)    
 *if you want to support me to keep this project maintained. Thanks :)*
