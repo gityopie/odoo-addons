@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="act_res_partner_map" model="ir.actions.act_window">
+        <field name="name">Google Map</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">google_map,form</field>
+        <field name="domain">[('id', '=', active_id)]</field>
+    </record>
+    <record id="view_partner_form" model="ir.ui.view">
+        <field name="name">Google Places Partner Form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <field name="name" position="attributes">
+                <attribute name="widget">gplaces_autocomplete</attribute>
+                <!-- by default address format for street is formatted by street number followed by street name -->
+                <!-- if the format is different in your country for example, street name followed by street number -->
+                <!-- you can modify the widget via options -->
+                <!-- <attribute name="options">{ -->
+                    <!-- 'fillfields': { -->
+                        <!-- 'address': { -->
+                            <!-- 'street': ['route', 'street_number'] -->
+                        <!-- } -->
+                    <!-- } -->
+                <!-- }</attribute> -->
+                <attribute name="options">{
+                    'fillfields': {
+                        'geolocation': {
+                            'partner_latitude': 'latitude',
+                            'partner_longitude': 'longitude'
+                        }
+                    }
+                }</attribute>
+            </field>
+            <field name="street" position="attributes">
+                <attribute name="widget">gplaces_address_autocomplete</attribute>
+                <!-- the same for address_form widget -->
+                <!-- <attribute name="options">{'lat': 'partner_latitude', 'lng': 'partner_longitude', 'fillfields': {'street': ['route', 'street_number']}}</attribute> -->
+                <attribute name="options">{'lat': 'partner_latitude', 'lng': 'partner_longitude'}</attribute>
+            </field>
+            <div name="button_box" position="inside">
+                <button name="%(act_res_partner_map)d" 
+                    type="action" 
+                    class="oe_stat_button" 
+                    icon="fa-map-marker" string="Google Map" 
+                    attrs="{'invisible': ['|',('partner_latitude', '=', 0.0), ('partner_longitude', '=', 0.0)]}"/>
+            </div>
+        </field>
+    </record>
+    <record id="view_partner_address_form" model="ir.ui.view">
+        <field name="name">Google Places Partner Address form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_address_form"/>
+        <field name="arch" type="xml">
+            <field name="street" position="attributes">
+                <attribute name="widget">gplaces_address_autocomplete</attribute>
+                <attribute name="options">{'lat': 'partner_latitude', 'lng': 'partner_longitude'}</attribute>
+            </field>
+        </field>
+    </record>
+    <record id="contacts.action_contacts" model="ir.actions.act_window">
+        <field name="view_mode">kanban,tree,form,google_map,activity</field>
+    </record>
+    <record id="action_contacts_view_google_map" model="ir.actions.act_window.view">
+        <field name="sequence" eval="4"/>
+        <field name="view_mode">google_map</field>
+        <field name="view_id" ref="web_google_maps.view_res_partner_map"/>
+        <field name="act_window_id" ref="contacts.action_contacts"/>
+    </record>
+    <record id="view_crm_partner_geo_form_inherit" model="ir.ui.view">
+        <field name="name">view.crm.partner.get.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base_geolocalize.view_crm_partner_geo_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='geo_location']" position="inside">
+                <group>
+                    <group>
+                        <field name="marker_color" widget="google_marker_picker"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_res_partner_map_inherit_contact" model="ir.ui.view">
+        <field name="name">view.res.partner.map.inherit.contact</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="web_google_maps.view_res_partner_map"/>
+        <field name="arch" type="xml">
+            <xpath expr="//google_map" position="attributes">
+                <attribute name="color">marker_color</attribute>
+                <attribute name="colors"></attribute>
+            </xpath>
+            <xpath expr="//templates" position="before">
+                <field name="marker_color"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
