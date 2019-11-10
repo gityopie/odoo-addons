@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # License AGPL-3
-from odoo import api, fields, models
+from odoo import fields, models
 
 
 class IrUiView(models.Model):

@@ -931,7 +931,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
             this.fieldLng = params.fieldLng;
             this.markerColor = params.markerColor;
             this.markerColors = params.markerColors;
-            this.groupedMarkerColors = _.extend([], params.iconColors);
+            this.groupedMarkerColors = _.extend([], MARKER_COLORS);
         },
         /**
          * override
@@ -1176,14 +1176,11 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
          * @returns {string}
          */
         _getGroupedMarkerColor: function () {
-            var color;
-            if (this.groupedMarkerColors.length) {
-                color = this.groupedMarkerColors.splice(0, 1)[0];
-            } else {
+            if (this.groupedMarkerColors.length === 0) {
                 this.groupedMarkerColors = _.extend([], MARKER_COLORS);
-                color = this.groupedMarkerColors.splice(0, 1)[0];
             }
-            return color;
+            var color = this.groupedMarkerColors.splice(0, 1);
+            return color[0];
         },
         /**
          * @override
