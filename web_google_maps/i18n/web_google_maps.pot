@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-24 13:56+0000\n"
-"PO-Revision-Date: 2019-02-24 13:56+0000\n"
+"POT-Creation-Date: 2019-12-29 14:22+0000\n"
+"PO-Revision-Date: 2019-12-29 14:22+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -17,8 +17,8 @@ msgstr ""
 
 #. module: web_google_maps
 #. openerp-web
-#: code:addons/web_google_maps/static/src/js/widgets/gplaces_autocomplete.js:303
-#: code:addons/web_google_maps/static/src/js/widgets/gplaces_autocomplete.js:476
+#: code:addons/web_google_maps/static/src/js/widgets/gplaces_autocomplete.js:322
+#: code:addons/web_google_maps/static/src/js/widgets/gplaces_autocomplete.js:479
 #, python-format
 msgid "<ul><li></li></ul>"
 msgstr ""
@@ -35,6 +35,21 @@ msgid "Activity"
 msgstr ""
 
 #. module: web_google_maps
+#: selection:res.config.settings,google_maps_lang_localization:0
+msgid "Afrikaans"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:res.config.settings,google_maps_lang_localization:0
+msgid "Albanian"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:res.config.settings,google_maps_lang_localization:0
+msgid "Amharic"
+msgstr ""
+
+#. module: web_google_maps
 #: model_terms:ir.ui.view,arch_db:web_google_maps.res_config_settings_view_form
 msgid "Api key"
 msgstr ""
@@ -45,8 +60,18 @@ msgid "Arabic"
 msgstr ""
 
 #. module: web_google_maps
+#: selection:res.config.settings,google_maps_lang_localization:0
+msgid "Armenian"
+msgstr ""
+
+#. module: web_google_maps
 #: selection:res.config.settings,google_maps_theme:0
 msgid "Aubergine"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:res.config.settings,google_maps_lang_localization:0
+msgid "Azerbaijani"
 msgstr ""
 
 #. module: web_google_maps
@@ -56,12 +81,27 @@ msgstr ""
 
 #. module: web_google_maps
 #: selection:res.config.settings,google_maps_lang_localization:0
+msgid "Belarusian"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:res.config.settings,google_maps_lang_localization:0
 msgid "Bengali"
 msgstr ""
 
 #. module: web_google_maps
 #: selection:res.config.settings,google_maps_lang_localization:0
+msgid "Bosnian"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:res.config.settings,google_maps_lang_localization:0
 msgid "Bulgarian"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:res.config.settings,google_maps_lang_localization:0
+msgid "Burmese"
 msgstr ""
 
 #. module: web_google_maps
@@ -73,6 +113,16 @@ msgstr ""
 #. module: web_google_maps
 #: selection:res.config.settings,google_maps_lang_localization:0
 msgid "Catalan"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:res.config.settings,google_maps_lang_localization:0
+msgid "Chinese"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:res.config.settings,google_maps_lang_localization:0
+msgid "Chinese (Hong Kong)"
 msgstr ""
 
 #. module: web_google_maps
@@ -121,6 +171,22 @@ msgid "Diagram"
 msgstr ""
 
 #. module: web_google_maps
+#: model:ir.model.fields,field_description:web_google_maps.field_res_config_settings__google_maps_lib_drawing
+msgid "Drawing"
+msgstr ""
+
+#. module: web_google_maps
+#: model_terms:ir.ui.view,arch_db:web_google_maps.res_config_settings_view_form
+msgid "Drawing library documentation"
+msgstr ""
+
+#. module: web_google_maps
+#: model_terms:ir.ui.view,arch_db:web_google_maps.res_config_settings_view_form
+msgid "Drawing provides a graphical interface for users to draw polygons, rectangles, polylines, circles, and markers on the map.\n"
+"                                        Consult the"
+msgstr ""
+
+#. module: web_google_maps
 #: selection:res.config.settings,google_maps_lang_localization:0
 msgid "Dutch"
 msgstr ""
@@ -138,6 +204,11 @@ msgstr ""
 #. module: web_google_maps
 #: selection:res.config.settings,google_maps_lang_localization:0
 msgid "English (Great Britain)"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:res.config.settings,google_maps_lang_localization:0
+msgid "Estonian"
 msgstr ""
 
 #. module: web_google_maps
@@ -168,6 +239,11 @@ msgstr ""
 
 #. module: web_google_maps
 #: selection:res.config.settings,google_maps_lang_localization:0
+msgid "French (Canada)"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:res.config.settings,google_maps_lang_localization:0
 msgid "Galician"
 msgstr ""
 
@@ -178,7 +254,7 @@ msgid "Gantt"
 msgstr ""
 
 #. module: web_google_maps
-#: model:ir.model.fields,field_description:web_google_maps.field_res_config_settings__google_maps_geometry
+#: model:ir.model.fields,field_description:web_google_maps.field_res_config_settings__google_maps_lib_geometry
 msgid "Geometry"
 msgstr ""
 
@@ -195,7 +271,17 @@ msgstr ""
 
 #. module: web_google_maps
 #: selection:res.config.settings,google_maps_lang_localization:0
+msgid "Georgian"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:res.config.settings,google_maps_lang_localization:0
 msgid "German"
+msgstr ""
+
+#. module: web_google_maps
+#: model:ir.model.fields,field_description:web_google_maps.field_res_config_settings__google_autocomplete_lang_restrict
+msgid "Google Autocomplete Language Restriction"
 msgstr ""
 
 #. module: web_google_maps
@@ -255,6 +341,11 @@ msgid "Hungarian"
 msgstr ""
 
 #. module: web_google_maps
+#: selection:res.config.settings,google_maps_lang_localization:0
+msgid "Icelandic"
+msgstr ""
+
+#. module: web_google_maps
 #: model_terms:ir.ui.view,arch_db:web_google_maps.res_config_settings_view_form
 msgid "If you set the language of the map, it's important to consider setting the region too. This helps ensure that your application complies with local laws."
 msgstr ""
@@ -287,12 +378,32 @@ msgstr ""
 
 #. module: web_google_maps
 #: selection:res.config.settings,google_maps_lang_localization:0
+msgid "Kazakh"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:res.config.settings,google_maps_lang_localization:0
+msgid "Khmer"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:res.config.settings,google_maps_lang_localization:0
 msgid "Korean"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:res.config.settings,google_maps_lang_localization:0
+msgid "Kyrgyz"
 msgstr ""
 
 #. module: web_google_maps
 #: model_terms:ir.ui.view,arch_db:web_google_maps.res_config_settings_view_form
 msgid "Language"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:res.config.settings,google_maps_lang_localization:0
+msgid "Lao"
 msgstr ""
 
 #. module: web_google_maps
@@ -303,6 +414,16 @@ msgstr ""
 #. module: web_google_maps
 #: selection:res.config.settings,google_maps_lang_localization:0
 msgid "Lithuanian"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:res.config.settings,google_maps_lang_localization:0
+msgid "Macedonian"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:res.config.settings,google_maps_lang_localization:0
+msgid "Malay"
 msgstr ""
 
 #. module: web_google_maps
@@ -331,6 +452,16 @@ msgid "Marathi"
 msgstr ""
 
 #. module: web_google_maps
+#: selection:res.config.settings,google_maps_lang_localization:0
+msgid "Mongolian"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:res.config.settings,google_maps_lang_localization:0
+msgid "Nepali"
+msgstr ""
+
+#. module: web_google_maps
 #: selection:res.config.settings,google_maps_theme:0
 msgid "Night"
 msgstr ""
@@ -347,7 +478,7 @@ msgid "Pivot"
 msgstr ""
 
 #. module: web_google_maps
-#: model:ir.model.fields,field_description:web_google_maps.field_res_config_settings__google_maps_places
+#: model:ir.model.fields,field_description:web_google_maps.field_res_config_settings__google_maps_lib_places
 msgid "Places"
 msgstr ""
 
@@ -380,6 +511,11 @@ msgstr ""
 #. module: web_google_maps
 #: selection:res.config.settings,google_maps_lang_localization:0
 msgid "Portuguese (Portugal)"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:res.config.settings,google_maps_lang_localization:0
+msgid "Punjabi"
 msgstr ""
 
 #. module: web_google_maps
@@ -429,6 +565,11 @@ msgstr ""
 
 #. module: web_google_maps
 #: selection:res.config.settings,google_maps_lang_localization:0
+msgid "Sinhalese"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:res.config.settings,google_maps_lang_localization:0
 msgid "Slovak"
 msgstr ""
 
@@ -444,12 +585,17 @@ msgstr ""
 
 #. module: web_google_maps
 #: selection:res.config.settings,google_maps_lang_localization:0
-msgid "Swedish"
+msgid "Spanish (Latin America)"
 msgstr ""
 
 #. module: web_google_maps
 #: selection:res.config.settings,google_maps_lang_localization:0
-msgid "Tagalog"
+msgid "Swahili"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:res.config.settings,google_maps_lang_localization:0
+msgid "Swedish"
 msgstr ""
 
 #. module: web_google_maps
@@ -469,10 +615,15 @@ msgstr ""
 
 #. module: web_google_maps
 #. openerp-web
-#: code:addons/web_google_maps/static/src/js/widgets/gplaces_autocomplete.js:303
-#: code:addons/web_google_maps/static/src/js/widgets/gplaces_autocomplete.js:476
+#: code:addons/web_google_maps/static/src/js/widgets/gplaces_autocomplete.js:322
+#: code:addons/web_google_maps/static/src/js/widgets/gplaces_autocomplete.js:479
 #, python-format
 msgid "The following fields are invalid:"
+msgstr ""
+
+#. module: web_google_maps
+#: model_terms:ir.ui.view,arch_db:web_google_maps.res_config_settings_view_form
+msgid "The language code, indicating in which language the results should be returned, if possible. Searches are also biased to the selected language; results in the selected language may be given a higher ranking."
 msgstr ""
 
 #. module: web_google_maps
@@ -498,6 +649,16 @@ msgstr ""
 
 #. module: web_google_maps
 #: selection:res.config.settings,google_maps_lang_localization:0
+msgid "Urdu"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:res.config.settings,google_maps_lang_localization:0
+msgid "Uzbek"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:res.config.settings,google_maps_lang_localization:0
 msgid "Vietnamese"
 msgstr ""
 
@@ -515,6 +676,27 @@ msgstr ""
 #. module: web_google_maps
 #: model_terms:ir.ui.view,arch_db:web_google_maps.res_config_settings_view_form
 msgid "Visit the"
+msgstr ""
+
+#. module: web_google_maps
+#: model:ir.model.fields,field_description:web_google_maps.field_res_config_settings__google_maps_lib_visualization
+msgid "Visualization"
+msgstr ""
+
+#. module: web_google_maps
+#: model_terms:ir.ui.view,arch_db:web_google_maps.res_config_settings_view_form
+msgid "Visualization library documentation"
+msgstr ""
+
+#. module: web_google_maps
+#: model_terms:ir.ui.view,arch_db:web_google_maps.res_config_settings_view_form
+msgid "Visualization provides heatmaps for visual representation of data.\n"
+"                                        Consult the"
+msgstr ""
+
+#. module: web_google_maps
+#: selection:res.config.settings,google_maps_lang_localization:0
+msgid "Zulu"
 msgstr ""
 
 #. module: web_google_maps

@@ -32,11 +32,12 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
         },
         willStart: function () {
             var self = this;
-            return this._rpc({
+            var getSettings = this._rpc({
                 route: '/web/google_autocomplete_conf'
             }).then(function (res) {
                 self.autocomplete_settings = res;
             });
+            return $.when(this._super.apply(this, arguments), getSettings);
         },
         /**
          * @override
@@ -252,7 +253,6 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
         handlePopulateAddress: function () {
             var self = this;
             var place = this.places_autocomplete.getPlace();
-            console.log({place});
             if (place.hasOwnProperty('address_components')) {
                 var requests = [];
                 var google_address = this._populateAddress(place);

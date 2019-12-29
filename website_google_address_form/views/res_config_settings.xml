@@ -9,7 +9,7 @@
                 <div class="col-12 col-lg-6 o_setting_box" id="google_address_form_setting">
                     <div class="o_setting_right_pane">
                         <div class="mt16">
-                            <label for="google_maps_country_restriction" string="Address Form Autocomplete Country Restriction"/>
+                            <label for="google_maps_country_restriction" string="Website Address Form Autocomplete Country Restriction"/>
                             <div class="text-muted">
                                 Restrict results of google address form autocomplete to one or multiple countries
                             </div>
