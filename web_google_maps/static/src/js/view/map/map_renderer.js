@@ -11,7 +11,6 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
 
     var qweb = core.qweb;
 
-    var ICON_URL = '/web_google_maps/static/src/img/markers/';
     var MARKER_COLORS = [
         'green', 'yellow', 'blue', 'light-green',
         'red', 'magenta', 'black', 'purple', 'orange',
@@ -960,7 +959,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
             }
             if (!this.theme) {
                 this._rpc({
-                    route: '/web/map_theme'
+                    route: '/web/google_map_theme'
                 }).then(function (data) {
                     if (data.theme && self.mapThemes.hasOwnProperty(data.theme)) {
                         self.theme = data.theme;
