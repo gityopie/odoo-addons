@@ -80,7 +80,7 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
                 }
 
                 this.target_fields = this.getFillFieldsType();
-                this.initGplacesAutocomplete()
+                this.initGplacesAutocomplete();
             }
         },
         /**
@@ -100,8 +100,11 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
                         center: geolocation,
                         radius: position.coords.accuracy
                     });
-
-                    self.places_autocomplete.setBounds(circle.getBounds());
+                    setTimeout(function() {
+                        if (self.places_autocomplete) {
+                            self.places_autocomplete.setBounds(circle.getBounds());
+                        }
+                    }, 400);
                 });
             }
         },
