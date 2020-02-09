@@ -9,9 +9,6 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
     var GplaceAutocomplete = BasicFields.InputField.extend({
         tagName: 'span',
         supportedFieldTypes: ['char'],
-        events: _.extend({}, BasicFields.InputField.prototype.events, {
-            'focus': '_geolocate',
-        }),
         /**
          * @override
          */
@@ -80,7 +77,9 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
                 }
 
                 this.target_fields = this.getFillFieldsType();
-                this.initGplacesAutocomplete();
+                this.initGplacesAutocomplete().then(function (self) {
+                    self._geolocate();
+                });
             }
         },
         /**
@@ -100,11 +99,9 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
                         center: geolocation,
                         radius: position.coords.accuracy
                     });
-                    setTimeout(function() {
-                        if (self.places_autocomplete) {
-                            self.places_autocomplete.setBounds(circle.getBounds());
-                        }
-                    }, 400);
+                    if (self.places_autocomplete) {
+                        self.places_autocomplete.setBounds(circle.getBounds());
+                    }
                 });
             }
         },
@@ -189,8 +186,11 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
         },
         /**
          * Initialize google autocomplete
+         * return promise
          */
-        initGplacesAutocomplete: function () { },
+        initGplacesAutocomplete: function () {
+            return $.when();
+        },
         /**
          * @override
          */
@@ -296,6 +296,7 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
         },
         initGplacesAutocomplete: function () {
             var self = this;
+            var def = $.Deferred();
             setTimeout(function () {
                 if (!self.places_autocomplete) {
                     self.places_autocomplete = new google.maps.places.Autocomplete(self.$input.get(0), {
@@ -308,7 +309,9 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
                 }
                 // When the user selects an address from the dropdown, populate the address fields in the form.
                 self.places_autocomplete.addListener('place_changed', self.handlePopulateAddress.bind(self));
+                def.resolve(self);
             }, 300);
+            return def.promise();
         },
         /**
          * @override
@@ -452,6 +455,7 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
         },
         initGplacesAutocomplete: function () {
             var self = this;
+            var def = $.Deferred();
             setTimeout(function () {
                 if (!self.places_autocomplete) {
                     self.places_autocomplete = new google.maps.places.Autocomplete(self.$input.get(0), {
@@ -465,7 +469,9 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
                 }
                 // When the user selects an address from the dropdown, populate the address fields in the form.
                 self.places_autocomplete.addListener('place_changed', self.handlePopulateAddress.bind(self));
+                def.resolve(self);
             }, 300);
+            return def.promise();
         },
         /**
          * @override
