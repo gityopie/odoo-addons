@@ -1,7 +1,7 @@
 odoo.define('web_google_maps.Utils', function (require) {
     'use strict';
 
-    var rpc = require("web.rpc");
+    var rpc = require('web.rpc');
 
     var GOOGLE_PLACES_COMPONENT_FORM = {
         street_number: 'long_name',
@@ -74,8 +74,8 @@ odoo.define('web_google_maps.Utils', function (require) {
                 args: [[['country_id', '=', country], '|', ['code', '=', state], ['name', '=', state]], ['display_name']],
                 limit: 1,
             }).then(function (record) {
-                var record = record.length === 1 ? record[0] : {};
-                def.resolve(record);
+                var rec = record.length === 1 ? record[0] : {};
+                def.resolve(rec);
             });
         } else {
             def.resolve([]);
@@ -100,8 +100,8 @@ odoo.define('web_google_maps.Utils', function (require) {
     function gmaps_populate_places(place, place_options) {
         if (!place) return {};
 
-        var values = {},
-            vals;
+        var values = {};
+        var vals;
         _.each(place_options, function (option, field) {
             if (option instanceof Array && !_.has(values, field)) {
                 vals = _.filter(_.map(option, function (opt) {
@@ -117,14 +117,15 @@ odoo.define('web_google_maps.Utils', function (require) {
 
     function gmaps_populate_address(place, address_options, delimiter) {
         if (!place) return {};
-
-        var address_options = address_options || {},
-            fields_delimiter = delimiter || {
-                street: " ",
-                street2: ", "
-            },
-            fields_to_fill = {},
-            temp, dlmter, result = {};
+        address_options = address_options || {};
+        var fields_delimiter = delimiter || {
+            street: ' ',
+            street2: ', '
+        };
+        var fields_to_fill = {};
+        var temp;
+        var dlmter;
+        var result = {};
 
         // initialize object key and value
         _.each(address_options, function (value, key) {

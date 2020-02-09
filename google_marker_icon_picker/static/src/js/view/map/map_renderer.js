@@ -11,7 +11,7 @@ odoo.define('google_marker_dynamic_color.MapRenderer', function (require) {
     ];
 
     MapRenderer.include({
-        _getGroupedMarkerColor: function() {
+        _getGroupedMarkerColor: function () {
             if (this.groupedMarkerColors.length === 0) {
                 this.groupedMarkerColors = _.extend([], MARKER_COLORS);
             }
@@ -25,7 +25,7 @@ odoo.define('google_marker_dynamic_color.MapRenderer', function (require) {
             this.groupedMarkerColors = _.extend([], MARKER_COLORS);
         },
         _createMarker: function (latLng, record, color) {
-            var color = (record.data[this.fieldMarkerColor] ? record.data[this.fieldMarkerColor] : color) || 'red';
+            color = (record.data[this.fieldMarkerColor] ? record.data[this.fieldMarkerColor] : color) || 'red';
             this._super(latLng, record, color);
         },
     });

@@ -17,7 +17,7 @@ odoo.define('google_marker_dynamic_color.MarkerColor', function (require) {
         _onOpenMarkerPicker: function (ev) {
             ev.preventDefault();
             this.$marker_picker = $(qweb.render('FieldMarkerColorPicker.marker_picker', {
-                'widget': this,
+                widget: this
             }));
             $(ev.currentTarget).after(this.$marker_picker);
             this.$marker_picker.dropdown();
