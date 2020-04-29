@@ -20,7 +20,7 @@ Use Google Places autocomplete to help you find a place
     ],
     'website': 'https://github.com/gityopie/odoo-addons',
     'data': [
-        'views/templates.xml'
+        'views/res_partner.xml'
     ],
     'demo': [],
     'installable': True

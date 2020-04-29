@@ -25,10 +25,10 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
             this.lng = false;
             this.lat = false;
             this.autocomplete_settings = null;
-            this.setDefault();
         },
         willStart: function () {
             var self = this;
+            this.setDefault();
             var getSettings = this._rpc({
                 route: '/web/google_autocomplete_conf'
             }).then(function (res) {
@@ -240,11 +240,11 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
             var self = this,
                 res = this._super();
             if (this._isValid) {
-                _.each(this.fillfields, function (val, name) {
+                _.each(Object.keys(this.fillfields), function (field_name) {
                     res.push({
-                        name: name,
-                        type: self.record.fields[name].type,
-                        relation: self.record.fields[name].relation
+                        name: field_name,
+                        type: self.record.fields[field_name].type,
+                        relation: self.record.fields[field_name].relation
                     });
                 });
             }
@@ -389,15 +389,15 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
             var self = this,
                 res = this._super();
             if (this._isValid) {
-                for (var option in this.fillfields) {
-                    _.each(this.fillfields[option], function (val, name) {
+                _.each(this.fillfields, function(option) {
+                    _.each(Object.keys(option), function(field_name) {
                         res.push({
-                            name: name,
-                            type: self.record.fields[name].type,
-                            relation: self.record.fields[name].relation
+                            name: field_name,
+                            type: self.record.fields[field_name].type,
+                            relation: self.record.fields[field_name].relation
                         });
                     });
-                }
+                });
             }
             return res;
         },
