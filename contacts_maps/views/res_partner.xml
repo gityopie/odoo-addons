@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
+    <record id="action_view_res_partner_map" model="ir.actions.act_window">
+        <field name="name">Map</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">map,form</field>
+        <field name="domain">[('id', '=', active_id)]</field>
+    </record>
     <record id="contacts.action_contacts" model="ir.actions.act_window">
         <field name="view_mode">kanban,tree,map,form</field>
     </record>
@@ -18,6 +26,20 @@
                     </group>
                 </group>
             </xpath>
+        </field>
+    </record>
+    <record id="view_partner_form" model="ir.ui.view">
+        <field name="name">Contacts Google Map</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button name="%(contacts_maps.action_view_res_partner_map)d" 
+                    type="action" 
+                    class="oe_stat_button" 
+                    icon="fa-map-marker" string="Map" 
+                    attrs="{'invisible': ['|',('partner_latitude', '=', 0.0), ('partner_longitude', '=', 0.0)]}"/>
+            </div>
         </field>
     </record>
     <record id="view_res_partner_map_marker_color" model="ir.ui.view">

@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Website Google Address Form',
-    'version': '12.0.1.0.0',
+    'version': '12.0.1.0.1',
     'author': 'Yopi Angi',
+    'license': 'AGPL-3',
     'maintainer': 'Yopi Angi<yopiangi@gmail.com>',
     'support': 'yopiangi@gmail.com',
     'category': 'Extra Tools',

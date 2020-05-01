@@ -70,11 +70,10 @@ odoo.define('website_google_address_form.address_form_autocomplete', function (r
         initAutocomplete: function (country_restrictions) {
             // Create the autocomplete object, restricting the search to geographical
             // location types.
-            this.place_autocomplete = new google.maps.places.Autocomplete(
-                (this.$target[0]), {
-                    types: ['geocode'],
-                }
-            );
+            this.place_autocomplete = new google.maps.places.Autocomplete(this.$target[0], {
+                types: ['geocode'],
+                fields: ['address_components', 'name', 'geometry'],
+            });
 
             // Add country restrictions if any
             if (country_restrictions.length) {
@@ -82,7 +81,6 @@ odoo.define('website_google_address_form.address_form_autocomplete', function (r
                     'country': country_restrictions
                 });
             }
-
             // When the user selects an address from the dropdown, populate the address
             // fields in the form.
             this.place_autocomplete.addListener('place_changed', this.fillInAddress.bind(this));
@@ -116,7 +114,9 @@ odoo.define('website_google_address_form.address_form_autocomplete', function (r
                         });
                     });
                 });
-                self.$target.val(place.name);
+                setTimeout(function () {
+                    self.$target.val(place.name);
+                }, 300);
             }
         },
         prepareValue: function (input, value) {
@@ -238,9 +238,9 @@ odoo.define('website_google_address_form.website_portal_form', function (require
                 return false;
             }
         });
-        $('input[name="street"]').on('focus', function () {
-            new GooglePlacesAutocomplete.AddressForm($(this), streetFillInputs);
-        });
+        if ($('input[name="street"]').length > 0) {
+            new GooglePlacesAutocomplete.AddressForm($('input[name="street"]'), streetFillInputs);
+        }
     });
 
 });
@@ -283,9 +283,9 @@ odoo.define('website_google_address_form.website_sale_form', function (require) 
     };
 
     $(document).ready(function () {
-        $('input[name="street"]').on('focus', function () {
-            new GooglePlacesAutocomplete.AddressForm($(this), streetFillInputs);
-        });
+        if ($('input[name="street"]').length > 0) {
+            new GooglePlacesAutocomplete.AddressForm($('input[name="street"]'), streetFillInputs);
+        }
     });
 
 });

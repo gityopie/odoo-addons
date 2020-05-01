@@ -11,7 +11,7 @@
                     <div name="web_google_maps">
                         <h2>Google Maps View</h2>
                         <div class="row mt16 o_settings_container">
-                            <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="col-12 col-lg-6 o_setting_box">
                                 <div class="o_setting_right_pane">
                                     <!-- <label string="Configure your Google Maps View"/> -->
                                     <div class="text-muted">
@@ -41,30 +41,65 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <h2> Google Maps Libraries </h2>
-                        <div class="row mt16 o_settings_container">
-                            <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="col-12 col-lg-6 o_setting_box" attrs="{'invisible': [('google_maps_lang_localization', '=', False)]}">
                                 <div class="o_setting_left_pane">
-                                    <field name="google_maps_geometry"/>
+                                    <field name="google_autocomplete_lang_restrict"/>
                                 </div>
                                 <div class="o_setting_right_pane">
-                                    <label for="google_maps_geometry"/>
+                                    <label for="google_autocomplete_lang_restrict"/>
                                     <div class="text-muted">
-                                        Geometry includes utility functions for calculating scalar geometric values (such as distance and area) on the surface of the earth. 
-                                        Consult the <a href="https://developers.google.com/maps/documentation/javascript/geometry">Geometry library documentation</a> for more information.
+                                        The language code, indicating in which language the results should be returned, if possible. Searches are also biased to the selected language; results in the selected language may be given a higher ranking.
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-xs-12 col-md-6 o_setting_box">
+                        </div>
+                        <h2 groups="base.group_no_one"> Google Maps Libraries </h2>
+                        <div class="row mt16 o_settings_container" groups="base.group_no_one">
+                            <div class="col-12 col-lg-6 o_setting_box">
                                 <div class="o_setting_left_pane">
-                                    <field name="google_maps_places"/>
+                                    <field name="google_maps_lib_geometry"/>
                                 </div>
                                 <div class="o_setting_right_pane">
-                                    <label for="google_maps_places"/>
+                                    <label for="google_maps_lib_geometry"/>
+                                    <div class="text-muted">
+                                        Geometry includes utility functions for calculating scalar geometric values (such as distance and area) on the surface of the earth. 
+                                        Consult the <a href="https://developers.google.com/maps/documentation/javascript/geometry" target="_blank">Geometry library documentation</a> for more information.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <field name="google_maps_lib_places"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="google_maps_lib_places"/>
                                     <div class="text-muted">
                                         Places enables your application to search for places such as establishments, geographic locations, or prominent points of interest, within a defined area. 
-                                        Consult the <a href="https://developers.google.com/maps/documentation/javascript/places">Places library documentation</a> for more information.
+                                        Consult the <a href="https://developers.google.com/maps/documentation/javascript/places" target="_blank">Places library documentation</a> for more information.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 o_setting_box" invisible="1">
+                                <div class="o_setting_left_pane">
+                                    <field name="google_maps_lib_drawing"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="google_maps_lib_drawing"/>
+                                    <div class="text-muted">
+                                        Drawing provides a graphical interface for users to draw polygons, rectangles, polylines, circles, and markers on the map.
+                                        Consult the <a href="https://developers.google.com/maps/documentation/javascript/drawinglayer" target="_blank">Drawing library documentation</a> for more information.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 o_setting_box" invisible="1">
+                                <div class="o_setting_left_pane">
+                                    <field name="google_maps_lib_visualization"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="google_maps_lib_visualization"/>
+                                    <div class="text-muted">
+                                        Visualization provides heatmaps for visual representation of data.
+                                        Consult the <a href="https://developers.google.com/maps/documentation/javascript/visualization" target="_blank">Visualization library documentation</a> for more information.
                                     </div>
                                 </div>
                             </div>

@@ -11,7 +11,6 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
 
     var qweb = core.qweb;
 
-    var ICON_URL = '/web_google_maps/static/src/img/markers/';
     var MARKER_COLORS = [
         'green', 'yellow', 'blue', 'light-green',
         'red', 'magenta', 'black', 'purple', 'orange',
@@ -960,7 +959,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
             }
             if (!this.theme) {
                 this._rpc({
-                    route: '/web/map_theme'
+                    route: '/web/google_map_theme'
                 }).then(function (data) {
                     if (data.theme && self.mapThemes.hasOwnProperty(data.theme)) {
                         self.theme = data.theme;
@@ -1132,17 +1131,29 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
                 this._renderUngrouped();
             }
         },
+        /**
+         * Default location
+         */
+        _getDefaultCoordinate: function() {
+            return new google.maps.LatLng(0.0, 0.0);
+        },
         _renderGrouped: function () {
             var self = this;
-            var color;
-            var latLng;
+            var defaultLatLng = this._getDefaultCoordinate();
+            var color, latLng, lat, lng;
 
             _.each(this.state.data, function (record) {
                 color = self._getGroupedMarkerColor();
                 record.markerColor = color;
                 _.each(record.data, function (rec) {
-                    latLng = new google.maps.LatLng(rec.data[self.fieldLat], rec.data[self.fieldLng]);
-                    self._createMarker(latLng, rec, color);
+                    lat = rec.data[self.fieldLat] || 0.0;
+                    lng = rec.data[self.fieldLng] || 0.0;
+                    if (lat === 0.0 && lng === 0.0) {
+                        self._createMarker(defaultLatLng, rec, color);
+                    } else {
+                        latLng = new google.maps.LatLng(lat, lng);
+                        self._createMarker(latLng, rec, color);
+                    }
                 });
                 self.markerGroupedInfo.push({
                     'title': record.value || 'Undefined',
@@ -1153,14 +1164,20 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
         },
         _renderUngrouped: function () {
             var self = this;
-            var color;
-            var latLng;
+            var defaultLatLng = this._getDefaultCoordinate();
+            var color, latLng, lat, lng;
 
             _.each(this.state.data, function (record) {
                 color = self._getIconColor(record);
-                latLng = new google.maps.LatLng(record.data[self.fieldLat], record.data[self.fieldLng]);
-                record.markerColor = color;
-                self._createMarker(latLng, record, color);
+                lat = record.data[self.fieldLat] || 0.0;
+                lng = record.data[self.fieldLng] || 0.0;
+                if (lat === 0.0 && lng === 0.0) {
+                    self._createMarker(defaultLatLng, record, color);
+                } else {
+                    latLng = new google.maps.LatLng(lat, lng);
+                    record.markerColor = color;
+                    self._createMarker(latLng, record, color);
+                }
             });
         },
         /**
