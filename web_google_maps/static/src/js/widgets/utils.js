@@ -147,7 +147,7 @@ odoo.define('web_google_maps.Utils', function (require) {
 
         _.each(fields_to_fill, function (value, key) {
             dlmter = fields_delimiter[key] || ' ';
-            if (key == 'city') {
+            if (key === 'city') {
                 result[key] = _.first(_.filter(value)) || '';
             } else {
                 result[key] = _.filter(value).join(dlmter);

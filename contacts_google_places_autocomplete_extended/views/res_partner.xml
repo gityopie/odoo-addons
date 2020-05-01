@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="view_contacts_google_places_autocomplete_extended_inherit" model="ir.ui.view">
+        <field name="name">Contacts Google Places Autocomplete Extended</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="priority">1100</field>
+        <field name="arch" type="xml">
+            <field name="name" position="attributes">
+                <attribute name="options">{
+                    'fillfields': {
+                        'address': {
+                            'street_name': 'route',
+                            'street_number': 'street_number',
+                            'street2': ['administrative_area_level_3', 'administrative_area_level_4', 'administrative_area_level_5'],
+                            'city': 'locality',
+                            'zip': 'postal_code',
+                            'state_id': 'administrative_area_level_1',
+                            'country_id': 'country'
+                        },
+                        'geolocation': {
+                            'partner_latitude': 'latitude',
+                            'partner_longitude': 'longitude'
+                        }
+                    }
+                }</attribute>
+            </field>
+        </field>
+    </record>
+</odoo>
