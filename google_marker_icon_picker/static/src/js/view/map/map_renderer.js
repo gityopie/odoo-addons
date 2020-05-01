@@ -7,7 +7,7 @@ odoo.define('google_marker_dynamic_color.MapRenderer', function (require) {
         'gold', 'gray', 'green', 'indigo', 'lime-green', 'lime', 'maroon',
         'navy', 'olive', 'orange', 'purple', 'red', 'teal', 'yellow'
     ];
-
+    
     MapRenderer.include({
         _initLibraryProperties: function (params) {
             this._super.apply(this, arguments);
