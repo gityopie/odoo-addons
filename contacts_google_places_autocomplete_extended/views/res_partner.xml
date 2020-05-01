@@ -7,17 +7,6 @@
         <field name="priority">1100</field>
         <field name="arch" type="xml">
             <field name="name" position="attributes">
-                <attribute name="widget">gplaces_autocomplete</attribute>
-                <!-- by default address format for street is formatted by street number followed by street name -->
-                <!-- if the format is different in your country for example, street name followed by street number -->
-                <!-- you can modify the widget via options -->
-                <!-- <attribute name="options">{ -->
-                    <!-- 'fillfields': { -->
-                        <!-- 'address': { -->
-                            <!-- 'street': ['route', 'street_number'] -->
-                        <!-- } -->
-                    <!-- } -->
-                <!-- }</attribute> -->
                 <attribute name="options">{
                     'fillfields': {
                         'address': {
