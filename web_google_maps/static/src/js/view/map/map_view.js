@@ -32,9 +32,7 @@ odoo.define('web_google_maps.MapView', function (require) {
             var activeActions = this.controllerParams.activeActions;
 
             this.loadParams.limit = this.loadParams.limit || 80;
-            this.loadParams.openGroupByDefault = true;
             this.loadParams.type = 'list';
-            this.loadParams.groupBy = arch.attrs.default_group_by ? [arch.attrs.default_group_by] : (params.groupBy || []);
 
             var modes = this._map_mode();
             var defaultMode = 'geometry';

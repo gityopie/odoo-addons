@@ -12,9 +12,9 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
     var qweb = core.qweb;
 
     var MARKER_COLORS = [
-        'green', 'yellow', 'blue', 'light-green',
-        'red', 'magenta', 'black', 'purple', 'orange',
-        'pink', 'grey', 'brown', 'cyan', 'white'
+        'black', 'blue', 'brown', 'cyan', 'fuschia', 'green', 
+        'grey', 'lime', 'maroon', 'navy', 'olive', 'orange', 
+        'pink', 'purple', 'red', 'teal', 'white', 'yellow'
     ];
 
     var MAP_THEMES = {
@@ -923,22 +923,12 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
          */
         set_property_geometry: function (params) {
             this.defaultMarkerColor = 'red';
-            this.markerGroupedInfo = [];
             this.markers = [];
             this.iconUrl = '/web_google_maps/static/src/img/markers/';
             this.fieldLat = params.fieldLat;
             this.fieldLng = params.fieldLng;
             this.markerColor = params.markerColor;
             this.markerColors = params.markerColors;
-            this.groupedMarkerColors = _.extend([], MARKER_COLORS);
-        },
-        /**
-         * override
-         * @param {*} state 
-         */
-        updateState: function (state) {
-            this._setState(state);
-            return this._super.apply(this, arguments);
         },
         /**
          * @override
@@ -1126,39 +1116,6 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
          * @param {Object} record
          */
         _renderMarkers: function () {
-            var isGrouped = !!this.state.groupedBy.length;
-            if (isGrouped) {
-                this._renderGrouped();
-            } else {
-                this._renderUngrouped();
-            }
-        },
-        /**
-         * 
-         */
-        _renderGrouped: function () {
-            var self = this,
-                color,
-                latLng;
-
-            _.each(this.state.data, function (record) {
-                color = self._getGroupedMarkerColor();
-                record.markerColor = color;
-                _.each(record.data, function (rec) {
-                    latLng = new google.maps.LatLng(rec.data[self.fieldLat], rec.data[self.fieldLng]);
-                    self._createMarker(latLng, rec, color);
-                });
-                self.markerGroupedInfo.push({
-                    'title': record.value || 'Undefined',
-                    'count': record.count,
-                    'marker': self.iconUrl + record.markerColor.trim() + '.png'
-                });
-            });
-        },
-        /**
-         * 
-         */
-        _renderUngrouped: function () {
             var self = this,
                 color,
                 latLng;
@@ -1171,27 +1128,14 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
             });
         },
         /**
-         * Get color
-         * @returns {string}
-         */
-        _getGroupedMarkerColor: function () {
-            if (this.groupedMarkerColors.length === 0) {
-                this.groupedMarkerColors = _.extend([], MARKER_COLORS);
-            }
-            var color = this.groupedMarkerColors.splice(0, 1);
-            return color[0];
-        },
-        /**
          * @override
          */
         _renderView: function () {
             var self = this;
-            this.markerGroupedInfo.length = 0;
             this._clearMarkerClusters();
             this._renderMarkers();
             this._clusterMarkers();
             return this._super.apply(this, arguments)
-                .then(self._renderSidebarGroup.bind(self))
                 .then(self['_map_center_' + self.mapMode].bind(self));
         },
         /**
@@ -1226,53 +1170,6 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
         _clearMarkerClusters: function () {
             this.markerCluster.clearMarkers();
             this.markers = [];
-        },
-        /**
-         * Render a sidebar for grouped markers info
-         * @private
-         */
-        _renderSidebarGroup: function () {
-            if (this.markerGroupedInfo.length > 0) {
-                this.$right_sidebar.empty().removeClass('closed').addClass('open');
-                var groupInfo = new SidebarGroup(this, {
-                    'groups': this.markerGroupedInfo
-                });
-                groupInfo.appendTo(this.$right_sidebar);
-            } else {
-                this.$right_sidebar.empty();
-                if (!this.$right_sidebar.hasClass('closed')) {
-                    this.$right_sidebar.removeClass('open').addClass('closed');
-                }
-            }
-        },
-        /**
-         * Sets the current state and updates some internal attributes accordingly.
-         *
-         * @private
-         * @param {Object} state
-         */
-        _setState: function (state) {
-            this.state = state;
-
-            var groupByFieldAttrs = state.fields[state.groupedBy[0]];
-            var groupByFieldInfo = state.fieldsInfo.google_map[state.groupedBy[0]];
-            // Deactivate the drag'n'drop if the groupedBy field:
-            // - is a date or datetime since we group by month or
-            // - is readonly (on the field attrs or in the view)
-            var draggable = false;
-            if (groupByFieldAttrs) {
-                if (groupByFieldAttrs.type === 'date' || groupByFieldAttrs.type === 'datetime') {
-                    draggable = false;
-                } else if (groupByFieldAttrs.readonly !== undefined) {
-                    draggable = !(groupByFieldAttrs.readonly);
-                }
-            }
-            if (groupByFieldInfo) {
-                if (draggable && groupByFieldInfo.readonly !== undefined) {
-                    draggable = !(groupByFieldInfo.readonly);
-                }
-            }
-            this.groupedByM2O = groupByFieldAttrs && (groupByFieldAttrs.type === 'many2one');
         },
     });
 
