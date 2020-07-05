@@ -4,7 +4,7 @@
         <t t-set="google_maps_api_key" t-value="request.env['ir.config_parameter'].sudo().get_param('web_google_maps.api_key')"/>
         <t t-set="google_maps_lang_localization" t-value="request.env['ir.config_parameter'].sudo().get_param('web_google_maps.lang_localization')"/>
         <t t-set="google_maps_libraries" t-value="request.env['ir.config_parameter'].sudo().get_param('web_google_maps.libraries')"/>
-        <script src="/web_google_maps/static/lib/markercluster/markerclusterer.js"></script>
+        <script src="/web_google_maps/static/lib/markercluster/markerclusterer.min.js"></script>
         <t t-if="google_maps_api_key">
             <script t-attf-src="https://maps.googleapis.com/maps/api/js?v=quarterly&amp;key=#{google_maps_api_key}&amp;libraries=#{google_maps_libraries}#{'&amp;' + google_maps_lang_localization if google_maps_lang_localization else ''}#{'&amp;' + google_maps_region_localization if google_maps_region_localization else ''}"></script>
         </t>

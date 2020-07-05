@@ -915,7 +915,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
          * @param {*} params 
          */
         _initLibraryProperties: function (params) {
-            this['set_property_' + this.mapMode](params);
+            this['set_property_' + this.mapMode].call(this, params);
         },
         /**
          * 
@@ -984,7 +984,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
                 mapTypeControl: true
             });
             this._getMapTheme();
-            this['_post_load_map_' + this.mapMode]();
+            this['_post_load_map_' + this.mapMode].call(this);
         },
         /**
          * 

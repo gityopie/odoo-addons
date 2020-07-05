@@ -119,6 +119,9 @@ class ResConfigSettings(models.TransientModel):
     google_maps_libraries = fields.Char(
         string='Libraries',
         config_parameter='web_google_maps.libraries')
+    google_autocomplete_lang_restrict = fields.Boolean(
+        string='Google Autocomplete Language Restriction',
+        config_parameter='web_google_maps.autocomplete_lang_restrict')
 
     @api.onchange('google_maps_lang_localization')
     def onchange_lang_localization(self):

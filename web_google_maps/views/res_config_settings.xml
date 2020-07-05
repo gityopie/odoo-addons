@@ -45,6 +45,17 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-12 col-md-6 o_setting_box" attrs="{'invisible': [('google_maps_lang_localization', '=', False)]}">
+                                <div class="o_setting_left_pane">
+                                    <field name="google_autocomplete_lang_restrict"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="google_autocomplete_lang_restrict"/>
+                                    <div class="text-muted">
+                                        The language code, indicating in which language the results should be returned, if possible. Searches are also biased to the selected language; results in the selected language may be given a higher ranking.
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </xpath>

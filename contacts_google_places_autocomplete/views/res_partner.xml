@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="view_contacts_google_places_autocomplete_inherit" model="ir.ui.view">
+        <field name="name">Contacts Google Places Auto Complete</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="priority">1000</field>
+        <field name="arch" type="xml">
+            <field name="name" position="attributes">
+                <attribute name="widget">gplaces_autocomplete</attribute>
+                <attribute name="options">{
+                    'fillfields': {
+                        'geolocation': {
+                            'partner_latitude': 'latitude',
+                            'partner_longitude': 'longitude'
+                        }
+                    }
+                }</attribute>
+            </field>
+        </field>
+    </record>
+</odoo>
