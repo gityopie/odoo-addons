@@ -1139,7 +1139,7 @@ odoo.define('web_google_maps.Utils', function (require) {
                 featureType: 'road.local',
                 elementType: 'labels.text.fill',
                 stylers: [
-                    {ƒ
+                    {
                         color: '#9e9e9e',
                     },
                 ],

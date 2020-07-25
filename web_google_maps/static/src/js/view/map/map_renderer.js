@@ -279,16 +279,16 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
                 return this.defaultMarkerColor;
             }
 
-            var color, expression;
+            var color, expression, result = this.defaultMarkerColor;
             for (var i = 0; i < this.markerColors.length; i++) {
                 color = this.markerColors[i][0];
                 expression = this.markerColors[i][1];
                 if (py.PY_isTrue(py.evaluate(expression, record.evalContext))) {
-                    return color;
+                    result = color;
+                    return;
                 }
-                return this.defaultLatLng;
             }
-            return this.defaultMarkerColor;
+            return result;
         },
         /**
          * Create marker
