@@ -51,10 +51,7 @@ odoo.define('web_google_maps.Utils', function (require) {
             rpc.query({
                 model: model,
                 method: 'search_read',
-                args: [
-                    ['|', ['name', '=', value], ['code', '=', value]],
-                    ['display_name'],
-                ],
+                args: [['|', ['name', '=', value], ['code', '=', value]], ['display_name']],
                 limit: 1,
             }).then(function (record) {
                 res[field_name] = record.length === 1 ? record[0] : false;
@@ -75,12 +72,7 @@ odoo.define('web_google_maps.Utils', function (require) {
                 model: model,
                 method: 'search_read',
                 args: [
-                    [
-                        ['country_id', '=', country],
-                        '|',
-                        ['code', '=', state],
-                        ['name', '=', state],
-                    ],
+                    [['country_id', '=', country], '|', ['code', '=', state], ['name', '=', state]],
                     ['display_name'],
                 ],
                 limit: 1,
@@ -152,8 +144,7 @@ odoo.define('web_google_maps.Utils', function (require) {
             temp = {};
             _.each(place.address_components, function (component) {
                 _.each(_.intersection(options, component.types), function (match) {
-                    temp[match] =
-                        component[GOOGLE_PLACES_COMPONENT_FORM[match]] || false;
+                    temp[match] = component[GOOGLE_PLACES_COMPONENT_FORM[match]] || false;
                 });
             });
             fields_to_fill[field] = _.map(options, function (item) {

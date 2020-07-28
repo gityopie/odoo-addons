@@ -231,7 +231,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
                 this._rpc({
                     route: '/web/google_map_theme',
                 }).then(function (data) {
-                    if (data.theme && self.mapThemes.hasOwnProperty(data.theme)) {
+                    if (data.theme && Object.prototype.hasOwnProperty.call(self.mapThemes, data.theme)) {
                         self.theme = data.theme;
                         update_map(data.theme);
                     }
@@ -560,7 +560,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
             var shapesToKeep = [];
             this.shapesBounds = new google.maps.LatLngBounds();
             _.each(this.state.data, function (record) {
-                if (record.data.hasOwnProperty('id')) {
+                if (Object.prototype.hasOwnProperty.call(record.data, 'id')) {
                     shapesToKeep.push(record.data.id.toString());
                 }
                 if (record.data[self.drawingMode] === 'polygon') {

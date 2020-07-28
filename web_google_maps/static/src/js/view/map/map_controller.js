@@ -71,13 +71,9 @@ odoo.define('web_google_maps.MapController', function (require) {
                 // these cases, but this is out of scope. A simpler one is to do a try / catch.
 
                 if (domInData && !activeInDomain && activeInData) {
-                    domain = domain.concat([
-                        ['active', '=', true]
-                    ]);
+                    domain = domain.concat([['active', '=', true]]);
                 } else if (!domInData && !activeInDomain && activeInData) {
-                    domain = [
-                        ['active', '=', true]
-                    ];
+                    domain = [['active', '=', true]];
                 }
                 try {
                     var visible = new Domain(domain).compute(data.evalContext);
@@ -98,12 +94,11 @@ odoo.define('web_google_maps.MapController', function (require) {
             var attrs = event.data.attrs;
             var record = event.data.record;
             if (attrs.context) {
-                attrs.context = new Context(attrs.context)
-                    .set_eval_context({
-                        active_id: record.res_id,
-                        active_ids: [record.res_id],
-                        active_model: record.model,
-                    });
+                attrs.context = new Context(attrs.context).set_eval_context({
+                    active_id: record.res_id,
+                    active_ids: [record.res_id],
+                    active_model: record.model,
+                });
             }
             this.trigger_up('execute_action', {
                 action_data: attrs,
@@ -169,11 +164,17 @@ odoo.define('web_google_maps.MapController', function (require) {
         },
         renderButtons: function ($node) {
             if (this.hasButtons) {
-                this.$buttons = $(qweb.render('MapView.buttons', {
-                    widget: this
-                }));
+                this.$buttons = $(
+                    qweb.render('MapView.buttons', {
+                        widget: this,
+                    })
+                );
                 this.$buttons.on('click', 'button.o-map-button-new', this._onButtonNew.bind(this));
-                this.$buttons.on('click', 'button.o-map-button-center-map', this._onButtonMapCenter.bind(this));
+                this.$buttons.on(
+                    'click',
+                    'button.o-map-button-center-map',
+                    this._onButtonMapCenter.bind(this)
+                );
                 this.$buttons.appendTo($node);
             }
         },
@@ -189,7 +190,7 @@ odoo.define('web_google_maps.MapController', function (require) {
             event.stopPropagation();
             this.trigger_up('switch_view', {
                 view_type: 'form',
-                res_id: undefined
+                res_id: undefined,
             });
         },
     });

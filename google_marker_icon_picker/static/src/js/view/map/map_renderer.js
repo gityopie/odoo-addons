@@ -35,9 +35,8 @@ odoo.define('google_marker_dynamic_color.MapRenderer', function (require) {
         },
         _createMarker: function (latLng, record, color) {
             color =
-                (record.data[this.fieldMarkerColor]
-                    ? record.data[this.fieldMarkerColor]
-                    : color) || 'red';
+                (record.data[this.fieldMarkerColor] ? record.data[this.fieldMarkerColor] : color) ||
+                'red';
             this._super(latLng, record, color);
         },
         _getGroupedMarkerColor: function () {
