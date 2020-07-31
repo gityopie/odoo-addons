@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<odoo>
-    <template id="assets_backend" name="contacts_google_address_form_extended assets backend" inherit_id="web.assets_backend">
-        <xpath expr="." position="inside">
-            <script type="text/javascript" src="/contacts_google_address_form_extended/static/src/js/widgets/gplaces_autocomplete.js"></script>
-        </xpath>
-    </template>
-</odoo>

@@ -160,6 +160,7 @@ Example:
 New widget to integrate [Place Autocomplete Address Form](https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete-addressform) in Odoo.  
 The widget has four options that can be modify:
  - `component_form`
+ - `address_form`
  - `fillfields`
  - `lat`
  - `lng`
@@ -273,6 +274,8 @@ By default this options are configured like following value:
         }
     };
 ```
+###  Check my other modules of how to implement the map view and also the widgets.
+
 # Technical
 This module will install `base_setup` and `base_geolocalize`.    
 *I recommend you to setup __Google Maps Key API__ and add it into Odoo `Settings > General` Settings when you installed this module*

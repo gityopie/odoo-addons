@@ -17,7 +17,7 @@ odoo.define('web_google_maps.MapView', function (require) {
         config: _.extend({}, BasicView.prototype.config, {
             Model: MapModel,
             Renderer: MapRenderer,
-            Controller: MapController
+            Controller: MapController,
         }),
         viewType: 'map',
         mobile_friendly: true,
@@ -28,13 +28,15 @@ odoo.define('web_google_maps.MapView', function (require) {
             var attrs = arch.attrs;
 
             var activeActions = this.controllerParams.activeActions;
-            var mode = arch.attrs.editable && !params.readonly ? "edit" : "readonly";
+            var mode = arch.attrs.editable && !params.readonly ? 'edit' : 'readonly';
 
             this.loadParams.limit = this.loadParams.limit || 80;
             this.loadParams.openGroupByDefault = true;
             this.loadParams.type = 'list';
 
-            this.loadParams.groupBy = arch.attrs.default_group_by ? [arch.attrs.default_group_by] : (params.groupBy || []);
+            this.loadParams.groupBy = arch.attrs.default_group_by
+                ? [arch.attrs.default_group_by]
+                : params.groupBy || [];
 
             this.rendererParams.arch = arch;
             this.rendererParams.mapLibrary = attrs.library;
@@ -72,10 +74,10 @@ odoo.define('web_google_maps.MapView', function (require) {
                     color = pair[0];
                     expr = pair[1];
                     return [color, py.parse(py.tokenize(expr)), expr];
-                }).value();
-        }
+                })
+                .value();
+        },
     });
 
     return MapView;
-
 });

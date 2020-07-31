@@ -1,4 +1,4 @@
-odoo.define('web_google_maps.MapModel', function(require) {
+odoo.define('web_google_maps.MapModel', function (require) {
     'use strict';
 
     var BasicModel = require('web.BasicModel');
@@ -18,7 +18,10 @@ odoo.define('web_google_maps.MapModel', function(require) {
          */
         load: function (params) {
             this.defaultGroupedBy = params.groupBy;
-            params.groupedBy = (params.groupedBy && params.groupedBy.length) ? params.groupedBy : this.defaultGroupedBy;
+            params.groupedBy =
+                params.groupedBy && params.groupedBy.length
+                    ? params.groupedBy
+                    : this.defaultGroupedBy;
             return this._super(params);
         },
         /**
@@ -33,9 +36,8 @@ odoo.define('web_google_maps.MapModel', function(require) {
                 list.groupedBy = [list.groupedBy[0]];
             }
             return this._super.apply(this, arguments);
-        }
+        },
     });
 
     return MapModel;
-
 });

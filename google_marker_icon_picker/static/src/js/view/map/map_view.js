@@ -9,7 +9,6 @@ odoo.define('google_marker_dynamic_color.MapView', function (require) {
             if (this.arch.attrs.library === 'geometry') {
                 this.rendererParams.fieldMarkerColor = this.arch.attrs.color;
             }
-        }
+        },
     });
-
 });
