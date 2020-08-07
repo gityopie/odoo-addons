@@ -7,6 +7,40 @@ This module contains three new features:
  - New widget `"gplaces_address_autocomplete"`
  - New widget `"gplaces_autocomplete"`
  
+# Update 2020-08-07
+Now you can edit or change marker location on the map. To enable this feature, you need to modify your form view attributes by append `geo_field` attribute (a new attribute) and then specify `latitude` field and `longitude` field on your model.    
+For example:
+```xml
+...
+ <form geo_field="{'lat': 'partner_latitude', 'lng': 'partner_longitude'}">
+    ...
+ </form>
+...
+```
+The attribute will add a new button "Edit Geolocation" next to button "Edit" & "Create".    
+<img src="./static/description/form_edit_geolocation.png" alt="drawing" height="200"/>
+
+Once you defined this attribute on form view, you can activate or access this feature on your `ir.actions.act_window` record either in XML or Python by append `edit_geo_field = True` in context.    
+For example,    
+Python
+```python
+    def action_edit_geolocation(self):
+        context = self.env.context.copy()
+        context['edit_geo_field'] = True
+        return {
+            ...
+            'type': 'ir.actions.act_window',
+            'context': context
+        }
+```
+XML
+```xml
+    <record id="action_edit_geolocation" model="ir.actions.act_window">
+        ...
+        <field name="context">{'edit_geo_field': True}</field>
+        ...
+    </record>
+```
 
 # Map view  `"map"`
 Basically, this new view `map`  will integrate Google Maps into Odoo.    
@@ -131,8 +165,14 @@ Example
 
 The view looks familiar?    
 Yes, you're right.    
-The marker infowindow will use `kanban-box` kanban card style.    
+The marker infowindow will use `kanban-box` kanban card style. 
 
+### **Mandatory**
+The map view required you to provide fields geolocation in the view attributes
+```xml
+<map ... lat="partner_latitude" lng="partner_longitude" ..>
+```
+These attributes lets the map view identify which geolocation fields on the model.
 
 ### How to setup color for marker on map?
 There are two attributes:
