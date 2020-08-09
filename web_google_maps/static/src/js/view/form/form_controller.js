@@ -17,14 +17,19 @@ odoo.define('web_google_maps.MapFormController', function (require) {
             this._super.apply(this, arguments);
             var $footer = this.footerToButtons ? this.$('footer') : null;
             var mustRenderFooterButtons = $footer && $footer.length;
-            if (!mustRenderFooterButtons) {
+            if (!this.defaultButtons && !mustRenderFooterButtons) {
+                return;
+            }
+            if (this.$buttons) {
                 this.$marker_buttons = $(
                     qweb.render('FormView.marker_edit_button', {
                         widget: this,
                     })
                 );
                 this.$marker_buttons.on('click', this._onButtonEditMarker.bind(this));
-                this.$marker_buttons.appendTo(this.$buttons.find('.o_form_buttons_view'));
+                if (this.$buttons.find('.o_form_buttons_view').length > 0) {
+                    this.$marker_buttons.appendTo(this.$buttons.find('.o_form_buttons_view'));
+                }
             }
         },
         _updateButtons: function () {

@@ -49,5 +49,11 @@ odoo.define('google_marker_dynamic_color.MapRenderer', function (require) {
             }
             return color;
         },
+        _getIconColorPath: function (color) {
+            if (MARKER_COLORS.indexOf(color) >= 0) {
+                return this.iconUrl + color + '.png';
+            }
+            return this._super(color);
+        },
     });
 });

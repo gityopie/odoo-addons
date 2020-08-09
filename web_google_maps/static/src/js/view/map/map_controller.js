@@ -22,7 +22,8 @@ odoo.define('web_google_maps.MapController', function (require) {
          */
         init: function (parent, model, renderer, params) {
             this._super.apply(this, arguments);
-
+            this.actionButtons = params.actionButtons;
+            this.defaultButtons = params.defaultButtons;
             this.on_create = params.on_create;
             this.hasButtons = params.hasButtons;
             this.is_marker_edit = false;
@@ -191,11 +192,6 @@ odoo.define('web_google_maps.MapController', function (require) {
                 );
                 this.$buttons.on(
                     'click',
-                    'button.o-map-button-marker-edit',
-                    this._onButtonEditMarker.bind(this)
-                );
-                this.$buttons.on(
-                    'click',
                     'button.o-map-button-marker-save',
                     this._onButtonSaveMarker.bind(this)
                 );
@@ -227,10 +223,6 @@ odoo.define('web_google_maps.MapController', function (require) {
                 view_type: 'form',
                 res_id: undefined,
             });
-        },
-        _onButtonEditMarker: function (event) {
-            event.stopPropagation();
-            this._onEditMarker();
         },
         _onEditMarker: function () {
             this.is_marker_edit = true;

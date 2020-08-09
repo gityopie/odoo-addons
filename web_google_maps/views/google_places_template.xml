@@ -5,14 +5,14 @@
         <t t-set="google_maps_lang_localization" t-value="request.env['ir.config_parameter'].sudo().get_param('web_google_maps.localization_lang', default='')"/>
         <t t-set="google_maps_region_localization" t-value="request.env['ir.config_parameter'].sudo().get_param('web_google_maps.localization_region', default='')"/>
         <t t-set="google_maps_libraries" t-value="request.env['ir.config_parameter'].sudo().get_param('web_google_maps.maps_libraries', default='')"/>
-        <script src="/web_google_maps/static/lib/markercluster/markerclusterer.min.js"></script>
+        <script defer="defer" src="/web_google_maps/static/lib/markercluster/markerclusterer.min.js"></script>
         <t t-set="google_lang" t-value="'&amp;language=' + google_maps_lang_localization if google_maps_lang_localization else ''"/>
         <t t-set="google_region" t-value="'&amp;region=' + google_maps_region_localization if google_maps_region_localization else ''"/>
         <t t-if="google_maps_api_key">
-            <script t-attf-src="https://maps.googleapis.com/maps/api/js?v=quarterly&amp;key=#{google_maps_api_key}&amp;libraries=#{google_maps_libraries}#{google_lang}#{google_region}"></script>
+            <script defer="defer" t-attf-src="https://maps.googleapis.com/maps/api/js?v=quarterly&amp;key=#{google_maps_api_key}&amp;libraries=#{google_maps_libraries}#{google_lang}#{google_region}"></script>
         </t>
         <t t-else="">
-            <script t-attf-src="https://maps.googleapis.com/maps/api/js?v=quarterly&amp;libraries=#{google_maps_libraries}#{google_lang}#{google_region}"></script>
+            <script defer="defer" t-attf-src="https://maps.googleapis.com/maps/api/js?v=quarterly&amp;libraries=#{google_maps_libraries}#{google_lang}#{google_region}"></script>
         </t>
     </template>
     <template id="webclient_bootstrap" name="webclient_bootstrap gmaps" inherit_id="web.webclient_bootstrap">
