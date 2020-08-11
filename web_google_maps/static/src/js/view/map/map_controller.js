@@ -22,9 +22,24 @@ odoo.define('web_google_maps.MapController', function (require) {
          */
         init: function (parent, model, renderer, params) {
             this._super.apply(this, arguments);
-
+            this.actionButtons = params.actionButtons;
+            this.defaultButtons = params.defaultButtons;
             this.on_create = params.on_create;
             this.hasButtons = params.hasButtons;
+            this.is_marker_edit = false;
+        },
+        start: function () {
+            return this._super.apply(this, arguments).then(this._checkEditMarker.bind(this));
+        },
+        _checkEditMarker: function () {
+            if (this._isEditMarkerInContext()) {
+                this._onEditMarker();
+            }
+        },
+        _isEditMarkerInContext: function () {
+            var record = this.model.get(this.handle);
+            var context = record.getContext();
+            return context.edit_geo_field;
         },
         /**
          * @private
@@ -175,8 +190,24 @@ odoo.define('web_google_maps.MapController', function (require) {
                     'button.o-map-button-center-map',
                     this._onButtonMapCenter.bind(this)
                 );
+                this.$buttons.on(
+                    'click',
+                    'button.o-map-button-marker-save',
+                    this._onButtonSaveMarker.bind(this)
+                );
+                this.$buttons.on(
+                    'click',
+                    'button.o-map-button-marker-discard',
+                    this._onButtonDiscardMarker.bind(this)
+                );
                 this.$buttons.appendTo($node);
             }
+        },
+        _isMarkerEditable: function () {
+            if (this.initialState.count === 1 && this.renderer.mapLibrary === 'geometry') {
+                return true;
+            }
+            return false;
         },
         _onButtonMapCenter: function (event) {
             event.stopPropagation();
@@ -192,6 +223,56 @@ odoo.define('web_google_maps.MapController', function (require) {
                 view_type: 'form',
                 res_id: undefined,
             });
+        },
+        _onEditMarker: function () {
+            this.is_marker_edit = true;
+            this._updateMarkerButtons();
+            this.renderer.setMarkerDraggable();
+        },
+        _onButtonSaveMarker: function (event) {
+            event.stopPropagation();
+            var self = this;
+            var record = this.model.get(this.handle);
+            var marker_position = this.renderer.markers[0].getPosition();
+            this.is_marker_edit = false;
+
+            this._updateMarkerButtons();
+
+            return this._rpc({
+                model: this.modelName,
+                method: 'write',
+                args: [
+                    record.res_ids,
+                    {
+                        [this.renderer.fieldLat]: marker_position.lat(),
+                        [this.renderer.fieldLng]: marker_position.lng(),
+                    },
+                ],
+            }).then(function () {
+                self.renderer.disableMarkerDraggable();
+                return self.reload();
+            });
+        },
+        _onButtonDiscardMarker: function (event) {
+            event.stopPropagation();
+            this.is_marker_edit = false;
+            this._updateMarkerButtons();
+            this.renderer.disableMarkerDraggable();
+            this._discardChanges();
+
+            if (this._isEditMarkerInContext()) {
+                this.trigger_up('history_back');
+            } else {
+                this.reload();
+            }
+        },
+        _updateMarkerButtons: function () {
+            this.$buttons
+                .find('.o_form_marker_buttons_actions')
+                .toggleClass('o_hidden', this.is_marker_edit);
+            this.$buttons
+                .find('.o_form_marker_buttons_edit')
+                .toggleClass('o_hidden', !this.is_marker_edit);
         },
     });
 
