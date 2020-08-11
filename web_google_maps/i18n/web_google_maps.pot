@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-12-29 14:22+0000\n"
-"PO-Revision-Date: 2019-12-29 14:22+0000\n"
+"POT-Creation-Date: 2020-08-07 16:20+0000\n"
+"PO-Revision-Date: 2020-08-07 16:20+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -17,8 +17,8 @@ msgstr ""
 
 #. module: web_google_maps
 #. openerp-web
-#: code:addons/web_google_maps/static/src/js/widgets/gplaces_autocomplete.js:322
-#: code:addons/web_google_maps/static/src/js/widgets/gplaces_autocomplete.js:479
+#: code:addons/web_google_maps/static/src/js/widgets/gplaces_autocomplete.js:408
+#: code:addons/web_google_maps/static/src/js/widgets/gplaces_autocomplete.js:621
 #, python-format
 msgid "<ul><li></li></ul>"
 msgstr ""
@@ -141,6 +141,11 @@ msgid "Config Settings"
 msgstr ""
 
 #. module: web_google_maps
+#: model:ir.model,name:web_google_maps.model_res_partner
+msgid "Contact"
+msgstr ""
+
+#. module: web_google_maps
 #: selection:res.config.settings,google_maps_lang_localization:0
 msgid "Croatian"
 msgstr ""
@@ -189,6 +194,13 @@ msgstr ""
 #. module: web_google_maps
 #: selection:res.config.settings,google_maps_lang_localization:0
 msgid "Dutch"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/js/view/form/form_controller.js:43
+#, python-format
+msgid "Edit Geolocation"
 msgstr ""
 
 #. module: web_google_maps
@@ -615,8 +627,8 @@ msgstr ""
 
 #. module: web_google_maps
 #. openerp-web
-#: code:addons/web_google_maps/static/src/js/widgets/gplaces_autocomplete.js:322
-#: code:addons/web_google_maps/static/src/js/widgets/gplaces_autocomplete.js:479
+#: code:addons/web_google_maps/static/src/js/widgets/gplaces_autocomplete.js:407
+#: code:addons/web_google_maps/static/src/js/widgets/gplaces_autocomplete.js:620
 #, python-format
 msgid "The following fields are invalid:"
 msgstr ""
@@ -718,3 +730,4 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:web_google_maps.res_config_settings_view_form
 msgid "page"
 msgstr ""
+

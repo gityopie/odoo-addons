@@ -29,6 +29,7 @@ odoo.define('web_google_maps.MapView', function (require) {
 
             var activeActions = this.controllerParams.activeActions;
             var mode = arch.attrs.editable && !params.readonly ? 'edit' : 'readonly';
+            var mapLibrary = attrs.library || 'geometry';
 
             this.loadParams.limit = this.loadParams.limit || 80;
             this.loadParams.openGroupByDefault = true;
@@ -39,12 +40,13 @@ odoo.define('web_google_maps.MapView', function (require) {
                 : params.groupBy || [];
 
             this.rendererParams.arch = arch;
-            this.rendererParams.mapLibrary = attrs.library;
 
-            if (attrs.library === 'drawing') {
+            this.rendererParams.mapLibrary = mapLibrary;
+
+            if (mapLibrary === 'drawing') {
                 this.rendererParams.drawingMode = attrs.drawing_mode;
                 this.rendererParams.drawingPath = attrs.drawing_path;
-            } else if (attrs.library === 'geometry') {
+            } else if (mapLibrary === 'geometry') {
                 var colors = this._setMarkersColor(attrs.colors);
                 this.rendererParams.markerColor = attrs.color;
                 this.rendererParams.markerColors = colors;

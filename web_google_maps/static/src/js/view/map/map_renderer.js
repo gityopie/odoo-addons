@@ -52,11 +52,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
 
     function qwebAddIf(node, condition) {
         if (node.attrs[qweb.prefix + '-if']) {
-            condition = _.str.sprintf(
-                '(%s) and (%s)',
-                node.attrs[qweb.prefix + '-if'],
-                condition
-            );
+            condition = _.str.sprintf('(%s) and (%s)', node.attrs[qweb.prefix + '-if'], condition);
         }
         node.attrs[qweb.prefix + '-if'] = condition;
     }
@@ -68,10 +64,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
             if (modifiers.invisible) {
                 qwebAddIf(
                     node,
-                    _.str.sprintf(
-                        '!kanban_compute_domain(%s)',
-                        JSON.stringify(modifiers.invisible)
-                    )
+                    _.str.sprintf('!kanban_compute_domain(%s)', JSON.stringify(modifiers.invisible))
                 );
             }
         }
@@ -80,10 +73,8 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
             case 'a':
                 var type = node.attrs.type || '';
                 if (
-                    _.indexOf(
-                        'action,object,edit,open,delete,url,set_cover'.split(','),
-                        type
-                    ) !== -1
+                    _.indexOf('action,object,edit,open,delete,url,set_cover'.split(','), type) !==
+                    -1
                 ) {
                     _.each(node.attrs, function (v, k) {
                         if (
@@ -107,15 +98,13 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
                         node.attrs.type = 'button';
                     }
 
-                    var action_classes =
-                        ' oe_kanban_action oe_kanban_action_' + node.tag;
+                    var action_classes = ' oe_kanban_action oe_kanban_action_' + node.tag;
                     if (node.attrs['t-attf-class']) {
                         node.attrs['t-attf-class'] += action_classes;
                     } else if (node.attrs['t-att-class']) {
                         node.attrs['t-att-class'] += " + '" + action_classes + "'";
                     } else {
-                        node.attrs['class'] =
-                            (node.attrs['class'] || '') + action_classes;
+                        node.attrs['class'] = (node.attrs['class'] || '') + action_classes;
                     }
                 }
                 break;
@@ -205,21 +194,12 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
         _getMapTheme: function () {
             var self = this;
             var update_map = function (style) {
-                var styledMapType = new google.maps.StyledMapType(
-                    self.mapThemes[style],
-                    {
-                        name: 'Theme',
-                    }
-                );
+                var styledMapType = new google.maps.StyledMapType(self.mapThemes[style], {
+                    name: 'Theme',
+                });
                 self.gmap.setOptions({
                     mapTypeControlOptions: {
-                        mapTypeIds: [
-                            'roadmap',
-                            'satellite',
-                            'hybrid',
-                            'terrain',
-                            'styled_map',
-                        ],
+                        mapTypeIds: ['roadmap', 'satellite', 'hybrid', 'terrain', 'styled_map'],
                     },
                 });
                 //Associate the styled map with the MapTypeId and set it to display.
@@ -231,7 +211,10 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
                 this._rpc({
                     route: '/web/google_map_theme',
                 }).then(function (data) {
-                    if (data.theme && Object.prototype.hasOwnProperty.call(self.mapThemes, data.theme)) {
+                    if (
+                        data.theme &&
+                        Object.prototype.hasOwnProperty.call(self.mapThemes, data.theme)
+                    ) {
                         self.theme = data.theme;
                         update_map(data.theme);
                     }
@@ -279,7 +262,9 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
                 return this.defaultMarkerColor;
             }
 
-            var color, expression, result = this.defaultMarkerColor;
+            var color,
+                expression,
+                result = this.defaultMarkerColor;
             for (var i = 0; i < this.markerColors.length; i++) {
                 color = this.markerColors[i][0];
                 expression = this.markerColors[i][1];
@@ -546,10 +531,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
                 }
 
                 this.shapesBounds.union(rectangle.getBounds());
-                rectangle.addListener(
-                    'click',
-                    this._shapeInfoWindow.bind(this, record)
-                );
+                rectangle.addListener('click', this._shapeInfoWindow.bind(this, record));
             }
         },
         /**
@@ -603,9 +585,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
             } else if (this.mapLibrary === 'drawing') {
                 this.shapesLatLng.length = 0;
                 this._renderShapes();
-                return this._super
-                    .apply(this, arguments)
-                    .then(this.mapShapesCentered.bind(this));
+                return this._super.apply(this, arguments).then(this.mapShapesCentered.bind(this));
             }
             return this._super.apply(this, arguments);
         },
@@ -688,10 +668,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
             // - is readonly (on the field attrs or in the view)
             var draggable = false;
             if (groupByFieldAttrs) {
-                if (
-                    groupByFieldAttrs.type === 'date' ||
-                    groupByFieldAttrs.type === 'datetime'
-                ) {
+                if (groupByFieldAttrs.type === 'date' || groupByFieldAttrs.type === 'datetime') {
                     draggable = false;
                 } else if (groupByFieldAttrs.readonly !== undefined) {
                     draggable = !groupByFieldAttrs.readonly;
@@ -702,8 +679,19 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
                     draggable = !groupByFieldInfo.readonly;
                 }
             }
-            this.groupedByM2O =
-                groupByFieldAttrs && groupByFieldAttrs.type === 'many2one';
+            this.groupedByM2O = groupByFieldAttrs && groupByFieldAttrs.type === 'many2one';
+        },
+        setMarkerDraggable: function () {
+            this.markers[0].setOptions({
+                draggable: true,
+                animation: google.maps.Animation.BOUNCE,
+            });
+        },
+        disableMarkerDraggable: function () {
+            this.markers[0].setOptions({
+                draggable: false,
+                animation: google.maps.Animation.DROP,
+            });
         },
     });
 
