@@ -20,7 +20,7 @@ odoo.define('web_google_maps.MapFormController', function (require) {
             if (!this.defaultButtons && !mustRenderFooterButtons) {
                 return;
             }
-            if (this.$buttons) {
+            if (this.$buttons && this.geo_field) {
                 this.$marker_buttons = $(
                     qweb.render('FormView.marker_edit_button', {
                         widget: this,
@@ -34,7 +34,7 @@ odoo.define('web_google_maps.MapFormController', function (require) {
         },
         _updateButtons: function () {
             this._super.apply(this, arguments);
-            if (this.$marker_buttons) {
+            if (this.$marker_buttons && this.geo_field) {
                 if (this.model.isNew(this.handle)) {
                     this.$marker_buttons.toggleClass('o_hidden', true);
                 } else {
