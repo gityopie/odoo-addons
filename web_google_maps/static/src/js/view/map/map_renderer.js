@@ -313,8 +313,9 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
             var markerInClusters = this.markerCluster.getMarkers();
             var existingRecords = [];
             if (markerInClusters.length > 0) {
+                var position = marker.getPosition();
                 markerInClusters.forEach(function (_cMarker) {
-                    if (marker.getPosition().equals(_cMarker.getPosition())) {
+                    if (position && position.equals(_cMarker.getPosition())) {
                         existingRecords.push(_cMarker._odooRecord);
                     }
                 });
@@ -408,8 +409,10 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
                 color = self._getGroupedMarkerColor();
                 record.markerColor = color;
                 _.each(record.data, function (rec) {
-                    lat = rec.data[self.fieldLat] || 0.0;
-                    lng = rec.data[self.fieldLng] || 0.0;
+                    lat =
+                        typeof rec.data[self.fieldLat] === 'number' ? rec.data[self.fieldLat] : 0.0;
+                    lng =
+                        typeof rec.data[self.fieldLng] === 'number' ? rec.data[self.fieldLng] : 0.0;
                     if (lat === 0.0 && lng === 0.0) {
                         self._createMarker(defaultLatLng, rec, color);
                     } else {
@@ -431,8 +434,14 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
 
             _.each(this.state.data, function (record) {
                 color = self._getIconColor(record);
-                lat = record.data[self.fieldLat] || 0.0;
-                lng = record.data[self.fieldLng] || 0.0;
+                lat =
+                    typeof record.data[self.fieldLat] === 'number'
+                        ? record.data[self.fieldLat]
+                        : 0.0;
+                lng =
+                    typeof record.data[self.fieldLng] === 'number'
+                        ? record.data[self.fieldLng]
+                        : 0.0;
                 if (lat === 0.0 && lng === 0.0) {
                     self._createMarker(defaultLatLng, record, color);
                 } else {
@@ -695,5 +704,8 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
         },
     });
 
-    return MapRenderer;
+    return {
+        MapRenderer: MapRenderer,
+        MapRecord: MapRecord,
+    };
 });

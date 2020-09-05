@@ -5,7 +5,7 @@ odoo.define('web_google_maps.MapView', function (require) {
     var core = require('web.core');
 
     var MapModel = require('web_google_maps.MapModel');
-    var MapRenderer = require('web_google_maps.MapRenderer');
+    var MapRenderer = require('web_google_maps.MapRenderer').MapRenderer;
     var MapController = require('web_google_maps.MapController');
 
     var _lt = core._lt;
