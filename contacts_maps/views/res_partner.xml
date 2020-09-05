@@ -102,7 +102,7 @@
         domain="[('id','=', active_id)]"
         res_model="res.partner"/>
     <record id="contacts.action_contacts" model="ir.actions.act_window">
-        <field name="view_mode">kanban,tree,map,form</field>
+        <field name="view_mode">kanban,tree,map,form,activity</field>
     </record>
     <record id="contacts.action_contacts_view_form" model="ir.actions.act_window.view">
         <field name="sequence" eval="3"/>

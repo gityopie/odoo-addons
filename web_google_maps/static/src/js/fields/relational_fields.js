@@ -1,7 +1,7 @@
 odoo.define('web_google_maps.relational_fields', function (require) {
     var core = require('web.core');
     var relational_fields = require('web.relational_fields');
-    var MapRenderer = require('web_google_maps.MapRenderer');
+    var MapRenderer = require('web_google_maps.MapRenderer').MapRenderer;
 
     var qweb = core.qweb;
 
