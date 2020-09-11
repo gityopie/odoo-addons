@@ -1057,13 +1057,12 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
          * Handle Multiple Markers present at the same coordinates
          */
         _clusterAddMarker: function (marker) {
-            var _position;
             var markerInClusters = this.markerCluster.getMarkers();
             var existingRecords = [];
             if (markerInClusters.length > 0) {
+                var position = marker.getPosition();
                 markerInClusters.forEach(function (_cMarker) {
-                    _position = _cMarker.getPosition();
-                    if (marker.getPosition().equals(_position)) {
+                    if (position && position.equals(_cMarker.getPosition())) {
                         existingRecords.push(_cMarker._odooRecord);
                     }
                 });
@@ -1118,14 +1117,32 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
         _renderMarkers: function () {
             var self = this,
                 color,
-                latLng;
+                latLng,
+                defaultLatLng = this._getDefaultCoordinate();
 
             _.each(this.state.data, function (record) {
                 color = self._getIconColor(record);
-                latLng = new google.maps.LatLng(record.data[self.fieldLat], record.data[self.fieldLng]);
-                record.markerColor = color;
-                self._createMarker(latLng, record, color);
+                lat =
+                    typeof record.data[self.fieldLat] === 'number'
+                        ? record.data[self.fieldLat]
+                        : 0.0;
+                lng =
+                    typeof record.data[self.fieldLng] === 'number'
+                        ? record.data[self.fieldLng]
+                        : 0.0;
+                if (lat === 0.0 && lng === 0.0) {
+                    self._createMarker(defaultLatLng, record, color);
+                } else {
+                    latLng = new google.maps.LatLng(lat, lng);
+                    self._createMarker(latLng, record, color);
+                }
             });
+        },
+        /**
+         * Default location
+         */
+        _getDefaultCoordinate: function () {
+            return new google.maps.LatLng(0.0, 0.0);
         },
         /**
          * @override
