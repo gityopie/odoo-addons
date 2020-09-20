@@ -270,7 +270,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
                 expression = this.markerColors[i][1];
                 if (py.PY_isTrue(py.evaluate(expression, record.evalContext))) {
                     result = color;
-                    return;
+                    break;
                 }
             }
             return result;
