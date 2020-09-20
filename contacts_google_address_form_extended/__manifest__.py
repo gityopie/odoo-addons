@@ -20,10 +20,7 @@ Use Google Address Form autocomplete to help you find address
         'web_google_maps',
     ],
     'website': 'https://github.com/gityopie/odoo-addons',
-    'data': [
-        'views/res_partner.xml',
-        'views/templates.xml'
-    ],
+    'data': ['views/res_partner.xml'],
     'demo': [],
-    'installable': True
+    'installable': True,
 }

@@ -1,34 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <record id="act_res_partner_map" model="ir.actions.act_window">
-        <field name="name">Google Map</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">res.partner</field>
-        <field name="view_mode">google_map,form</field>
-        <field name="domain">[('id', '=', active_id)]</field>
-    </record>
-    <record id="view_partner_form" model="ir.ui.view">
-        <field name="name">Google Places Partner Form</field>
+    <record id="view_res_partner_google_map_marker_color" model="ir.ui.view">
+        <field name="name">view.res.partner.google_map Marker Color</field>
         <field name="model">res.partner</field>
-        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="priority">1000</field>
         <field name="arch" type="xml">
-            <div name="button_box" position="inside">
-                <button name="%(act_res_partner_map)d" 
-                    type="action" 
-                    class="oe_stat_button" 
-                    icon="fa-map-marker" string="Google Map" 
-                    attrs="{'invisible': ['|',('partner_latitude', '=', 0.0), ('partner_longitude', '=', 0.0)]}"/>
-            </div>
+            <google_map class="o_res_partner_map" library="geometry" string="Google Maps" lat="partner_latitude" lng="partner_longitude" color="marker_color">
+                <field name="id"/>
+                <field name="partner_latitude"/>
+                <field name="partner_longitude"/>
+                <field name="company_type"/>
+                <field name="color"/>
+                <field name="display_name"/>
+                <field name="title"/>
+                <field name="email"/>
+                <field name="parent_id"/>
+                <field name="is_company"/>
+                <field name="function"/>
+                <field name="phone"/>
+                <field name="street"/>
+                <field name="street2"/>
+                <field name="zip"/>
+                <field name="city"/>
+                <field name="country_id"/>
+                <field name="mobile"/>
+                <field name="state_id"/>
+                <field name="category_id"/>
+                <field name="type"/>
+                <field name="marker_color"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click o_kanban_record_has_image_fill o_res_partner_kanban">
+                            <t t-if="!record.is_company.raw_value">
+                                <t t-if="record.type.raw_value === 'delivery'" t-set="placeholder" t-value="'/base/static/img/truck.png'"/>
+                                <t t-elif="record.type.raw_value === 'invoice'" t-set="placeholder" t-value="'/base/static/img/money.png'"/>
+                                <t t-else="" t-set="placeholder" t-value="'/base/static/img/avatar_grey.png'"/>
+                                <div class="o_kanban_image_fill_left d-none d-md-block" t-attf-style="background-image:url('#{kanban_image('res.partner', 'image_128', record.id.raw_value,  placeholder)}')">
+                                    <img class="o_kanban_image_inner_pic" t-if="record.parent_id.raw_value" t-att-alt="record.parent_id.value" t-att-src="kanban_image('res.partner', 'image_128', record.parent_id.raw_value)"/>
+                                </div>
+                                <div class="o_kanban_image d-md-none" t-attf-style="background-image:url('#{kanban_image('res.partner', 'image_128', record.id.raw_value,  placeholder)}')">
+                                    <img class="o_kanban_image_inner_pic" t-if="record.parent_id.raw_value" t-att-alt="record.parent_id.value" t-att-src="kanban_image('res.partner', 'image_128', record.parent_id.raw_value)"/>
+                                </div>
+                            </t>
+                            <t t-else="">
+                                <t t-set="placeholder" t-value="'/base/static/img/company_image.png'"/>
+                                <div class="o_kanban_image_fill_left o_kanban_image_full" t-attf-style="background-image: url(#{kanban_image('res.partner', 'image_128', record.id.raw_value, placeholder)})" role="img"/>
+                            </t>
+                            <div class="oe_kanban_details">
+                                <strong class="o_kanban_record_title oe_partner_heading"><field name="display_name"/></strong>
+                                <div class="o_kanban_tags_section oe_kanban_partner_categories"/>
+                                <ul>
+                                    <li t-if="record.parent_id.raw_value and !record.function.raw_value"><field name="parent_id"/></li>
+                                    <li t-if="!record.parent_id.raw_value and record.function.raw_value"><field name="function"/></li>
+                                    <li t-if="record.parent_id.raw_value and record.function.raw_value"><field name="function"/> at <field name="parent_id"/></li>
+                                    <li t-if="record.city.raw_value and !record.country_id.raw_value"><field name="city"/></li>
+                                    <li t-if="!record.city.raw_value and record.country_id.raw_value"><field name="country_id"/></li>
+                                    <li t-if="record.city.raw_value and record.country_id.raw_value"><field name="city"/>, <field name="country_id"/></li>
+                                    <li t-if="record.email.raw_value" class="o_text_overflow"><field name="email"/></li>
+                                </ul>
+                                <div class="oe_kanban_partner_links"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </google_map>
         </field>
     </record>
+    <act_window
+        id="action_view_res_partner_google_map"
+        name="Google Map"
+        view_mode="google_map"
+        view_id="contacts_maps.view_res_partner_google_map_marker_color"
+        domain="[('id','=', active_id)]"
+        res_model="res.partner"/>
     <record id="contacts.action_contacts" model="ir.actions.act_window">
-        <field name="view_mode">kanban,tree,form,google_map,activity</field>
+        <field name="view_mode">kanban,tree,google_map,form,activity</field>
     </record>
-    <record id="action_contacts_view_google_map" model="ir.actions.act_window.view">
-        <field name="sequence" eval="4"/>
-        <field name="view_mode">google_map</field>
-        <field name="view_id" ref="web_google_maps.view_res_partner_map"/>
-        <field name="act_window_id" ref="contacts.action_contacts"/>
+    <record id="contacts.action_contacts_view_form" model="ir.actions.act_window.view">
+        <field name="sequence" eval="3"/>
     </record>
     <record id="view_crm_partner_geo_form_inherit" model="ir.ui.view">
         <field name="name">view.crm.partner.get.form.inherit</field>
@@ -44,18 +93,27 @@
             </xpath>
         </field>
     </record>
-    <record id="view_res_partner_map_inherit_contact" model="ir.ui.view">
-        <field name="name">view.res.partner.map.inherit.contact</field>
+    <record id="view_partner_form" model="ir.ui.view">
+        <field name="name">Contacts Google Map</field>
         <field name="model">res.partner</field>
-        <field name="inherit_id" ref="web_google_maps.view_res_partner_map"/>
+        <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//google_map" position="attributes">
-                <attribute name="color">marker_color</attribute>
-                <attribute name="colors"></attribute>
+            <xpath expr="//form" position="attributes">
+                <attribute name="geo_field">{'lat': 'partner_latitude', 'lng': 'partner_longitude'}</attribute>
             </xpath>
-            <xpath expr="//templates" position="before">
-                <field name="marker_color"/>
-            </xpath>
+            <div name="button_box" position="inside">
+                <button name="%(contacts_maps.action_view_res_partner_google_map)d" 
+                    type="action" 
+                    class="oe_stat_button" 
+                    icon="fa-map-marker" string="Google Map" 
+                    attrs="{'invisible': ['|',('partner_latitude', '=', 0.0), ('partner_longitude', '=', 0.0)]}"/>
+            </div>
         </field>
+    </record>
+    <record id="action_contacts_view_google_map" model="ir.actions.act_window.view">
+        <field name="sequence" eval="2"/>
+        <field name="view_mode">google_map</field>
+        <field name="view_id" ref="contacts_maps.view_res_partner_google_map_marker_color"/>
+        <field name="act_window_id" ref="contacts.action_contacts"/>
     </record>
 </odoo>

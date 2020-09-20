@@ -5,7 +5,7 @@ odoo.define('web_google_maps.MapView', function (require) {
     var core = require('web.core');
 
     var MapModel = require('web_google_maps.MapModel');
-    var MapRenderer = require('web_google_maps.MapRenderer');
+    var MapRenderer = require('web_google_maps.MapRenderer').MapRenderer;
     var MapController = require('web_google_maps.MapController');
 
     var _lt = core._lt;
@@ -17,7 +17,7 @@ odoo.define('web_google_maps.MapView', function (require) {
         config: _.extend({}, BasicView.prototype.config, {
             Model: MapModel,
             Renderer: MapRenderer,
-            Controller: MapController
+            Controller: MapController,
         }),
         viewType: 'google_map',
         mobile_friendly: true,
@@ -36,7 +36,11 @@ odoo.define('web_google_maps.MapView', function (require) {
 
             var modes = this._map_mode();
             var defaultMode = 'geometry';
-            var map_mode = attrs.mode ? (modes.indexOf(attrs.mode) > -1 ? attrs.mode : defaultMode) : defaultMode;
+            var map_mode = attrs.mode
+                ? modes.indexOf(attrs.mode) > -1
+                    ? attrs.mode
+                    : defaultMode
+                : defaultMode;
             this.rendererParams.arch = arch;
             this.rendererParams.map_mode = map_mode;
             this.rendererParams.record_options = {
@@ -44,7 +48,8 @@ odoo.define('web_google_maps.MapView', function (require) {
                 deletable: activeActions.delete,
                 read_only_mode: params.readOnlyMode || true,
             };
-            this.controllerParams.mode = arch.attrs.editable && !params.readonly ? "edit" : "readonly";;
+            this.controllerParams.mode =
+                arch.attrs.editable && !params.readonly ? 'edit' : 'readonly';
             this.controllerParams.hasButtons = true;
             this['set_property_' + map_mode](attrs);
         },
@@ -68,10 +73,10 @@ odoo.define('web_google_maps.MapView', function (require) {
                     color = pair[0];
                     expr = pair[1];
                     return [color, py.parse(py.tokenize(expr)), expr];
-                }).value();
-        }
+                })
+                .value();
+        },
     });
 
     return MapView;
-
 });
