@@ -86,13 +86,9 @@ odoo.define('web_google_maps.MapController', function (require) {
                 // these cases, but this is out of scope. A simpler one is to do a try / catch.
 
                 if (domInData && !activeInDomain && activeInData) {
-                    domain = domain.concat([
-                        ['active', '=', true]
-                    ]);
+                    domain = domain.concat([['active', '=', true]]);
                 } else if (!domInData && !activeInDomain && activeInData) {
-                    domain = [
-                        ['active', '=', true]
-                    ];
+                    domain = [['active', '=', true]];
                 }
                 try {
                     var visible = new Domain(domain).compute(data.evalContext);
@@ -113,12 +109,11 @@ odoo.define('web_google_maps.MapController', function (require) {
             var attrs = event.data.attrs;
             var record = event.data.record;
             if (attrs.context) {
-                attrs.context = new Context(attrs.context)
-                    .set_eval_context({
-                        active_id: record.res_id,
-                        active_ids: [record.res_id],
-                        active_model: record.model,
-                    });
+                attrs.context = new Context(attrs.context).set_eval_context({
+                    active_id: record.res_id,
+                    active_ids: [record.res_id],
+                    active_model: record.model,
+                });
             }
             this.trigger_up('execute_action', {
                 action_data: attrs,
@@ -209,20 +204,20 @@ odoo.define('web_google_maps.MapController', function (require) {
             }
         },
         _isMarkerEditable: function () {
-            if (this.initialState.count === 1 && this.renderer.mapLibrary === 'geometry') {
-                return true;
-            }
-            return false;
+            var is_editable =
+                this.initialState.count === 1 && this.renderer.mapLibrary === 'geometry';
+            return is_editable;
         },
         _onButtonMapCenter: function (event) {
             event.stopPropagation();
-            this.renderer['_map_center_' + this.renderer.mapMode]();
+            var func_name = '_map_center_' + this.renderer.mapMode;
+            this.renderer[func_name].call(this.renderer);
         },
         _onButtonNew: function (event) {
             event.stopPropagation();
             this.trigger_up('switch_view', {
                 view_type: 'form',
-                res_id: undefined
+                res_id: undefined,
             });
         },
         _onEditMarker: function () {
@@ -252,7 +247,7 @@ odoo.define('web_google_maps.MapController', function (require) {
             }).then(function () {
                 self.renderer.disableMarkerDraggable();
                 self.reload();
-                setTimeout(function() {
+                setTimeout(function () {
                     self.trigger_up('history_back');
                 }, 2000);
             });

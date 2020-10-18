@@ -28,6 +28,16 @@ odoo.define('web_google_maps.Utils', function (require) {
         airport: 'short_name',
         park: 'short_name',
         point_of_interest: 'long_name',
+        floor: 'short_name',
+        establishment: 'short_name',
+        point_of_interest: 'short_name',
+        parking: 'short_name',
+        post_box: 'short_name',
+        postal_town: 'short_name',
+        room: 'short_name',
+        bus_station: 'short_name',
+        train_station: 'short_name',
+        transit_station: 'short_name',
     };
     /**
      * Mapping field with an alias

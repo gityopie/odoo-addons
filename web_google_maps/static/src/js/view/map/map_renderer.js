@@ -17,7 +17,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
         'blue',
         'brown',
         'cyan',
-        'fuschia',
+        'fuchsia',
         'green',
         'grey',
         'lime',
@@ -168,7 +168,8 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
          * @param {*} params
          */
         _initLibraryProperties: function (params) {
-            this['set_property_' + this.mapMode](params);
+            var func_name = 'set_property_' + this.mapMode;
+            this[func_name].call(this, params);
         },
         /**
          *
@@ -237,7 +238,8 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
                 mapTypeControl: true,
             });
             this._getMapTheme();
-            this['_post_load_map_' + this.mapMode].call(this);
+            var func_name = '_post_load_map_' + this.mapMode;
+            this[func_name].call(this);
         },
         /**
          *
@@ -416,12 +418,13 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
          */
         _renderView: function () {
             var self = this;
+            var func_name = '_map_center_' + this.mapMode;
             this._clearMarkerClusters();
             this._renderMarkers();
             this._clusterMarkers();
             return this._super
                 .apply(this, arguments)
-                .then(self['_map_center_' + self.mapMode].bind(self));
+                .then(self[func_name].bind(self));
         },
         /**
          * Cluster markers

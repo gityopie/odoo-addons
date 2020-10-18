@@ -10,16 +10,14 @@
     'description': """
 Google Marker Icon Picker
 =========================
-- New widget `google_marker_picker` allowing user to set marker's color from field
-Loaded with 20 different marker's color
-To apply the selecter marker on map, you can tell map view by adding attribute color='[field_name]'
+- New widget `google_marker_picker` allowing user to assign marker's color
+  manually. To apply the selecter marker on map, you can tell map view by
+  adding attribute color='[field_name]'
 """,
-    'depends': ['web_google_maps', ],
+    'depends': ['web_google_maps'],
     'website': '',
-    'data': [
-        'views/template.xml',
-    ],
+    'data': ['views/template.xml'],
     'qweb': ['static/src/xml/marker_color.xml'],
     'demo': [],
-    'installable': True
+    'installable': True,
 }

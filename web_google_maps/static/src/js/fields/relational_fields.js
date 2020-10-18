@@ -18,13 +18,15 @@ odoo.define('web_google_maps.relational_fields', function (require) {
             }
             var arch = this.view.arch;
             if (arch.tag == 'google_map') {
-                this.renderer = this['_render_map_' + this.mapMode](arch);
+                var func_name = '_render_map_' + this.mapMode;
+                this.renderer = this[func_name].call(this, arch);
                 this.$el.addClass('o_field_x2many o_field_x2many_google_map');
                 return this.renderer.appendTo(this.$el);
             }
             return this._super();
         },
         _render_map_geometry: function (arch) {
+            // TODO: this must be taken from record/model permission
             var record_options = {
                 editable: true,
                 deletable: true,
@@ -46,7 +48,8 @@ odoo.define('web_google_maps.relational_fields', function (require) {
         _renderButtons: function () {
             this._super.apply(this, arguments);
             if (this.view.arch.tag === 'google_map') {
-                this['_render_map_button_' + this.mapMode]();
+                var func_name = '_render_map_button_' + this.mapMode;
+                this[func_name].call(this);
             }
         },
         _render_map_button_geometry: function () {
@@ -61,7 +64,8 @@ odoo.define('web_google_maps.relational_fields', function (require) {
         },
         _onMapCenter: function (event) {
             event.stopPropagation();
-            this.renderer['_map_center_' + this.renderer.mapMode]();
+            var func_name = '_map_center_' + this.renderer.mapMode;
+            this.renderer[func_name].call(this.renderer);
         },
         is_action_enabled: function (action) {
             return this.activeActions[action];

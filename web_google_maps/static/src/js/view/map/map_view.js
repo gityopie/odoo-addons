@@ -51,7 +51,8 @@ odoo.define('web_google_maps.MapView', function (require) {
             this.controllerParams.mode =
                 arch.attrs.editable && !params.readonly ? 'edit' : 'readonly';
             this.controllerParams.hasButtons = true;
-            this['set_property_' + map_mode](attrs);
+            var func_name = 'set_property_' + map_mode;
+            this[func_name].call(this, attrs);
         },
         set_property_geometry: function (attrs) {
             var colors = this._setMarkersColor(attrs.colors);

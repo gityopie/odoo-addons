@@ -4,6 +4,7 @@
         <field name="name">Contacts Google Address Form Auto Complete</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="priority">1000</field>
         <field name="arch" type="xml">
             <field name="street" position="attributes">
                 <attribute name="widget">gplaces_address_autocomplete</attribute>
