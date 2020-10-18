@@ -11,7 +11,7 @@
 Web Google Map and google places autocomplete address form
 ==========================================================
 
-This module brings three features:
+This module brings two features:
 1. Allows user to view all partners addresses on google maps.
 2. Enabled google places autocomplete address form into partner
 form view, provide autocomplete feature when typing address of partner

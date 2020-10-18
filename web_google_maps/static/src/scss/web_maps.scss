@@ -82,6 +82,7 @@
         .o_kanban_record, .o_kanban_quick_create {
             border: none;
             margin-bottom: $o-kanban-inside-hgutter;
+            width: 100%;
 
             &:focus, &:focus-within {
                 -webkit-box-shadow: none;
