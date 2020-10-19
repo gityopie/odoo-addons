@@ -76,10 +76,11 @@
         view_id="crm_maps.view_crm_leads_google_map"
         domain="[('id','=', active_id)]"
         res_model="crm.lead"/>
-    <record id="view_crm_leads_form" model="ir.ui.view">
-        <field name="name">view.crm.leads.form</field>
+    <record id="view_crm_leads_form_google_maps_inherit" model="ir.ui.view">
+        <field name="name">view.crm.leads.form.google_maps.inherit</field>
         <field name="model">crm.lead</field>
         <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="priority" eval="1000"/>
         <field name="arch" type="xml">
             <xpath expr="//notebook" position="inside">
                 <page name="geolocalize" string="Geolocalize">
@@ -103,11 +104,7 @@
                 string="Google Map"
                 attrs="{'invisible': ['|',('customer_latitude', '=', 0.0), ('customer_longitude', '=', 0.0)]}"/>
             </xpath>
-            <field name="street" position="attributes">
-                <attribute name="widget">gplaces_address_autocomplete</attribute>
-                <attribute name="options">{'lat': 'customer_latitude', 'lng': 'customer_longitude'}</attribute>
-            </field>
-            <field name="partner_name" position="attributes">
+            <xpath expr="//page[@name='lead']/group/group/field[@name='partner_name']" position="attributes">
                 <attribute name="widget">gplaces_autocomplete</attribute>
                 <attribute name="options">{
                 'fillfields': {
@@ -116,7 +113,25 @@
                         'customer_longitude': 'longitude'
                     }
                 }}</attribute>
-            </field>
+            </xpath>
+            <xpath expr="//page[@name='lead']/group/group/div/field[@name='street']" position="attributes">
+                <attribute name="widget">gplaces_address_autocomplete</attribute>
+                <attribute name="options">{'lat': 'customer_latitude', 'lng': 'customer_longitude'}</attribute>
+            </xpath>
+            <xpath expr="//sheet/group/group/field[@name='partner_name']" position="attributes">
+                <attribute name="widget">gplaces_autocomplete</attribute>
+                <attribute name="options">{
+                'fillfields': {
+                    'geolocation': {
+                        'customer_latitude': 'latitude',
+                        'customer_longitude': 'longitude'
+                    }
+                }}</attribute>
+            </xpath>
+            <xpath expr="//sheet/group/group/div/field[@name='street']" position="attributes">
+                <attribute name="widget">gplaces_address_autocomplete</attribute>
+                <attribute name="options">{'lat': 'customer_latitude', 'lng': 'customer_longitude'}</attribute>
+            </xpath>
         </field>
     </record>
     
