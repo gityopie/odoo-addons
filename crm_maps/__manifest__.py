@@ -11,12 +11,13 @@
 CRM Maps
 ========
 
-Added map view on projects
+Added google_map view on your pipeline
 """,
     'depends': ['crm', 'web_google_maps'],
     'website': '',
     'data': [
-        'views/crm_lead.xml'
+        'views/crm_lead.xml',
+        'views/res_partner.xml',
     ],
     'demo': [],
     'installable': True

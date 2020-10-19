@@ -4,73 +4,22 @@
         <field name="name">view.res.partner.google_map Marker Color</field>
         <field name="model">res.partner</field>
         <field name="priority">1000</field>
+        <field name="inherit_id" ref="web_google_maps.view_res_partner_google_map"/>
         <field name="arch" type="xml">
-            <google_map class="o_res_partner_map" library="geometry" string="Google Maps" lat="partner_latitude" lng="partner_longitude" color="marker_color">
-                <field name="id"/>
-                <field name="partner_latitude"/>
-                <field name="partner_longitude"/>
-                <field name="company_type"/>
-                <field name="color"/>
-                <field name="display_name"/>
-                <field name="title"/>
-                <field name="email"/>
-                <field name="parent_id"/>
-                <field name="is_company"/>
-                <field name="function"/>
-                <field name="phone"/>
-                <field name="street"/>
-                <field name="street2"/>
-                <field name="zip"/>
-                <field name="city"/>
-                <field name="country_id"/>
-                <field name="mobile"/>
-                <field name="state_id"/>
-                <field name="category_id"/>
-                <field name="type"/>
+            <xpath expr="//google_map" position="attributes">
+                <attribute name="color">marker_color</attribute>
+                <attribute name="colors"></attribute>
+            </xpath>
+            <field name="company_type" position="after">
                 <field name="marker_color"/>
-                <templates>
-                    <t t-name="kanban-box">
-                        <div class="oe_kanban_global_click o_kanban_record_has_image_fill o_res_partner_kanban">
-                            <t t-if="!record.is_company.raw_value">
-                                <t t-if="record.type.raw_value === 'delivery'" t-set="placeholder" t-value="'/base/static/img/truck.png'"/>
-                                <t t-elif="record.type.raw_value === 'invoice'" t-set="placeholder" t-value="'/base/static/img/money.png'"/>
-                                <t t-else="" t-set="placeholder" t-value="'/base/static/img/avatar_grey.png'"/>
-                                <div class="o_kanban_image_fill_left d-none d-md-block" t-attf-style="background-image:url('#{kanban_image('res.partner', 'image_128', record.id.raw_value,  placeholder)}')">
-                                    <img class="o_kanban_image_inner_pic" t-if="record.parent_id.raw_value" t-att-alt="record.parent_id.value" t-att-src="kanban_image('res.partner', 'image_128', record.parent_id.raw_value)"/>
-                                </div>
-                                <div class="o_kanban_image d-md-none" t-attf-style="background-image:url('#{kanban_image('res.partner', 'image_128', record.id.raw_value,  placeholder)}')">
-                                    <img class="o_kanban_image_inner_pic" t-if="record.parent_id.raw_value" t-att-alt="record.parent_id.value" t-att-src="kanban_image('res.partner', 'image_128', record.parent_id.raw_value)"/>
-                                </div>
-                            </t>
-                            <t t-else="">
-                                <t t-set="placeholder" t-value="'/base/static/img/company_image.png'"/>
-                                <div class="o_kanban_image_fill_left o_kanban_image_full" t-attf-style="background-image: url(#{kanban_image('res.partner', 'image_128', record.id.raw_value, placeholder)})" role="img"/>
-                            </t>
-                            <div class="oe_kanban_details">
-                                <strong class="o_kanban_record_title oe_partner_heading"><field name="display_name"/></strong>
-                                <div class="o_kanban_tags_section oe_kanban_partner_categories"/>
-                                <ul>
-                                    <li t-if="record.parent_id.raw_value and !record.function.raw_value"><field name="parent_id"/></li>
-                                    <li t-if="!record.parent_id.raw_value and record.function.raw_value"><field name="function"/></li>
-                                    <li t-if="record.parent_id.raw_value and record.function.raw_value"><field name="function"/> at <field name="parent_id"/></li>
-                                    <li t-if="record.city.raw_value and !record.country_id.raw_value"><field name="city"/></li>
-                                    <li t-if="!record.city.raw_value and record.country_id.raw_value"><field name="country_id"/></li>
-                                    <li t-if="record.city.raw_value and record.country_id.raw_value"><field name="city"/>, <field name="country_id"/></li>
-                                    <li t-if="record.email.raw_value" class="o_text_overflow"><field name="email"/></li>
-                                </ul>
-                                <div class="oe_kanban_partner_links"/>
-                            </div>
-                        </div>
-                    </t>
-                </templates>
-            </google_map>
+            </field>
         </field>
     </record>
     <act_window
         id="action_view_res_partner_google_map"
         name="Google Map"
         view_mode="google_map"
-        view_id="contacts_maps.view_res_partner_google_map_marker_color"
+        view_id="web_google_maps.view_res_partner_google_map"
         domain="[('id','=', active_id)]"
         res_model="res.partner"/>
     <record id="contacts.action_contacts" model="ir.actions.act_window">
@@ -113,7 +62,7 @@
     <record id="action_contacts_view_google_map" model="ir.actions.act_window.view">
         <field name="sequence" eval="2"/>
         <field name="view_mode">google_map</field>
-        <field name="view_id" ref="contacts_maps.view_res_partner_google_map_marker_color"/>
+        <field name="view_id" ref="web_google_maps.view_res_partner_google_map"/>
         <field name="act_window_id" ref="contacts.action_contacts"/>
     </record>
 </odoo>
