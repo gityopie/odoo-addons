@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="web_google_maps.assets_gmaps">
+    <template id="assets_gmaps" name="Google Maps Assets">
         <t t-set="google_maps_api_key" t-value="request.env['ir.config_parameter'].sudo().get_param('web_google_maps.api_key')"/>
         <t t-set="google_maps_lang_localization" t-value="request.env['ir.config_parameter'].sudo().get_param('web_google_maps.lang_localization')"/>
         <t t-set="google_maps_libraries" t-value="request.env['ir.config_parameter'].sudo().get_param('web_google_maps.libraries')"/>
