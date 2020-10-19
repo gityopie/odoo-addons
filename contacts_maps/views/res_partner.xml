@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_res_partner_google_map_marker_color" model="ir.ui.view">
+        <field name="name">view.res.partner.google_map Marker Color</field>
+        <field name="model">res.partner</field>
+        <field name="priority">1000</field>
+        <field name="inherit_id" ref="web_google_maps.view_res_partner_google_map"/>
+        <field name="arch" type="xml">
+            <xpath expr="//google_map" position="attributes">
+                <attribute name="color">marker_color</attribute>
+                <attribute name="colors"></attribute>
+            </xpath>
+            <field name="company_type" position="after">
+                <field name="marker_color"/>
+            </field>
+        </field>
+    </record>
+    <act_window
+        id="action_view_res_partner_google_map"
+        name="Google Map"
+        view_mode="google_map"
+        view_id="web_google_maps.view_res_partner_google_map"
+        domain="[('id','=', active_id)]"
+        res_model="res.partner"/>
+    <record id="contacts.action_contacts" model="ir.actions.act_window">
+        <field name="view_mode">kanban,tree,google_map,form,activity</field>
+    </record>
+    <record id="contacts.action_contacts_view_form" model="ir.actions.act_window.view">
+        <field name="sequence" eval="3"/>
+    </record>
+    <record id="view_crm_partner_geo_form_inherit" model="ir.ui.view">
+        <field name="name">view.crm.partner.get.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base_geolocalize.view_crm_partner_geo_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='geo_location']" position="inside">
+                <group>
+                    <group>
+                        <field name="marker_color" widget="google_marker_picker"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_partner_form" model="ir.ui.view">
+        <field name="name">Contacts Google Map</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="attributes">
+                <attribute name="geo_field">{'lat': 'partner_latitude', 'lng': 'partner_longitude'}</attribute>
+            </xpath>
+            <div name="button_box" position="inside">
+                <button name="%(contacts_maps.action_view_res_partner_google_map)d" 
+                    type="action" 
+                    class="oe_stat_button" 
+                    icon="fa-map-marker" string="Google Map" 
+                    attrs="{'invisible': ['|',('partner_latitude', '=', 0.0), ('partner_longitude', '=', 0.0)]}"/>
+            </div>
+        </field>
+    </record>
+    <record id="action_contacts_view_google_map" model="ir.actions.act_window.view">
+        <field name="sequence" eval="2"/>
+        <field name="view_mode">google_map</field>
+        <field name="view_id" ref="web_google_maps.view_res_partner_google_map"/>
+        <field name="act_window_id" ref="contacts.action_contacts"/>
+    </record>
+</odoo>
