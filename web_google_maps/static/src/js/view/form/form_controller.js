@@ -15,12 +15,9 @@ odoo.define('web_google_maps.MapFormController', function (require) {
         },
         renderButtons: function ($node) {
             this._super.apply(this, arguments);
-            var $footer = this.footerToButtons ? this.$('footer') : null;
+            var $footer = this.footerToButtons ? this.renderer.$el && this.renderer.$('footer') : null;
             var mustRenderFooterButtons = $footer && $footer.length;
-            if (!this.defaultButtons && !mustRenderFooterButtons) {
-                return;
-            }
-            if (this.$buttons && this.geo_field) {
+            if ((this.$buttons && !this.$marker_buttons) || mustRenderFooterButtons) {
                 this.$marker_buttons = $(
                     qweb.render('FormView.marker_edit_button', {
                         widget: this,
@@ -28,13 +25,14 @@ odoo.define('web_google_maps.MapFormController', function (require) {
                 );
                 this.$marker_buttons.on('click', this._onButtonEditMarker.bind(this));
                 if (this.$buttons.find('.o_form_buttons_view').length > 0) {
+                    console.log(' insert the edit geolocation button ');
                     this.$marker_buttons.appendTo(this.$buttons.find('.o_form_buttons_view'));
                 }
             }
         },
-        _updateButtons: function () {
+        updateButtons: function () {
             this._super.apply(this, arguments);
-            if (this.$marker_buttons && this.geo_field) {
+            if (this.$buttons && this.$marker_buttons && this.geo_field) {
                 this.$marker_buttons.toggleClass('o_hidden', this.model.isNew(this.handle));
             }
         },

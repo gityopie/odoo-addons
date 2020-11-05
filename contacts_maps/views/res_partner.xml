@@ -15,13 +15,13 @@
             </field>
         </field>
     </record>
-    <act_window
-        id="action_view_res_partner_google_map"
-        name="Google Map"
-        view_mode="google_map"
-        view_id="web_google_maps.view_res_partner_google_map"
-        domain="[('id','=', active_id)]"
-        res_model="res.partner"/>
+    <record id="action_view_res_partner_google_map" model="ir.actions.act_window">
+        <field name="name">Google Map</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">google_map</field>
+        <field name="view_id" ref="web_google_maps.view_res_partner_google_map"/>
+        <field name="domain">[('id', '=', active_id)]</field>
+    </record>
     <record id="contacts.action_contacts" model="ir.actions.act_window">
         <field name="view_mode">kanban,tree,google_map,form,activity</field>
     </record>
@@ -32,6 +32,7 @@
         <field name="name">view.crm.partner.get.form.inherit</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base_geolocalize.view_crm_partner_geo_form"/>
+        <field name="priority">1000</field>
         <field name="arch" type="xml">
             <xpath expr="//page[@name='geo_location']" position="inside">
                 <group>
@@ -46,6 +47,7 @@
         <field name="name">Contacts Google Map</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="priority">1000</field>
         <field name="arch" type="xml">
             <xpath expr="//form" position="attributes">
                 <attribute name="geo_field">{'lat': 'partner_latitude', 'lng': 'partner_longitude'}</attribute>

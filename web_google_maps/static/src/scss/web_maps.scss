@@ -92,6 +92,7 @@
         }
 
         .o_kanban_record {
+            border-top: 1px solid #ddd;
             .o_kanban_record_title {
                 @include o-kanban-record-title($font-size: 14px);
             }
