@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="assets_gmaps" inherit_id="web_google_maps.assets_gmaps" name="Google Maps Library loaded">
+        <xpath expr="//script[1]" position="before">
+            <script src="https://www.gstatic.com/charts/loader.js"></script>
+        </xpath>
+    </template>
+</odoo>
