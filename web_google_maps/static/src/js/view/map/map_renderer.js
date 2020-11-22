@@ -129,8 +129,8 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
     });
 
     var MapRenderer = BasicRenderer.extend({
-        className: 'o_map_view',
-        template: 'MapView.MapView',
+        className: 'o_google_map_view',
+        template: 'GoogleMapView.MapView',
         /**
          * @override
          *
@@ -229,8 +229,8 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
         _initMap: function () {
             this.infoWindow = new google.maps.InfoWindow();
             this.$right_sidebar = this.$('.o_map_right_sidebar');
-            this.$('.o_map_view').empty();
-            this.gmap = new google.maps.Map(this.$('.o_map_view').get(0), {
+            this.$('.o_google_map_view').empty();
+            this.gmap = new google.maps.Map(this.$('.o_google_map_view').get(0), {
                 mapTypeId: google.maps.MapTypeId.ROADMAP,
                 minZoom: 3,
                 maxZoom: 20,

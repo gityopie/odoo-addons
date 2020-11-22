@@ -180,7 +180,7 @@ odoo.define('web_google_maps.MapController', function (require) {
         renderButtons: function ($node) {
             if (this.hasButtons) {
                 this.$buttons = $(
-                    qweb.render('MapView.buttons', {
+                    qweb.render('GoogleMapView.buttons', {
                         widget: this,
                     })
                 );

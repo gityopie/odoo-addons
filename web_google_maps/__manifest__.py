@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Web Google Maps',
-    'version': '14.0.1.0.0',
+    'version': '14.0.1.0.1',
     'author': 'Yopi Angi',
     'license': 'AGPL-3',
     'maintainer': 'Yopi Angi<yopiangi@gmail.com>',
@@ -29,7 +29,7 @@ form view, provide autocomplete feature when typing address of partner
     ],
     'demo': [],
     'images': ['static/description/thumbnails.png'],
-    'qweb': ['static/src/xml/widget_places.xml'],
+    'qweb': ['static/src/xml/view_google_map.xml'],
     'installable': True,
     'application': False,
     'auto_install': False,
