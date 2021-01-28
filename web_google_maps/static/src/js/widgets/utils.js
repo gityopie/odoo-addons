@@ -28,16 +28,6 @@ odoo.define('web_google_maps.Utils', function (require) {
         airport: 'short_name',
         park: 'short_name',
         point_of_interest: 'long_name',
-        floor: 'short_name',
-        establishment: 'short_name',
-        point_of_interest: 'short_name',
-        parking: 'short_name',
-        post_box: 'short_name',
-        postal_town: 'short_name',
-        room: 'short_name',
-        bus_station: 'short_name',
-        train_station: 'short_name',
-        transit_station: 'short_name',
     };
     /**
      * Mapping field with an alias
@@ -87,8 +77,8 @@ odoo.define('web_google_maps.Utils', function (require) {
                 ],
                 limit: 1,
             }).then(function (record) {
-                var rec = record.length === 1 ? record[0] : {};
-                def.resolve(rec);
+                var record = record.length === 1 ? record[0] : {};
+                def.resolve(record);
             });
         } else {
             def.resolve([]);
@@ -113,8 +103,8 @@ odoo.define('web_google_maps.Utils', function (require) {
     function gmaps_populate_places(place, place_options) {
         if (!place) return {};
 
-        var values = {};
-        var vals;
+        var values = {},
+            vals;
         _.each(place_options, function (option, field) {
             if (option instanceof Array && !_.has(values, field)) {
                 vals = _.filter(
@@ -132,15 +122,16 @@ odoo.define('web_google_maps.Utils', function (require) {
 
     function gmaps_populate_address(place, address_options, delimiter) {
         if (!place) return {};
-        address_options = address_options || {};
-        var fields_delimiter = delimiter || {
-            street: ' ',
-            street2: ', ',
-        };
-        var fields_to_fill = {};
-        var temp;
-        var dlmter;
-        var result = {};
+
+        var address_options = address_options || {},
+            fields_delimiter = delimiter || {
+                street: ' ',
+                street2: ', ',
+            },
+            fields_to_fill = {},
+            temp,
+            dlmter,
+            result = {};
 
         // initialize object key and value
         _.each(address_options, function (value, key) {
@@ -163,7 +154,7 @@ odoo.define('web_google_maps.Utils', function (require) {
 
         _.each(fields_to_fill, function (value, key) {
             dlmter = fields_delimiter[key] || ' ';
-            if (key == 'city') {
+            if (key === 'city') {
                 result[key] = _.first(_.filter(value)) || '';
             } else {
                 result[key] = _.filter(value).join(dlmter);
@@ -1185,8 +1176,8 @@ odoo.define('web_google_maps.Utils', function (require) {
 
     return {
         GOOGLE_PLACES_COMPONENT_FORM: GOOGLE_PLACES_COMPONENT_FORM,
-        ADDRESS_FORM: ADDRESS_FORM,
         MAP_THEMES: MAP_THEMES,
+        ADDRESS_FORM: ADDRESS_FORM,
         gmaps_populate_address: gmaps_populate_address,
         gmaps_populate_places: gmaps_populate_places,
         gmaps_get_geolocation: gmaps_get_geolocation,

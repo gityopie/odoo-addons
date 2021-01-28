@@ -35,7 +35,11 @@ odoo.define('web_google_maps.MapFormController', function (require) {
         _updateButtons: function () {
             this._super.apply(this, arguments);
             if (this.$marker_buttons && this.geo_field) {
-                this.$marker_buttons.toggleClass('o_hidden', this.model.isNew(this.handle));
+                if (this.model.isNew(this.handle)) {
+                    this.$marker_buttons.toggleClass('o_hidden', true);
+                } else {
+                    this.$marker_buttons.toggleClass('o_hidden', false);
+                }
             }
         },
         _onButtonEditMarker: function () {
@@ -44,10 +48,10 @@ odoo.define('web_google_maps.MapFormController', function (require) {
                 name: _t('Edit Geolocation'),
                 res_model: this.modelName,
                 type: 'ir.actions.act_window',
-                view_type: 'google_map',
-                view_mode: 'google_map',
+                view_type: 'map',
+                view_mode: 'map',
                 domain: [['id', '=', record.res_id]],
-                views: [[false, 'google_map']],
+                views: [[false, 'map']],
                 target: 'current',
                 context: { edit_geo_field: true },
             });

@@ -204,14 +204,18 @@ odoo.define('web_google_maps.MapController', function (require) {
             }
         },
         _isMarkerEditable: function () {
-            var is_editable =
-                this.initialState.count === 1 && this.renderer.mapLibrary === 'geometry';
-            return is_editable;
+            if (this.initialState.count === 1 && this.renderer.mapLibrary === 'geometry') {
+                return true;
+            }
+            return false;
         },
         _onButtonMapCenter: function (event) {
             event.stopPropagation();
-            var func_name = '_map_center_' + this.renderer.mapMode;
-            this.renderer[func_name].call(this.renderer);
+            if (this.renderer.mapLibrary === 'geometry') {
+                this.renderer.mapGeometryCentered();
+            } else if (this.renderer.mapLibrary === 'drawing') {
+                this.renderer.mapShapesCentered();
+            }
         },
         _onButtonNew: function (event) {
             event.stopPropagation();
@@ -246,10 +250,7 @@ odoo.define('web_google_maps.MapController', function (require) {
                 ],
             }).then(function () {
                 self.renderer.disableMarkerDraggable();
-                self.reload();
-                setTimeout(function () {
-                    self.trigger_up('history_back');
-                }, 2000);
+                return self.reload();
             });
         },
         _onButtonDiscardMarker: function (event) {

@@ -19,47 +19,49 @@ odoo.define('web_google_maps.MapView', function (require) {
             Renderer: MapRenderer,
             Controller: MapController,
         }),
-        viewType: 'google_map',
+        viewType: 'map',
         mobile_friendly: true,
-        _map_mode: function () {
-            return ['geometry'];
-        },
         init: function (viewInfo, params) {
             this._super.apply(this, arguments);
 
             var arch = this.arch;
             var attrs = arch.attrs;
+
             var activeActions = this.controllerParams.activeActions;
+            var mode = arch.attrs.editable && !params.readonly ? 'edit' : 'readonly';
+            var mapLibrary = attrs.library || 'geometry';
 
             this.loadParams.limit = this.loadParams.limit || 80;
+            this.loadParams.openGroupByDefault = true;
             this.loadParams.type = 'list';
 
-            var modes = this._map_mode();
-            var defaultMode = 'geometry';
-            var map_mode = attrs.mode
-                ? modes.indexOf(attrs.mode) > -1
-                    ? attrs.mode
-                    : defaultMode
-                : defaultMode;
+            this.loadParams.groupBy = arch.attrs.default_group_by
+                ? [arch.attrs.default_group_by]
+                : params.groupBy || [];
+
             this.rendererParams.arch = arch;
-            this.rendererParams.map_mode = map_mode;
+
+            this.rendererParams.mapLibrary = mapLibrary;
+
+            if (mapLibrary === 'drawing') {
+                this.rendererParams.drawingMode = attrs.drawing_mode;
+                this.rendererParams.drawingPath = attrs.drawing_path;
+            } else if (mapLibrary === 'geometry') {
+                var colors = this._setMarkersColor(attrs.colors);
+                this.rendererParams.markerColor = attrs.color;
+                this.rendererParams.markerColors = colors;
+                this.rendererParams.fieldLat = attrs.lat;
+                this.rendererParams.fieldLng = attrs.lng;
+            }
+
             this.rendererParams.record_options = {
                 editable: activeActions.edit,
                 deletable: activeActions.delete,
                 read_only_mode: params.readOnlyMode || true,
             };
-            this.controllerParams.mode =
-                arch.attrs.editable && !params.readonly ? 'edit' : 'readonly';
+
+            this.controllerParams.mode = mode;
             this.controllerParams.hasButtons = true;
-            var func_name = 'set_property_' + map_mode;
-            this[func_name].call(this, attrs);
-        },
-        set_property_geometry: function (attrs) {
-            var colors = this._setMarkersColor(attrs.colors);
-            this.rendererParams.markerColor = attrs.color;
-            this.rendererParams.markerColors = colors;
-            this.rendererParams.fieldLat = attrs.lat;
-            this.rendererParams.fieldLng = attrs.lng;
         },
         _setMarkersColor: function (colors) {
             var pair, color, expr;

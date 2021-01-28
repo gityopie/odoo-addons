@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Web Google Maps',
-    'version': '13.0.1.0.0',
+    'version': '12.0.1.0.7',
     'author': 'Yopi Angi',
     'license': 'AGPL-3',
     'maintainer': 'Yopi Angi<yopiangi@gmail.com>',
@@ -11,10 +11,10 @@
 Web Google Map and google places autocomplete address form
 ==========================================================
 
-This module brings two features:
+This module brings three features:
 1. Allows user to view all partners addresses on google maps.
 2. Enabled google places autocomplete address form into partner
-form view, provide autocomplete feature when typing address of partner
+form view, it provide autocomplete feature when typing address of partner
 """,
     'depends': [
         'base_setup',

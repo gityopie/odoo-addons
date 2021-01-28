@@ -2,6 +2,7 @@
 <templates id="template" xml:space="preserve">
     <div t-name="MapView.MapView" class="o_map_container">
         <div class="o_map_view"></div>
+        <div class="o_map_right_sidebar closed"></div>
     </div>
     <t t-name="MapView.MapViewGroupInfo">
         <ul t-if="widget.groups">
