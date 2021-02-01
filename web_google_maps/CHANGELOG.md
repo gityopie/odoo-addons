@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
   - `cluster_max_zoom_level`: The maximum zoom level at which clustering is enabled or `null` if clustering is to be enabled at all zoom levels. Default value `7`
   - `cluster_zoom_on_click`: Whether to zoom the map when a cluster marker is clicked. You may want to set this to `false` if you have installed a handler for the `click` event and it deals with zooming on its own. Default value `true`
   - `cluster_image_path`: The full URL of the root name of the group of image files to use for cluster icons. The complete file name is of the form `imagePath`n.`imageExtension` where n is the image file number (1, 2, etc.). Default value `'/web_google_maps/static/lib/markercluster/img/m'`
+  - If you have issue when enabled Google Analytic and the "web_google_maps" is installed, please consider to install the module "website_google_library_loader".
 ### Fixed
 - Fix QWeb template for google_maps views button on the Enterprise version.
 
