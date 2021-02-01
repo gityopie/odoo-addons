@@ -8,14 +8,14 @@
     margin-top: 10px;
 }
 
-.o_map_container {
+.o_google_map_container {
     display: flex;
     align-content: stretch;
     overflow-x: visible;
     min-height: 550px;
     height: 100%;
 
-    .o_map_view {
+    .o_google_map_view {
         width: 100%;
 
         .gm-style-iw {

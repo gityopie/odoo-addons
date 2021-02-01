@@ -3,6 +3,7 @@ odoo.define('web_google_maps.MapView', function (require) {
 
     var BasicView = require('web.BasicView');
     var core = require('web.core');
+    var pyUtils = require('web.py_utils');
 
     var MapModel = require('web_google_maps.MapModel');
     var MapRenderer = require('web_google_maps.MapRenderer').MapRenderer;
@@ -51,6 +52,9 @@ odoo.define('web_google_maps.MapView', function (require) {
             this.controllerParams.mode =
                 arch.attrs.editable && !params.readonly ? 'edit' : 'readonly';
             this.controllerParams.hasButtons = true;
+            if (!_.isObject(attrs.options)) {
+                attrs.options = attrs.options ? pyUtils.py_eval(attrs.options) : {};
+            }
             var func_name = 'set_property_' + map_mode;
             this[func_name].call(this, attrs);
         },
@@ -60,6 +64,12 @@ odoo.define('web_google_maps.MapView', function (require) {
             this.rendererParams.markerColors = colors;
             this.rendererParams.fieldLat = attrs.lat;
             this.rendererParams.fieldLng = attrs.lng;
+            this.rendererParams.markerClusterConfig = {
+                gridSize: attrs.options.cluster_grid_size || 40,
+                maxZoom: attrs.options.cluster_max_zoom_level || 7,
+                zoomOnClick: attrs.options.cluster_zoom_on_click || true,
+                imagePath: attrs.options.cluster_image_path || '/web_google_maps/static/lib/markercluster/img/m',
+            }
         },
         _setMarkersColor: function (colors) {
             var pair, color, expr;

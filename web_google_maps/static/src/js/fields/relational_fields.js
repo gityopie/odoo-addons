@@ -54,7 +54,7 @@ odoo.define('web_google_maps.relational_fields', function (require) {
         },
         _render_map_button_geometry: function () {
             var options = { create_text: this.nodeOptions.create_text, widget: this };
-            this.$buttons = $(qweb.render('MapView.buttons', options));
+            this.$buttons = $(qweb.render('GoogleMapView.buttons', options));
             this.$buttons.on('click', 'button.o-map-button-new', this._onAddRecord.bind(this));
             this.$buttons.on(
                 'click',
