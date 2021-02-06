@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="assets_backend" name="Widget Google Address form extended assets" inherit_id="web.assets_backend">
+        <xpath expr="//script[last()]" position="after">
+            <script type="text/javascript" src="/contacts_google_address_form_extended/static/src/js/gplaces_autocomplete.js"></script>
+        </xpath>
+    </template>
+</odoo>

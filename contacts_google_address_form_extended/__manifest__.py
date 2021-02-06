@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Contact Google Address Form Extended',
-    'version': '13.0.1.0.0',
+    'version': '13.0.1.0.1',
     'author': 'Yopi Angi',
     'license': 'AGPL-3',
     'maintainer': 'Yopi Angi<yopiangi@gmail.com>',
@@ -20,7 +20,10 @@ Use Google Address Form autocomplete to help you find address
         'web_google_maps',
     ],
     'website': 'https://github.com/gityopie/odoo-addons',
-    'data': ['views/res_partner.xml'],
+    'data': [
+        'views/res_partner.xml',
+        'views/template.xml',
+    ],
     'demo': [],
     'installable': True,
 }
