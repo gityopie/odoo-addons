@@ -414,12 +414,12 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
          * @param {Object} record
          */
         _renderMarkers: function () {
-            var self = this,
-                color,
-                latLng,
-                lat,
-                lng,
-                defaultLatLng = this._getDefaultCoordinate();
+            var self = this;
+            var color = null;
+            var latLng = null
+            var lat = null;
+            var lng = null;
+            var defaultLatLng = this._getDefaultCoordinate();
 
             _.each(this.state.data, function (record) {
                 color = self._getIconColor(record);
