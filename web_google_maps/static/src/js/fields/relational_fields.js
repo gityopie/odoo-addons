@@ -1,9 +1,11 @@
 odoo.define('web_google_maps.relational_fields', function (require) {
-    var core = require('web.core');
-    var relational_fields = require('web.relational_fields');
-    var MapRenderer = require('web_google_maps.MapRenderer').MapRenderer;
+    'use strict';
 
-    var qweb = core.qweb;
+    const core = require('web.core');
+    const relational_fields = require('web.relational_fields');
+    const MapRenderer = require('web_google_maps.MapRenderer').MapRenderer;
+
+    const qweb = core.qweb;
 
     relational_fields.FieldOne2Many.include({
         init: function () {
@@ -16,9 +18,9 @@ odoo.define('web_google_maps.relational_fields', function (require) {
             if (!this.view || this.renderer) {
                 return this._super();
             }
-            var arch = this.view.arch;
+            const arch = this.view.arch;
             if (arch.tag == 'google_map') {
-                var func_name = '_render_map_' + this.mapMode;
+                const func_name = '_render_map_' + this.mapMode;
                 this.renderer = this[func_name].call(this, arch);
                 this.$el.addClass('o_field_x2many o_field_x2many_google_map');
                 return this.renderer.appendTo(this.$el);
@@ -27,7 +29,7 @@ odoo.define('web_google_maps.relational_fields', function (require) {
         },
         _render_map_geometry: function (arch) {
             // TODO: this must be taken from record/model permission
-            var record_options = {
+            const record_options = {
                 editable: true,
                 deletable: true,
                 read_only_mode: this.isReadonly,
@@ -48,12 +50,12 @@ odoo.define('web_google_maps.relational_fields', function (require) {
         _renderButtons: function () {
             this._super.apply(this, arguments);
             if (this.view.arch.tag === 'google_map') {
-                var func_name = '_render_map_button_' + this.mapMode;
+                const func_name = '_render_map_button_' + this.mapMode;
                 this[func_name].call(this);
             }
         },
         _render_map_button_geometry: function () {
-            var options = { create_text: this.nodeOptions.create_text, widget: this };
+            const options = { create_text: this.nodeOptions.create_text, widget: this };
             this.$buttons = $(qweb.render('GoogleMapView.buttons', options));
             this.$buttons.on('click', 'button.o-map-button-new', this._onAddRecord.bind(this));
             this.$buttons.on(
@@ -64,7 +66,7 @@ odoo.define('web_google_maps.relational_fields', function (require) {
         },
         _onMapCenter: function (event) {
             event.stopPropagation();
-            var func_name = '_map_center_' + this.renderer.mapMode;
+            const func_name = '_map_center_' + this.renderer.mapMode;
             this.renderer[func_name].call(this.renderer);
         },
         is_action_enabled: function (action) {

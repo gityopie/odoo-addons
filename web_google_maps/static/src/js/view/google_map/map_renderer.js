@@ -175,7 +175,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
          * Style the map
          * @private
          */
-        _getMapTheme: function () {
+        _getMapTheme: async function () {
             const self = this;
             const update_map = function (style) {
                 const styledMapType = new google.maps.StyledMapType(
@@ -201,17 +201,11 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
                 self.gmap.setMapTypeId('styled_map');
             };
             if (!this.theme) {
-                this._rpc({
-                    route: '/web/map_theme',
-                }).then((data) => {
-                    if (
-                        data.theme &&
-                        this.mapThemes.hasOwnProperty(data.theme)
-                    ) {
-                        this.theme = data.theme;
-                        update_map(data.theme);
-                    }
-                });
+                const data = await this._rpc({route: '/web/map_theme'});
+                if (data.theme && this.mapThemes.hasOwnProperty(data.theme)) {
+                    this.theme = data.theme;
+                    update_map(data.theme)
+                };
             }
         },
         /**

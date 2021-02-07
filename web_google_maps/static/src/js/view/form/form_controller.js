@@ -25,7 +25,6 @@ odoo.define('web_google_maps.MapFormController', function (require) {
                 );
                 this.$marker_buttons.on('click', this._onButtonEditMarker.bind(this));
                 if (this.$buttons.find('.o_form_buttons_view').length > 0) {
-                    console.log(' insert the edit geolocation button ');
                     this.$marker_buttons.appendTo(this.$buttons.find('.o_form_buttons_view'));
                 }
             }
