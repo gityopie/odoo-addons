@@ -363,6 +363,7 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
                 _.keys(self.fillfields),
                 (field) => !this.record.fields.hasOwnProperty(field)
             );
+            this._isValid = true;
             if (unknown_fields.length > 0) {
                 this.do_warn(
                     _t('The following fields are invalid:'),
