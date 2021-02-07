@@ -1,9 +1,9 @@
 odoo.define('web_google_maps.Utils', function (require) {
     'use strict';
 
-    var rpc = require('web.rpc');
+    const rpc = require('web.rpc');
 
-    var GOOGLE_PLACES_COMPONENT_FORM = {
+    const GOOGLE_PLACES_COMPONENT_FORM = {
         street_number: 'long_name',
         route: 'long_name',
         intersection: 'short_name',
@@ -44,7 +44,7 @@ odoo.define('web_google_maps.Utils', function (require) {
      * key: alias
      * value: field
      */
-    var ADDRESS_FORM = {
+    const ADDRESS_FORM = {
         street: 'street',
         street2: 'street2',
         city: 'city',
@@ -53,54 +53,77 @@ odoo.define('web_google_maps.Utils', function (require) {
         country_id: 'country_id',
     };
 
+    /**
+     *
+     * @param {*} model
+     * @param {*} field_name
+     * @param {*} value
+     */
     function fetchValues(model, field_name, value) {
-        var def = $.Deferred(),
-            res = {};
-
         if (model && value) {
-            rpc.query({
-                model: model,
-                method: 'search_read',
-                args: [['|', ['name', '=', value], ['code', '=', value]], ['display_name']],
-                limit: 1,
-            }).then(function (record) {
-                res[field_name] = record.length === 1 ? record[0] : false;
-                def.resolve(res);
+            return new Promise(async (resolve) => {
+                const data = await rpc.query({
+                    model: model,
+                    method: 'search_read',
+                    args: [['|', ['name', '=', value], ['code', '=', value]], ['display_name']],
+                    limit: 1,
+                });
+                resolve({
+                    [field_name]: data.length === 1 ? data[0] : false,
+                });
             });
         } else {
-            res[field_name] = value;
-            def.resolve(res);
+            return new Promise((resolve) => {
+                resolve({
+                    [field_name]: value,
+                });
+            });
         }
-        return def;
     }
 
+    /**
+     *
+     * @param {*} model
+     * @param {*} country
+     * @param {*} state
+     */
     function fetchCountryState(model, country, state) {
         var def = $.Deferred();
 
         if (model && country && state) {
-            rpc.query({
-                model: model,
-                method: 'search_read',
-                args: [
-                    [['country_id', '=', country], '|', ['code', '=', state], ['name', '=', state]],
-                    ['display_name'],
-                ],
-                limit: 1,
-            }).then(function (record) {
-                var rec = record.length === 1 ? record[0] : {};
-                def.resolve(rec);
+            return new Promise(async (resolve) => {
+                const data = await rpc.query({
+                    model: model,
+                    method: 'search_read',
+                    args: [
+                        [
+                            ['country_id', '=', country],
+                            '|',
+                            ['code', '=', state],
+                            ['name', '=', state],
+                        ],
+                        ['display_name'],
+                    ],
+                    limit: 1,
+                });
+                const result = data.length === 1 ? data[0] : {};
+                resolve(result);
             });
         } else {
-            def.resolve([]);
+            return new Promise((resolve) => resolve([]));
         }
-        return def;
     }
 
+    /**
+     *
+     * @param {*} place
+     * @param {*} options
+     */
     function gmaps_get_geolocation(place, options) {
         if (!place) return {};
 
-        var vals = {};
-        _.each(options, function (alias, field) {
+        const vals = {};
+        _.each(options, (alias, field) => {
             if (alias === 'latitude') {
                 vals[field] = place.geometry.location.lat();
             } else if (alias === 'longitude') {
@@ -110,12 +133,17 @@ odoo.define('web_google_maps.Utils', function (require) {
         return vals;
     }
 
+    /**
+     *
+     * @param {*} place
+     * @param {*} place_options
+     */
     function gmaps_populate_places(place, place_options) {
         if (!place) return {};
 
-        var values = {};
-        var vals;
-        _.each(place_options, function (option, field) {
+        const values = {};
+        let vals;
+        _.each(place_options, (option, field) => {
             if (option instanceof Array && !_.has(values, field)) {
                 vals = _.filter(
                     _.map(option, function (opt) {
@@ -130,38 +158,42 @@ odoo.define('web_google_maps.Utils', function (require) {
         return values;
     }
 
+    /**
+     *
+     * @param {*} place
+     * @param {*} address_options
+     * @param {*} delimiter
+     */
     function gmaps_populate_address(place, address_options, delimiter) {
         if (!place) return {};
-        address_options = address_options || {};
-        var fields_delimiter = delimiter || {
+        address_options = typeof address_options !== 'undefined' ? address_options : {};
+        const fields_delimiter = delimiter || {
             street: ' ',
             street2: ', ',
         };
-        var fields_to_fill = {};
-        var temp;
-        var dlmter;
-        var result = {};
+        const fields_to_fill = {};
+        const result = {};
+        let dlmter = null;
+        let temp = null;
 
         // initialize object key and value
-        _.each(address_options, function (value, key) {
+        _.each(address_options, (value, key) => {
             fields_to_fill[key] = [];
         });
 
-        _.each(address_options, function (options, field) {
+        _.each(address_options, (options, field) => {
             // turn all fields options into an Array
             options = _.flatten([options]);
             temp = {};
-            _.each(place.address_components, function (component) {
-                _.each(_.intersection(options, component.types), function (match) {
+            _.each(place.address_components, (component) => {
+                _.each(_.intersection(options, component.types), (match) => {
                     temp[match] = component[GOOGLE_PLACES_COMPONENT_FORM[match]] || false;
                 });
             });
-            fields_to_fill[field] = _.map(options, function (item) {
-                return temp[item];
-            });
+            fields_to_fill[field] = _.map(options, (item) => temp[item]);
         });
 
-        _.each(fields_to_fill, function (value, key) {
+        _.each(fields_to_fill, (value, key) => {
             dlmter = fields_delimiter[key] || ' ';
             if (key == 'city') {
                 result[key] = _.first(_.filter(value)) || '';
@@ -173,7 +205,7 @@ odoo.define('web_google_maps.Utils', function (require) {
         return result;
     }
 
-    var MAP_THEMES = {
+    const MAP_THEMES = {
         default: [],
         aubergine: [
             {
@@ -1177,6 +1209,260 @@ odoo.define('web_google_maps.Utils', function (require) {
                 stylers: [
                     {
                         color: '#9e9e9e',
+                    },
+                ],
+            },
+        ],
+        atlas: [
+            {
+                stylers: [
+                    {
+                        visibility: 'on',
+                    },
+                ],
+            },
+            {
+                featureType: 'administrative',
+                elementType: 'geometry.fill',
+                stylers: [
+                    {
+                        color: '#f5f5f5',
+                    },
+                ],
+            },
+            {
+                featureType: 'administrative',
+                elementType: 'labels.text.fill',
+                stylers: [
+                    {
+                        color: '#003975',
+                    },
+                ],
+            },
+            {
+                featureType: 'administrative.locality',
+                elementType: 'labels.text.fill',
+                stylers: [
+                    {
+                        weight: 1,
+                    },
+                ],
+            },
+            {
+                featureType: 'administrative.neighborhood',
+                elementType: 'labels.text.fill',
+                stylers: [
+                    {
+                        color: '#90b1d5',
+                    },
+                ],
+            },
+            {
+                featureType: 'landscape.man_made',
+                elementType: 'geometry',
+                stylers: [
+                    {
+                        color: '#fcfcfc',
+                    },
+                    {
+                        visibility: 'on',
+                    },
+                ],
+            },
+            {
+                featureType: 'landscape.natural',
+                elementType: 'geometry',
+                stylers: [
+                    {
+                        color: '#fcfcfc',
+                    },
+                ],
+            },
+            {
+                featureType: 'landscape.natural.landcover',
+                elementType: 'geometry',
+                stylers: [
+                    {
+                        color: '#f2f2f2',
+                    },
+                ],
+            },
+            {
+                featureType: 'landscape.natural.terrain',
+                elementType: 'geometry',
+                stylers: [
+                    {
+                        color: '#bfeecd',
+                    },
+                ],
+            },
+            {
+                featureType: 'poi.attraction',
+                elementType: 'labels.icon',
+                stylers: [
+                    {
+                        color: '#32b2c3',
+                    },
+                ],
+            },
+            {
+                featureType: 'poi.attraction',
+                elementType: 'labels.text.fill',
+                stylers: [
+                    {
+                        color: '#32b2c3',
+                    },
+                ],
+            },
+            {
+                featureType: 'poi.business',
+                elementType: 'labels.icon',
+                stylers: [
+                    {
+                        color: '#6c87ea',
+                    },
+                ],
+            },
+            {
+                featureType: 'poi.business',
+                elementType: 'labels.text.fill',
+                stylers: [
+                    {
+                        weight: 2,
+                    },
+                ],
+            },
+            {
+                featureType: 'poi.government',
+                elementType: 'geometry',
+                stylers: [
+                    {
+                        color: '#ebf7ff',
+                    },
+                ],
+            },
+            {
+                featureType: 'poi.park',
+                elementType: 'geometry',
+                stylers: [
+                    {
+                        color: '#dafbe2',
+                    },
+                ],
+            },
+            {
+                featureType: 'poi.park',
+                elementType: 'labels.icon',
+                stylers: [
+                    {
+                        color: '#44ca66',
+                    },
+                ],
+            },
+            {
+                featureType: 'poi.park',
+                elementType: 'labels.text.fill',
+                stylers: [
+                    {
+                        color: '#33a34f',
+                    },
+                ],
+            },
+            {
+                featureType: 'poi.school',
+                elementType: 'geometry',
+                stylers: [
+                    {
+                        color: '#f5e0f3',
+                    },
+                ],
+            },
+            {
+                featureType: 'road.arterial',
+                elementType: 'geometry.fill',
+                stylers: [
+                    {
+                        color: '#ededed',
+                    },
+                ],
+            },
+            {
+                featureType: 'road.arterial',
+                elementType: 'geometry.stroke',
+                stylers: [
+                    {
+                        color: '#cfcfcf',
+                    },
+                ],
+            },
+            {
+                featureType: 'road.highway',
+                elementType: 'geometry.fill',
+                stylers: [
+                    {
+                        color: '#90d59c',
+                    },
+                ],
+            },
+            {
+                featureType: 'road.highway',
+                elementType: 'geometry.stroke',
+                stylers: [
+                    {
+                        color: '#598860',
+                    },
+                ],
+            },
+            {
+                featureType: 'road.highway.controlled_access',
+                elementType: 'geometry.fill',
+                stylers: [
+                    {
+                        color: '#8ac0f0',
+                    },
+                ],
+            },
+            {
+                featureType: 'road.highway.controlled_access',
+                elementType: 'geometry.stroke',
+                stylers: [
+                    {
+                        color: '#2e7dc2',
+                    },
+                ],
+            },
+            {
+                featureType: 'road.local',
+                elementType: 'geometry.fill',
+                stylers: [
+                    {
+                        color: '#fcfcfc',
+                    },
+                ],
+            },
+            {
+                featureType: 'road.local',
+                elementType: 'geometry.stroke',
+                stylers: [
+                    {
+                        color: '#93d3fb',
+                    },
+                ],
+            },
+            {
+                featureType: 'transit',
+                stylers: [
+                    {
+                        visibility: 'off',
+                    },
+                ],
+            },
+            {
+                featureType: 'water',
+                elementType: 'geometry',
+                stylers: [
+                    {
+                        color: '#bde6fa',
                     },
                 ],
             },

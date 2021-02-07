@@ -1,9 +1,9 @@
 odoo.define('web_google_maps.MapModel', function(require) {
     'use strict';
 
-    var BasicModel = require('web.BasicModel');
+    const BasicModel = require('web.BasicModel');
 
-    var MapModel = BasicModel.extend({
+    const MapModel = BasicModel.extend({
         /**
          * @override
          */

@@ -1,15 +1,15 @@
 odoo.define('web_google_maps.MapController', function (require) {
     'use strict';
 
-    var Context = require('web.Context');
-    var core = require('web.core');
-    var BasicController = require('web.BasicController');
-    var Domain = require('web.Domain');
+    const Context = require('web.Context');
+    const core = require('web.core');
+    const BasicController = require('web.BasicController');
+    const Domain = require('web.Domain');
 
-    var _t = core._t;
-    var qweb = core.qweb;
+    const _t = core._t;
+    const qweb = core.qweb;
 
-    var MapController = BasicController.extend({
+    const MapController = BasicController.extend({
         custom_events: _.extend({}, BasicController.prototype.custom_events, {
             button_clicked: '_onButtonClicked',
             kanban_record_delete: '_onRecordDelete',
@@ -37,8 +37,8 @@ odoo.define('web_google_maps.MapController', function (require) {
             }
         },
         _isEditMarkerInContext: function () {
-            var record = this.model.get(this.handle);
-            var context = record.getContext();
+            const record = this.model.get(this.handle);
+            const context = record.getContext();
             return context.edit_geo_field;
         },
         /**
@@ -47,13 +47,12 @@ odoo.define('web_google_maps.MapController', function (require) {
          * @param {Object} params
          */
         _reloadAfterButtonClick: function (kanbanRecord, params) {
-            var self = this;
-            var recordModel = this.model.localData[params.record.id];
-            var group = this.model.localData[recordModel.parentID];
-            var parent = this.model.localData[group.parentID];
+            const recordModel = this.model.localData[params.record.id];
+            const group = this.model.localData[recordModel.parentID];
+            const parent = this.model.localData[group.parentID];
 
-            this.model.reload(params.record.id).then(function (db_id) {
-                var data = self.model.get(db_id);
+            this.model.reload(params.record.id).then((db_id) => {
+                const data = this.model.get(db_id);
                 kanbanRecord.update(data);
 
                 // Check if we still need to display the record. Some fields of the domain are
@@ -211,7 +210,7 @@ odoo.define('web_google_maps.MapController', function (require) {
         _onButtonMapCenter: function (event) {
             event.stopPropagation();
             var func_name = '_map_center_' + this.renderer.mapMode;
-            this.renderer[func_name].call(this.renderer);
+            this.renderer[func_name].call(this.renderer, true);
         },
         _onButtonNew: function (event) {
             event.stopPropagation();

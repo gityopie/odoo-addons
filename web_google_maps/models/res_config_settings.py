@@ -113,7 +113,8 @@ class ResConfigSettings(models.TransientModel):
                    ('night', 'Night'),
                    ('dark', 'Dark'),
                    ('retro', 'Retro'),
-                   ('silver', 'Silver')],
+                   ('silver', 'Silver'),
+                   ('atlas', 'Atlas')],
         string='Map theme',
         config_parameter='web_google_maps.theme')
     google_maps_libraries = fields.Char(
