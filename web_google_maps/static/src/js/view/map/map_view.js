@@ -64,15 +64,22 @@ odoo.define('web_google_maps.MapView', function (require) {
             this.rendererParams.markerColors = colors;
             this.rendererParams.fieldLat = attrs.lat;
             this.rendererParams.fieldLng = attrs.lng;
-            this.rendererParams.markerClusterConfig = {
-                gridSize: attrs.options.cluster_grid_size || 40,
-                maxZoom: attrs.options.cluster_max_zoom_level || 7,
-                zoomOnClick: attrs.options.cluster_zoom_on_click || true,
-                imagePath: attrs.options.cluster_image_path || '/web_google_maps/static/lib/markercluster/img/m',
+            var defaultMarkerClusterConfig = {
+                gridSize: 40,
+                maxZoom: 7,
+                zoomOnClick: true,
+                imagePath: '/web_google_maps/static/lib/markercluster/img/m'
+            };
+            var optionClusterConfig = {}
+            if (attrs.options) {
+                optionClusterConfig = _.pick(attrs.options, (_value, key) => /^cluster_/.test(key));
             }
+            this.rendererParams.markerClusterConfig = _.defaults(optionClusterConfig, defaultMarkerClusterConfig);
         },
         _setMarkersColor: function (colors) {
-            var pair, color, expr;
+            var pair = null;
+            var color = null;
+            var expr = null;
             if (!colors) {
                 return false;
             }

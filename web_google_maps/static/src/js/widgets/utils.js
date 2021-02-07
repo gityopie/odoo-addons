@@ -54,8 +54,8 @@ odoo.define('web_google_maps.Utils', function (require) {
     };
 
     function fetchValues(model, field_name, value) {
-        var def = $.Deferred(),
-            res = {};
+        var def = $.Deferred();
+        var res = {};
 
         if (model && value) {
             rpc.query({
@@ -114,7 +114,7 @@ odoo.define('web_google_maps.Utils', function (require) {
         if (!place) return {};
 
         var values = {};
-        var vals;
+        var vals = null;
         _.each(place_options, function (option, field) {
             if (option instanceof Array && !_.has(values, field)) {
                 vals = _.filter(
@@ -132,14 +132,14 @@ odoo.define('web_google_maps.Utils', function (require) {
 
     function gmaps_populate_address(place, address_options, delimiter) {
         if (!place) return {};
-        address_options = address_options || {};
+        address_options = (typeof address_options !== 'undefined') ? address_options : {};
         var fields_delimiter = delimiter || {
             street: ' ',
             street2: ', ',
         };
         var fields_to_fill = {};
-        var temp;
-        var dlmter;
+        var temp = null;
+        var dlmter = null;
         var result = {};
 
         // initialize object key and value

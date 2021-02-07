@@ -110,18 +110,18 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
          * @private
          */
         _prepareValue: function (model, field_name, value) {
-            var model = model || false;
-            var field_name = field_name || false;
-            var value = value || false;
+            model = (typeof model !== 'undefined') ? model : false;
+            field_name = (typeof  field_name !== 'undefined') ? field_name : false;
+            value = (typeof value !== 'undefined') ? value : false;
             return Utils.fetchValues(model, field_name, value);
         },
         /**
          * @private
          */
         _populateAddress: function (place, fillfields, delimiter) {
-            var place = place || false;
-            var fillfields = fillfields || this.fillfields;
-            var delimiter = delimiter || this.fillfields_delimiter;
+            place = (typeof place !== 'undefined') ? place : false;
+            fillfields = (typeof fillfields !== 'undefined') ? fillfields : this.fillfields;
+            delimiter = (typeof delimiter !== 'undefined') ? delimiter : this.fillfields_delimiter;
             return Utils.gmaps_populate_address(place, fillfields, delimiter);
         },
         /**
@@ -130,8 +130,8 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
          * @param {*} fillfields 
          */
         _populatePlaces: function (place, fillfields) {
-            var place = place || false;
-            var fillfields = fillfields || this.fillfields;
+            place = (typeof place !== 'undefined') ? place : false;
+            fillfields = (typeof fillfields !== 'undefined') ? fillfields : this.fillfields;
             return Utils.gmaps_populate_places(place, fillfields);
         },
         /**
@@ -141,9 +141,9 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
          * @param {*} state 
          */
         _getCountryState: function (model, country, state) {
-            var model = model || false;
-            var country = country || false;
-            var state = state || false;
+            model = (typeof model !== 'undefined') ? model : false;
+            country = (typeof country !== 'undefined') ? country : false;
+            state = (typeof state !== 'undefined') ? state : false;
             return Utils.fetchCountryState(model, country, state);
         },
         /**
@@ -238,8 +238,8 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
          * @override
          */
         getFillFieldsType: function () {
-            var self = this,
-                res = this._super();
+            var self = this;
+            var res = this._super();
 
             if (this._isValid) {
                 _.each(Object.keys(this.fillfields), function (field_name) {
@@ -331,10 +331,8 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
          */
         isValid: function () {
             this._super.apply(this, arguments);
-            var self = this,
-                unknown_fields;
-
-            unknown_fields = _.filter(_.keys(self.fillfields), function (field) {
+            var self = this;
+            var unknown_fields = _.filter(_.keys(self.fillfields), function (field) {
                 return !self.record.fields.hasOwnProperty(field);
             });
             if (unknown_fields.length > 0) {
@@ -391,8 +389,8 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
             this._super();
         },
         getFillFieldsType: function () {
-            var self = this,
-                res = this._super();
+            var self = this;
+            var res = this._super();
             if (this._isValid) {
                 _.each(this.fillfields, function (option) {
                     _.each(Object.keys(option), function (field_name) {
@@ -490,8 +488,8 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
          */
         isValid: function () {
             this._super.apply(this, arguments);
-            var self = this,
-                unknown_fields;
+            var self = this
+            var unknown_fields = null;
             for (var option in this.fillfields) {
                 unknown_fields = _.filter(_.keys(this.fillfields[option]), function (field) {
                     return !self.record.fields.hasOwnProperty(field);
