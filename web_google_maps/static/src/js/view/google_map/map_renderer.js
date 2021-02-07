@@ -89,7 +89,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
                         node.attrs.type = 'button';
                     }
     
-                    var action_classes = " oe_kanban_action oe_kanban_action_" + node.tag;
+                    const action_classes = " oe_kanban_action oe_kanban_action_" + node.tag;
                     if (node.attrs['t-attf-class']) {
                         node.attrs['t-attf-class'] += action_classes;
                     } else if (node.attrs['t-att-class']) {

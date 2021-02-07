@@ -164,7 +164,7 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
         setCountryState: async function (model, country, state) {
             if (model && country && state) {
                 const result = await this._getCountryState(model, country, state);
-                const value = {[this.address_form.state_id]: result};
+                const value = { [this.address_form.state_id]: result };
                 this._onUpdateWidgetFields(value);
             }
         },
@@ -186,7 +186,7 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
          * @param {*} values
          */
         _onUpdateWidgetFields: function (values) {
-            var values = values || {};
+            values = typeof values !== 'undefined' ? values : {};
             this.trigger_up('field_changed', {
                 dataPointID: this.dataPointID,
                 changes: values,
@@ -456,7 +456,7 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
             if (this.lat && this.lng) {
                 return this._super(lat, lng);
             } else if (this.fillfields.geolocation) {
-                _.each(this.fillfields.geolocation, function (alias, field) {
+                _.each(this.fillfields.geolocation, (alias, field) => {
                     if (alias === 'latitude') {
                         res[field] = lat;
                     }
@@ -560,6 +560,7 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
         isValid: function () {
             this._super.apply(this, arguments);
             let unknown_fields = null;
+            const invalid_fields = [];
             for (let option in this.fillfields) {
                 unknown_fields = _.filter(
                     _.keys(this.fillfields[option]),
@@ -570,9 +571,10 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
                         _t('The following fields are invalid:'),
                         _t('<ul><li>' + unknown_fields.join('</li><li>') + '</li></ul>')
                     );
-                    this._isValid = false;
+                    invalid_fields.push(unknown_fields);
                 }
             }
+            this._isValid = (invalid_fields.length > 0);
             return this._isValid;
         },
         /**
