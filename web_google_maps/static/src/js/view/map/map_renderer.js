@@ -281,6 +281,9 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
          *
          */
         _initMarkerCluster: function () {
+            if (!this.markerClusterConfig.imagePath) {
+                this.markerClusterConfig.imagePath = '/web_google_maps/static/lib/markercluster/img/m';
+            }
             this.markerCluster = new MarkerClusterer(
                 this.gmap,
                 [],
