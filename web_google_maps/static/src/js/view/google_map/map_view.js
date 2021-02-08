@@ -3,6 +3,7 @@ odoo.define('web_google_maps.MapView', function (require) {
 
     const BasicView = require('web.BasicView');
     const core = require('web.core');
+    const pyUtils = require('web.py_utils');
 
     const MapModel = require('web_google_maps.MapModel');
     const MapRenderer = require('web_google_maps.MapRenderer').MapRenderer;
@@ -63,17 +64,7 @@ odoo.define('web_google_maps.MapView', function (require) {
             this.rendererParams.markerColors = colors;
             this.rendererParams.fieldLat = attrs.lat;
             this.rendererParams.fieldLng = attrs.lng;
-            const defaultMarkerClusterConfig = {
-                gridSize: 40,
-                maxZoom: 7,
-                zoomOnClick: true,
-                imagePath: '/web_google_maps/static/lib/markercluster/img/m'
-            };
-            let optionClusterConfig = {}
-            if (attrs.options) {
-                optionClusterConfig = _.pick(attrs.options, (_value, key) => /^cluster_/.test(key));
-            }
-            this.rendererParams.markerClusterConfig = _.defaults(optionClusterConfig, defaultMarkerClusterConfig);
+            this._setClusterParams(attrs);
         },
         _setMarkersColor: function (colors) {
             if (!colors) {
@@ -92,6 +83,41 @@ odoo.define('web_google_maps.MapView', function (require) {
                     return [color, py.parse(py.tokenize(expr)), expr];
                 })
                 .value();
+        },
+        _setClusterParams: function (attrs) {
+            const optionClusterConfig = {};
+            const defaultMarkerClusterConfig = this._getDefaultClusterMarkerConfig();
+            if (attrs.options) {
+                const configMapper = this._getClusterMarkerConfigMapper();
+                for (const key in attrs.options) {
+                    const conf = configMapper[key];
+                    if (conf !== undefined) {
+                        optionClusterConfig[conf] = attrs.options[key];
+                    }
+                }
+            }
+            this.rendererParams.markerClusterConfig = _.defaults(
+                optionClusterConfig,
+                defaultMarkerClusterConfig
+            );
+        },
+        _getClusterMarkerConfigMapper: function () {
+            // more options can be check on this link: https://googlemaps.github.io/v3-utility-library/interfaces/_google_markerclustererplus.markerclustereroptions.html
+            // override this function and the `_getDefaultClusterMarkerConfig` if you want cover more 
+            return {
+                cluster_grid_size: 'gridSize',
+                cluster_max_zoom_level: 'maxZoom',
+                cluster_zoom_on_click: 'zoomOnClick',
+                cluster_image_path: 'imagePath',
+            };
+        },
+        _getDefaultClusterMarkerConfig: function () {
+            return {
+                gridSize: 40,
+                maxZoom: 7,
+                zoomOnClick: true,
+                imagePath: '/web_google_maps/static/lib/markercluster/img/m',
+            };
         },
     });
 
