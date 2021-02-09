@@ -1,24 +1,24 @@
-odoo.define('web_google_maps.MapView', function (require) {
+odoo.define('web_google_maps.GoogleMapView', function (require) {
     'use strict';
 
     const BasicView = require('web.BasicView');
     const core = require('web.core');
     const pyUtils = require('web.py_utils');
 
-    const MapModel = require('web_google_maps.MapModel');
-    const MapRenderer = require('web_google_maps.MapRenderer').MapRenderer;
-    const MapController = require('web_google_maps.MapController');
+    const GoogleMapModel = require('web_google_maps.GoogleMapModel');
+    const GoogleMapRenderer = require('web_google_maps.GoogleMapRenderer').GoogleMapRenderer;
+    const GoogleMapController = require('web_google_maps.GoogleMapController');
 
     const _lt = core._lt;
 
-    const MapView = BasicView.extend({
+    const GoogleMapView = BasicView.extend({
         accesskey: 'm',
         display_name: _lt('Map'),
         icon: 'fa-map-o',
         config: _.extend({}, BasicView.prototype.config, {
-            Model: MapModel,
-            Renderer: MapRenderer,
-            Controller: MapController,
+            Model: GoogleMapModel,
+            Renderer: GoogleMapRenderer,
+            Controller: GoogleMapController,
         }),
         viewType: 'google_map',
         mobile_friendly: true,
@@ -121,5 +121,5 @@ odoo.define('web_google_maps.MapView', function (require) {
         },
     });
 
-    return MapView;
+    return GoogleMapView;
 });

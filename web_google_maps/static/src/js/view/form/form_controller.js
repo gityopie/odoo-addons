@@ -1,12 +1,12 @@
 odoo.define('web_google_maps.MapFormController', function (require) {
     'use strict';
 
-    var core = require('web.core');
-    var MapController = require('web.FormController');
-    var qweb = core.qweb;
-    var _t = core._t;
+    const core = require('web.core');
+    const FormController = require('web.FormController');
+    const qweb = core.qweb;
+    const _t = core._t;
 
-    MapController.include({
+    FormController.include({
         init: function (parent, model, renderer, params) {
             this._super.apply(this, arguments);
             this.geo_field = Object.prototype.hasOwnProperty.call(params, 'geo_field')
@@ -15,8 +15,8 @@ odoo.define('web_google_maps.MapFormController', function (require) {
         },
         renderButtons: function ($node) {
             this._super.apply(this, arguments);
-            var $footer = this.footerToButtons ? this.renderer.$el && this.renderer.$('footer') : null;
-            var mustRenderFooterButtons = $footer && $footer.length;
+            const $footer = this.footerToButtons ? this.renderer.$el && this.renderer.$('footer') : null;
+            const mustRenderFooterButtons = $footer && $footer.length;
             if ((this.$buttons && !this.$marker_buttons) || mustRenderFooterButtons) {
                 this.$marker_buttons = $(
                     qweb.render('FormView.marker_edit_button', {
@@ -36,7 +36,7 @@ odoo.define('web_google_maps.MapFormController', function (require) {
             }
         },
         _onButtonEditMarker: function () {
-            var record = this.model.get(this.handle);
+            const record = this.model.get(this.handle);
             this.do_action({
                 name: _t('Edit Geolocation'),
                 res_model: this.modelName,

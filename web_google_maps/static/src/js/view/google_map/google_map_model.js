@@ -1,9 +1,9 @@
-odoo.define('web_google_maps.MapModel', function(require) {
+odoo.define('web_google_maps.GoogleMapModel', function(require) {
     'use strict';
 
     const BasicModel = require('web.BasicModel');
 
-    const MapModel = BasicModel.extend({
+    const GoogleMapModel = BasicModel.extend({
         /**
          * @override
          */
@@ -31,6 +31,6 @@ odoo.define('web_google_maps.MapModel', function(require) {
         }
     });
 
-    return MapModel;
+    return GoogleMapModel;
 
 });

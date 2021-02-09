@@ -1,4 +1,4 @@
-odoo.define('web_google_maps.MapRenderer', function (require) {
+odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
     'use strict';
 
     const BasicRenderer = require('web.BasicRenderer');
@@ -6,7 +6,6 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
     const QWeb = require('web.QWeb');
     const session = require('web.session');
     const utils = require('web.utils');
-    const Widget = require('web.Widget');
     const KanbanRecord = require('web.KanbanRecord');
     const Utils = require('web_google_maps.Utils');
 
@@ -33,7 +32,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
         'yellow',
     ];
 
-    const MapRecord = KanbanRecord.extend({
+    const GoogleMapRecord = KanbanRecord.extend({
         init: function (parent, state, options) {
             this._super.apply(this, arguments);
             this.fieldsInfo = state.fieldsInfo.google_map;
@@ -107,7 +106,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
         }
     }
 
-    const MapRenderer = BasicRenderer.extend({
+    const GoogleMapRenderer = BasicRenderer.extend({
         className: 'o_google_map_view',
         template: 'GoogleMapView.MapView',
         /**
@@ -336,7 +335,6 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
          * @return function
          */
         _markerInfoWindow: function (marker, currentRecords) {
-            const self = this;
             let _content = '';
             const markerRecords = [];
 
@@ -367,7 +365,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
          * @private
          */
         _generateMarkerInfoWindow: function (record) {
-            const markerIw = new MapRecord(this, record, this.recordOptions);
+            const markerIw = new GoogleMapRecord(this, record, this.recordOptions);
             return markerIw;
         },
         /**
@@ -462,7 +460,7 @@ odoo.define('web_google_maps.MapRenderer', function (require) {
     });
 
     return {
-        MapRenderer: MapRenderer,
-        MapRecord: MapRecord,
+        GoogleMapRenderer: GoogleMapRenderer,
+        GoogleMapRecord: GoogleMapRecord,
     };
 });
