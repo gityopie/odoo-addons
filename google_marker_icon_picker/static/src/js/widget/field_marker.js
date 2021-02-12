@@ -1,4 +1,4 @@
-odoo.define('google_marker_dynamic_color.MarkerColor', function (require) {
+odoo.define('google_marker_icon_picker.MarkerColor', function (require) {
     'use strict';
 
     var core = require('web.core');
@@ -40,12 +40,11 @@ odoo.define('google_marker_dynamic_color.MarkerColor', function (require) {
 
         _onSelectMarker: function (ev) {
             ev.preventDefault();
-            var color = $(ev.currentTarget).attr('data-color');
-            var self = this;
+            const color = $(ev.currentTarget).attr('data-color');
             this.trigger_up('field_changed', {
-                dataPointID: self.dataPointID,
+                dataPointID: this.dataPointID,
                 changes: {
-                    [self.name]: color,
+                    [this.name]: color,
                 },
             });
         },

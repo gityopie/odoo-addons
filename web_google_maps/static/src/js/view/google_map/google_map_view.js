@@ -13,7 +13,7 @@ odoo.define('web_google_maps.GoogleMapView', function (require) {
 
     const GoogleMapView = BasicView.extend({
         accesskey: 'm',
-        display_name: _lt('Map'),
+        display_name: _lt('Google Map'),
         icon: 'fa-map-o',
         config: _.extend({}, BasicView.prototype.config, {
             Model: GoogleMapModel,
@@ -116,7 +116,7 @@ odoo.define('web_google_maps.GoogleMapView', function (require) {
                 gridSize: 40,
                 maxZoom: 7,
                 zoomOnClick: true,
-                imagePath: '/web_google_maps/static/lib/markercluster/img/m',
+                imagePath: '/web_google_maps/static/lib/markerclusterer/img/m',
             };
         },
     });

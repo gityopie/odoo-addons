@@ -49,11 +49,11 @@ odoo.define('web_google_maps.GoogleMapController', function (require) {
             const recordModel = this.model.localData[params.record.id];
             const group = this.model.localData[recordModel.parentID];
             const parent = this.model.localData[group.parentID];
-
+    
             this.model.reload(params.record.id).then((db_id) => {
                 const data = this.model.get(db_id);
                 kanbanRecord.update(data);
-
+    
                 // Check if we still need to display the record. Some fields of the domain are
                 // not guaranteed to be in data. This is for example the case if the action
                 // contains a domain on a field which is not in the Kanban view. Therefore,
@@ -61,14 +61,14 @@ odoo.define('web_google_maps.GoogleMapController', function (require) {
                 // domInData: all domain fields are in the data
                 // activeInDomain: 'active' is already in the domain
                 // activeInData: 'active' is available in the data
-
+    
                 const domain = (parent ? parent.domain : group.domain) || [];
                 const domInData = _.every(domain, function (d) {
                     return d[0] in data.data;
                 });
                 const activeInDomain = _.pluck(domain, 0).indexOf('active') !== -1;
                 const activeInData = 'active' in data.data;
-
+    
                 // Case # | domInData | activeInDomain | activeInData
                 //   1    |   true    |      true      |      true     => no domain change
                 //   2    |   true    |      true      |      false    => not possible
@@ -78,18 +78,19 @@ odoo.define('web_google_maps.GoogleMapController', function (require) {
                 //   6    |   false   |      true      |      false    => no evaluation
                 //   7    |   false   |      false     |      true     => replace domain
                 //   8    |   false   |      false     |      false    => no evaluation
-
+    
                 // There are 3 cases which cannot be evaluated since we don't have all the
                 // necessary information. The complete solution would be to perform a RPC in
                 // these cases, but this is out of scope. A simpler one is to do a try / catch.
-
+    
                 if (domInData && !activeInDomain && activeInData) {
                     domain = domain.concat([['active', '=', true]]);
                 } else if (!domInData && !activeInDomain && activeInData) {
                     domain = [['active', '=', true]];
                 }
+                let visible = null;
                 try {
-                    var visible = new Domain(domain).compute(data.evalContext);
+                    visible = new Domain(domain).compute(data.evalContext);
                 } catch (e) {
                     return;
                 }

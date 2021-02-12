@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 13.0\n"
+"Project-Id-Version: Odoo Server 14.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-19 16:33+0000\n"
-"PO-Revision-Date: 2020-10-19 16:33+0000\n"
+"POT-Creation-Date: 2021-02-12 11:36+0000\n"
+"PO-Revision-Date: 2021-02-12 11:36+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -51,6 +51,11 @@ msgstr ""
 #. module: web_google_maps
 #: model:ir.model.fields.selection,name:web_google_maps.selection__res_config_settings__google_maps_lang_localization__ar
 msgid "Armenian"
+msgstr ""
+
+#. module: web_google_maps
+#: model:ir.model.fields.selection,name:web_google_maps.selection__res_config_settings__google_maps_theme__atlas
+msgid "Atlas"
 msgstr ""
 
 #. module: web_google_maps
@@ -149,6 +154,13 @@ msgid "Default"
 msgstr ""
 
 #. module: web_google_maps
+#: model:ir.model.fields,field_description:web_google_maps.field_ir_actions_act_window_view__display_name
+#: model:ir.model.fields,field_description:web_google_maps.field_ir_ui_view__display_name
+#: model:ir.model.fields,field_description:web_google_maps.field_res_config_settings__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: web_google_maps
 #: model:ir.model.fields.selection,name:web_google_maps.selection__res_config_settings__google_maps_lang_localization__nl
 msgid "Dutch"
 msgstr ""
@@ -226,7 +238,10 @@ msgid "Google Autocomplete Language Restriction"
 msgstr ""
 
 #. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/js/view/google_map/google_map_view.js:0
 #: model_terms:ir.ui.view,arch_db:web_google_maps.view_res_partner_google_map
+#, python-format
 msgid "Google Map"
 msgstr ""
 
@@ -279,6 +294,13 @@ msgstr ""
 #. module: web_google_maps
 #: model:ir.model.fields.selection,name:web_google_maps.selection__res_config_settings__google_maps_lang_localization__hu
 msgid "Hungarian"
+msgstr ""
+
+#. module: web_google_maps
+#: model:ir.model.fields,field_description:web_google_maps.field_ir_actions_act_window_view__id
+#: model:ir.model.fields,field_description:web_google_maps.field_ir_ui_view__id
+#: model:ir.model.fields,field_description:web_google_maps.field_res_config_settings__id
+msgid "ID"
 msgstr ""
 
 #. module: web_google_maps
@@ -345,6 +367,13 @@ msgid "Lao"
 msgstr ""
 
 #. module: web_google_maps
+#: model:ir.model.fields,field_description:web_google_maps.field_ir_actions_act_window_view____last_update
+#: model:ir.model.fields,field_description:web_google_maps.field_ir_ui_view____last_update
+#: model:ir.model.fields,field_description:web_google_maps.field_res_config_settings____last_update
+msgid "Last Modified on"
+msgstr ""
+
+#. module: web_google_maps
 #: model:ir.model.fields.selection,name:web_google_maps.selection__res_config_settings__google_maps_lang_localization__lv
 msgid "Latvian"
 msgstr ""
@@ -373,13 +402,6 @@ msgstr ""
 #. module: web_google_maps
 #: model:ir.model.fields.selection,name:web_google_maps.selection__res_config_settings__google_maps_lang_localization__ml
 msgid "Malayalam"
-msgstr ""
-
-#. module: web_google_maps
-#. openerp-web
-#: code:addons/web_google_maps/static/src/js/view/map/map_view.js:0
-#, python-format
-msgid "Map"
 msgstr ""
 
 #. module: web_google_maps
@@ -495,6 +517,13 @@ msgstr ""
 #. module: web_google_maps
 #: model:ir.model.fields.selection,name:web_google_maps.selection__res_config_settings__google_maps_lang_localization__es-419
 msgid "Spanish (Latin America)"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/js/view/google_map/google_map_renderer.js:0
+#, python-format
+msgid "Styled Map"
 msgstr ""
 
 #. module: web_google_maps
