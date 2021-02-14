@@ -1,12 +1,12 @@
 odoo.define('google_marker_icon_picker.MarkerColor', function (require) {
     'use strict';
 
-    var core = require('web.core');
-    var AbstractField = require('web.AbstractField');
-    var registry = require('web.field_registry');
-    var qweb = core.qweb;
+    const core = require('web.core');
+    const AbstractField = require('web.AbstractField');
+    const registry = require('web.field_registry');
+    const qweb = core.qweb;
 
-    var MarkerColorPicker = AbstractField.extend({
+    const MarkerColorPicker = AbstractField.extend({
         tag_template: 'FieldMarkerColorPicker',
         className: 'o_field_char_marker_color',
         supportedFieldTypes: ['char'],

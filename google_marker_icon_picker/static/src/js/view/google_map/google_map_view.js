@@ -1,7 +1,7 @@
 odoo.define('google_marker_icon_picker.GoogleMapView', function (require) {
     'use strict';
 
-    var GoogleMapView = require('web_google_maps.GoogleMapView');
+    const GoogleMapView = require('web_google_maps.GoogleMapView');
 
     GoogleMapView.include({
         set_property_geometry: function (params) {
