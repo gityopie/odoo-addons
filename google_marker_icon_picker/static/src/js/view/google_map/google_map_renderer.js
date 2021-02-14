@@ -1,7 +1,7 @@
 odoo.define('google_marker_icon_picker.GoogleMapRenderer', function (require) {
     'use strict';
 
-    var GoogleMapRenderer = require('web_google_maps.GoogleMapRenderer').GoogleMapRenderer;
+    const GoogleMapRenderer = require('web_google_maps.GoogleMapRenderer').GoogleMapRenderer;
 
     GoogleMapRenderer.include({
         set_property_geometry: function (params) {
