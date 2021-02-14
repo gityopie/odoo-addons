@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_contacts_google_address_form_inherit_extended" model="ir.ui.view">
+        <field name="name">Contacts Google Address Form Autocomplete Extended</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="priority">1100</field>
+        <field name="arch" type="xml">
+            <field name="street_name" position="attributes">
+                <attribute name="widget">gplaces_address_autocomplete</attribute>
+                <!-- the same for address_form widget -->
+                <!-- <attribute name="options">{'lat': 'partner_latitude', 'lng': 'partner_longitude', 'fillfields': {'street': ['route', 'street_number']}}</attribute> -->
+                <attribute name="options">{
+                    'lat': 'partner_latitude',
+                    'lng': 'partner_longitude',
+                    'fillfields': {
+                        'street_name': 'route',
+                        'street_number': 'street_number',
+                        'street2': ['administrative_area_level_3', 'administrative_area_level_4', 'administrative_area_level_5'],
+                        'city': 'locality',
+                        'zip': 'postal_code',
+                        'state_id': 'administrative_area_level_1',
+                        'country_id': 'country'
+                    },
+                    'address_form': {
+                        'street_name': 'street_name',
+                        'street_number': 'street_number',
+                        'street2': 'street2',
+                        'city': 'city',
+                        'zip': 'zip',
+                        'state_id': 'state_id',
+                        'country_id': 'country_id',
+                    },
+                    'display_name': 'street_name',
+                    'force_override': true
+                }</attribute>
+            </field>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="crm_lead_partner_google_map_view" model="ir.ui.view">
+        <field name="name">crm.lead.partner.google_map.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="web_google_maps.view_res_partner_google_map"/>
+        <field name="priority" eval="1000"/>
+        <field name="groups_id" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
+        <field name="arch" type="xml">
+            <field name="mobile" position="after">
+                <field name="opportunity_count"/>
+                <field name="meeting_count"/>
+            </field>
+            <xpath expr="//div[hasclass('oe_kanban_partner_links')]" position="inside">
+                <span class="badge badge-pill" t-if="record.opportunity_count.value>0"><i class="fa fa-fw fa-star" aria-label="Favorites" role="img" title="Favorites"/><t t-esc="record.opportunity_count.value"/></span>
+                <span class="badge badge-pill" t-if="record.meeting_count.value>0"><i class="fa fa-fw fa-calendar" aria-label="Meetings" role="img" title="Meetings"/><t t-esc="record.meeting_count.value"/></span>
+            </xpath>
+        </field>
+    </record>
+</odoo>
