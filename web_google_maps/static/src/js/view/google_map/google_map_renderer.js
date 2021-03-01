@@ -320,6 +320,7 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
                     }
                 });
             }
+            this.markerCluster.addMarker(marker);
             google.maps.event.addListener(
                 marker,
                 'click',
@@ -400,15 +401,7 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
             const func_name = '_map_center_' + this.mapMode;
             this._clearMarkerClusters();
             this._renderMarkers();
-            this._clusterMarkers();
             return this._super.apply(this, arguments).then(this[func_name].bind(this));
-        },
-        /**
-         * Cluster markers
-         * @private
-         */
-        _clusterMarkers: function () {
-            this.markerCluster.addMarkers(this.markers);
         },
         /**
          * Centering map

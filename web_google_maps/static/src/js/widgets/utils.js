@@ -88,8 +88,6 @@ odoo.define('web_google_maps.Utils', function (require) {
      * @param {*} state
      */
     function fetchCountryState(model, country, state) {
-        var def = $.Deferred();
-
         if (model && country && state) {
             return new Promise(async (resolve) => {
                 const data = await rpc.query({
@@ -145,11 +143,7 @@ odoo.define('web_google_maps.Utils', function (require) {
         let vals;
         _.each(place_options, (option, field) => {
             if (option instanceof Array && !_.has(values, field)) {
-                vals = _.filter(
-                    _.map(option, function (opt) {
-                        return place[opt] || false;
-                    })
-                );
+                vals = _.filter(_.map(option, (opt) => place[opt] || false));
                 values[field] = _.first(vals) || '';
             } else {
                 values[field] = place[option] || '';
