@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_calendar_event_form_inherit" model="ir.ui.view">
+        <field name="name">view.calendar.event.form.inherit</field>
+        <field name="model">calendar.event</field>
+        <field name="priority">3000</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_form"/>
+        <field name="arch" type="xml">
+            <field name="location" position="attributes">
+                <attribute name="widget">gplaces_address_autocomplete</attribute>
+                <attribute name="options">{'mode': 'no_address_format', 'lat': 'location_latitude', 'lng': 'location_longitude', 'display_name': 'formatted_address', 'types': []}</attribute>
+            </field>
+            <field name="location" position="after">
+                <field name="location_latitude" invisible="1"/>
+                <field name="location_longitude" invisible="1"/>
+            </field>
+        </field>
+    </record>
+    <record id="view_calendar_event_google_map" model="ir.ui.view">
+        <field name="name">view.calendar.event.google_map</field>
+        <field name="model">calendar.event</field>
+        <field name="arch" type="xml">
+            <google_map string="Google Map" lat="location_latitude" lng="location_longitude">
+                <field name="id"/>
+                <field name="location_latitude"/>
+                <field name="location_longitude"/>
+                <field name="name"/>
+                <field name="start" string="Start Date"/>
+                <field name="stop_date" string="End Date"/>
+                <field name="location"/>
+                <field name="duration" readonly="1"/>
+                <field name="partner_ids" readonly="1"/>
+                <field name="alarm_ids" readonly="1"/>
+                <field name="attendee_status"/>
+                <field name="user_id"/>
+                <field name="description"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="oe_kanban_details">
+                                <div class="o_kanban_record_title text-center">
+                                    <h4><field name="name"/></h4>
+                                    <div class="mb-4">
+                                        <span class="fa fa-calendar-o">&amp;nbsp; <t t-esc="moment(record.start.raw_value).format('LLLL')"/></span>
+                                        <span> &amp;nbsp; </span>
+                                        <span class="fa fa-clock-o">&amp;nbsp; <field name="duration"/> hours</span>
+                                    </div>
+                                </div>
+                                <dl class="row mt-2">
+                                    <dt class="col-sm-3">Responsible</dt>
+                                    <dd class="col-sm-9">
+                                        <field name="user_id" string="Responsible" filters="1" widget="many2one_avatar_user"/>
+                                    </dd>
+                                    <dt class="col-sm-3">Attendees</dt>
+                                    <dd class="col-sm-9">
+                                        <field name="partner_ids" widget="many2many_tags_avatar" write_model="calendar.contacts" write_field="partner_id" avatar_field="image_128"/>
+                                    </dd>
+                                    <dt class="col-sm-3">Location</dt>
+                                    <dd class="col-sm-9">
+                                        <field name="location"/>
+                                    </dd>
+                                    <dt class="col-sm-3">Description</dt>
+                                    <dd class="col-sm-9">
+                                        <field name="description"/>
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </google_map>
+        </field>
+    </record>
+    <record id="calendar.action_calendar_event" model="ir.actions.act_window">
+        <field name="view_mode">calendar,tree,google_map,form</field>
+    </record>
+    <record id="action_view_calendar_event_google_map" model="ir.actions.act_window.view">
+        <field name="act_window_id" ref="calendar.action_calendar_event"/>
+        <field name="sequence" eval="3"/>
+        <field name="view_mode">google_map</field>
+        <field name="view_id" ref="view_calendar_event_google_map"/>
+    </record>
+    <record id="calendar.action_view_calendar_event_form" model="ir.actions.act_window.view">
+        <field name="sequence" eval="4"/>
+    </record>
+</odoo>
