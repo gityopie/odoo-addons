@@ -261,6 +261,12 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
          * @override
          */
         prepareWidgetOptions: function () {
+            if (Object.prototype.hasOwnProperty.call(this.attrs.options, 'mode')) {
+                this.address_mode =
+                    Utils.ADDRESS_MODE.indexOf(this.attrs.options.mode) != -1
+                        ? this.attrs.options.mode
+                        : 'address_format';
+            }
             if (this.mode === 'edit' && this.attrs.options) {
                 if (this.attrs.options.hasOwnProperty('fillfields')) {
                     this.fillfields = _.defaults(
@@ -268,12 +274,6 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
                         this.attrs.options.fillfields,
                         this.fillfields
                     );
-                }
-                if (Object.prototype.hasOwnProperty.call(this.attrs.options, 'mode')) {
-                    this.address_mode =
-                        Utils.ADDRESS_MODE.indexOf(this.attrs.options.mode) != -1
-                            ? this.attrs.options.mode
-                            : 'address_format';
                 }
                 if (Object.prototype.hasOwnProperty.call(this.attrs.options, 'types')) {
                     this.autocomplete_types = this.attrs.options.types;
@@ -464,6 +464,9 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
             this.autocomplete_types = ['establishment'];
         },
         prepareWidgetOptions: function () {
+            if (Object.prototype.hasOwnProperty.call(this.attrs.options, 'mode')) {
+                console.warn('Option `mode` are not supported!');
+            }
             if (this.mode === 'edit' && this.attrs.options) {
                 if (Object.prototype.hasOwnProperty.call(this.attrs.options, 'force_override')) {
                     this.force_override = true;

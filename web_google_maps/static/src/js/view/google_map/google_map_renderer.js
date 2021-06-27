@@ -12,6 +12,8 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
     const qweb = core.qweb;
     const _lt = core._lt;
 
+    // Normally any color can be used here (not limited to these colors)
+    // as we used SVG for the marker
     const MARKER_COLORS = [
         'black',
         'blue',
@@ -282,14 +284,16 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
          * @param {string} color
          */
         _createMarker: function (latLng, record, color) {
+            const icon = Utils.svgMarker;
             const options = {
                 position: latLng,
                 map: this.gmap,
                 animation: google.maps.Animation.DROP,
                 _odooRecord: record,
+                icon: icon,
             };
             if (color) {
-                options.icon = this._getIconColorPath(color);
+                options.icon.fillColor = color;
             }
             const marker = new google.maps.Marker(options);
             this.markers.push(marker);
@@ -298,6 +302,7 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
         /**
          * Get marker icon color path
          * @param {String} color
+         * 2021/06/27 Depricated (replaced by svg marker)
          */
         _getIconColorPath: function (color) {
             const defaultPath = '/web_google_maps/static/src/img/markers/';
@@ -316,6 +321,7 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
                 const position = marker.getPosition();
                 markerInClusters.forEach(function (_cMarker) {
                     if (position && position.equals(_cMarker.getPosition())) {
+                        _cMarker.setMap(null);
                         existingRecords.push(_cMarker._odooRecord);
                     }
                 });

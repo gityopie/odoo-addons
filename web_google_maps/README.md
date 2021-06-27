@@ -7,9 +7,9 @@ This module contains three new features:
  
 
 # Map view  `"google_map"`
-Basically, this new view `map`  will integrate Google Maps into Odoo.    
-Enable you to display `res.partner` geolocation on map or any model contains geolocation.   
-This feature will work seamlessly with Odoo means you can search your partner location using Odoo search feature.     
+Basically, this new view `google_map`  will integrate Google Maps into Odoo.    
+Enable you to display `res.partner` geolocation on map or any model contains geolocation fields.   
+This feature will work seamlessly with Odoo means user can do search on this new view like user do search on Odoo build-in view.     
 
 There are five available attributes that you can customize
  - `lat` : an attritube to tell the map the latitude field on the object __[mandatory]__
@@ -129,11 +129,25 @@ Example:
 
 New widget to integrate [Place Autocomplete Address Form](https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete-addressform) in Odoo.  
 The widget has four options that can be modify:
- - `component_form`
- - `fillfields`
- - `lat`
- - `lng`
-
+ - `component_form`    
+  Google component address
+ - `fillfields`   
+  List of fields the widget will automatically fulfil based on address results return from the autocomplete.
+ - `lat`    
+  Latitude field of your model
+ - `lng`    
+  Longitude field of your model
+ - `display_name`    
+  Property of google autocomplete that you want to take as value
+ - `types`    
+  Google autocomplete types. [Please check this documentation for more detail](https://developers.google.com/maps/documentation/places/web-service/supported_types#table3).
+  Default value:    
+   `gplaces_address_autocomplete`: `["establishment"]`
+   `gplaces_address_autocomplete`: `["address"]`
+ - `mode` (only support widget `gplaces_address_autocomplete`)    
+   Available value:     
+   - `address_format`
+   - `no_address_format`. Used this value if you simply just want to take the address without automatically fulfill other fields.
 ### Component form `component_form`
 Is an option used to modify which value you want to take from an objects returned by the geocoder.    
 Full documentation about Google component types can be found [here](https://developers.google.com/maps/documentation/geocoding/intro#Types)
@@ -191,7 +205,7 @@ Example:
 
 ### Fill fields `fillfields`
 Is an option that will be influenced by `gplaces_address_autocomplete` widget.    
-This options should contains known `fields` that you want the widget to fulfill a value for each given field automatically.    
+This options should contains known `fields`(address fields) that you want the widget to fulfill a value for each given field automatically (based on selected address from the search result).    
 A field can contains one or multiple elements of component form    
 By default this options are configured like the following
 ```javascript
@@ -255,7 +269,7 @@ By default this options are configured like following value:
 ```
 # Technical
 This module will install `base_setup` and `base_geolocalize`.    
-*I recommend you to setup __Google Maps Key API__ and add it into Odoo `Settings > General` Settings when you installed this module*
+*I recommend you to setup __Google Maps Key API__ and add it into Odoo `Settings > General > Google Maps View` section when you installed this module*
 
 *__List of Google APIs & services required in order to make all features works__*
 - Geocoding API
@@ -263,7 +277,3 @@ This module will install `base_setup` and `base_geolocalize`.
 - Places API
 
 Visit this [page](https://developers.google.com/maps/documentation/javascript/get-api-key) of how to get Google API Key
-
-
-[![ko-fi](https://www.ko-fi.com/img/donate_sm.png)](https://ko-fi.com/P5P4FOM0)    
-*if you want to support me to keep this project maintained. Thanks :)*
