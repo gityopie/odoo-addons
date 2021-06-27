@@ -25,5 +25,14 @@ class CalendarEvent(models.Model):
             res['location_longitude'] = partner_id.partner_longitude
         return res
 
+    @api.depends('start')
+    def _compute_marker_color(self):
+        for rec in self:
+            if rec.start < fields.Datetime.now():
+                rec.marker_color = 'red'
+            else:
+                rec.marker_color = 'green'
+
     location_latitude = fields.Float('Geo Latitude', digits=(16, 5))
     location_longitude = fields.Float('Geo Longitude', digits=(16, 5))
+    marker_color = fields.Char(compute='_compute_marker_color')
