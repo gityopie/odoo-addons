@@ -67,7 +67,7 @@ odoo.define('web_google_maps.relational_fields', function (require) {
         _onMapCenter: function (event) {
             event.stopPropagation();
             if (this.renderer.mapLibrary === 'geometry') {
-                this.renderer.mapGeometryCentered();
+                this.renderer.mapGeometryCentered(true);
             } else if (this.renderer.mapLibrary === 'drawing') {
                 this.renderer.mapShapesCentered();
             }

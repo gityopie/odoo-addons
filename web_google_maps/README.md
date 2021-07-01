@@ -21,7 +21,7 @@ The attribute will add a new button "Edit Geolocation" next to button "Edit" & "
 <img src="./static/description/form_edit_geolocation.png" alt="drawing" height="200"/>
 
 Once you defined this attribute on form view, you can activate or access this feature on your `ir.actions.act_window` record either in XML or Python by append `edit_geo_field = True` in context.    
-For example,    
+For example    
 Python
 ```python
     def action_edit_geolocation(self):
@@ -41,6 +41,14 @@ XML
         ...
     </record>
 ```
+#### __Note:__ 
+1. Make sure the action only render one recordset and `map` is the view to load.
+2. If your model `form` view already has this attribute     
+    ```xml
+    <form ... geo_field="{'lat': 'partner_latitude', 'lng': 'partner_longitude'}" ...>
+    ```
+    then point 1 is no longer a necessary.    
+
 
 # Map view  `"map"`
 Basically, this new view `map`  will integrate Google Maps into Odoo.    
