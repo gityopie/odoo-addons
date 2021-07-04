@@ -24,9 +24,15 @@ class Main(http.Controller):
             )
         )
         lang = get_param('web_google_maps.lang_localization', default=False)
+        region = get_param(
+            'web_google_maps.region_localization', default=False
+        )
 
         result = {}
-        if is_lang_restrict and lang:
-            result['language'] = lang
+        if is_lang_restrict:
+            if lang:
+                result['language'] = lang
+            if region:
+                result['region'] = region.lower()
 
         return result
