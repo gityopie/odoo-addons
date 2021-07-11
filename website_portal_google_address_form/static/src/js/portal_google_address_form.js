@@ -8,7 +8,7 @@ odoo.define('website_portal_google_address_form.portal_google_address_form', fun
     
 
     publicWidget.registry.PortalGoogleAddressForm = publicWidget.Widget.extend(googleUtils.GoogleAutocompleteMixin, {
-        selector: '.o_portal_wrap',
+        selector: '.o_portal_details',
         events: {
             'keypress form': '_disableEnterKey'
         },
