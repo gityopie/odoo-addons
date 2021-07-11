@@ -173,6 +173,144 @@ odoo.define('web_google_maps.Utils', function (require) {
         return result;
     }
 
+    var GoogleAutocompleteMixin = {
+        /**
+         * Geolocate
+         * @private
+         */
+        _geolocate: function () {
+            var self = this;
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    var geolocation = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude,
+                    };
+
+                    var circle = new google.maps.Circle({
+                        center: geolocation,
+                        radius: position.coords.accuracy,
+                    });
+
+                    self.place_autocomplete.setBounds(circle.getBounds());
+                });
+            }
+        },
+        /**
+         * @private
+         * @param {jQueryElement} $target
+         * @param {Array} country_restriction
+         * @param {Array} options
+         * @returns Promise
+         */
+        _initializeGoogleAutocomplete: function (
+            $target,
+            country_restriction,
+            options
+        ) {
+            options = options || {
+                types: ['geocode'],
+                fields: ['address_components', 'name', 'geometry'],
+            };
+            if (!this.place_autocomplete) {
+                this.place_autocomplete = new google.maps.places.Autocomplete(
+                    $target[0],
+                    options
+                );
+            }
+            if (country_restriction && country_restriction.length) {
+                this.place_autocomplete.setComponentRestrictions({
+                    country: country_restriction,
+                });
+            }
+            this.place_autocomplete.addListener(
+                'place_changed',
+                this._onPlaceChanged.bind(this)
+            );
+            return Promise.resolve(this);
+        },
+        /**
+         * Initialize google places autocomplete
+         * @param {*} $target 
+         * @param {*} country_restriction 
+         * @param {*} options 
+         */
+        initializeGoogleAutocomplete: function (
+            $target,
+            country_restriction,
+            options
+        ) {
+            return this._initializeGoogleAutocomplete(
+                $target,
+                country_restriction,
+                options
+            ).then(this._geolocate.bind(this));
+        },
+        /**
+         * @private
+         * Method Google place_changed event listener
+         */
+        _onPlaceChanged: function () {
+            var place = this.place_autocomplete.getPlace();
+            this.onPlaceChanged(place);
+        },
+        /**
+         * Override this method to add your needs
+         * @param {object} place
+         */
+        onPlaceChanged: function (place) {},
+        /**
+         *
+         * @param {object} place
+         * @param {object} fillFields
+         */
+        populateAddress: function (place, fillFields) {
+            var input2fill = {},
+                result = {},
+                fields_delimiter = {
+                    street: ' ',
+                    street2: ', ',
+                },
+                temp_values,
+                dlmter;
+
+            _.each(fillFields, function (value, key) {
+                input2fill[key] = [];
+            });
+
+            _.each(fillFields, function (options, field) {
+                // turn all fields options into an Array
+                // if (options.hasOwnProperty.components) {
+                    options = _.flatten([options.components]);
+                    temp_values = {};
+                    _.each(place.address_components, function (component) {
+                        _.each(_.intersection(options, component.types), function (
+                            match
+                        ) {
+                            temp_values[match] =
+                                component[GOOGLE_PLACES_COMPONENT_FORM[match]] ||
+                                false;
+                        });
+                    });
+                    input2fill[field] = _.map(options, function (item) {
+                        return temp_values[item];
+                    });
+                // }
+            });
+
+            _.each(input2fill, function (value, key) {
+                dlmter = fields_delimiter[key] || ' ';
+                if (key == 'city') {
+                    result[key] = _.first(_.filter(value)) || '';
+                } else {
+                    result[key] = _.filter(value).join(dlmter);
+                }
+            });
+
+            return result;
+        },
+    };
+
     var MAP_THEMES = {
         default: [],
         aubergine: [
@@ -1192,5 +1330,6 @@ odoo.define('web_google_maps.Utils', function (require) {
         gmaps_get_geolocation: gmaps_get_geolocation,
         fetchValues: fetchValues,
         fetchCountryState: fetchCountryState,
+        GoogleAutocompleteMixin: GoogleAutocompleteMixin,
     };
 });
