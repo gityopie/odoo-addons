@@ -24,46 +24,34 @@
     }
 
     .o_map_right_sidebar {
+        top: 0;
         right: 0;
         bottom: 0;
-        background-color: #f5f5f5;
+        position: absolute;
+        z-index: 3;
+        transform: translate3d(0, 0, 0);
+        -webkit-transform: translate3d(0, 0, 0);
+        -moz-transform: translate3d(0, 0, 0);
+        box-shadow: 0px 0px 1px 0px rgba(181, 181, 181, 0.75);
+        width: 400px;
+        position: relative;
+        overflow-x: auto;
+        color: rgb(253, 253, 253);
 
         &.closed {
-            width: 0;
-            transition: 0.5s;
-            transform: translateX(-100%);
-            -webkit-transform: translateX(-100%);
+            box-shadow: none;
+            transform: translate3d(100%, 0, 0);
+            -webkit-transform: translate3d(100%, 0, 0);
+            -moz-transform: translate3d(100%, 0, 0);
         }
 
-        &.open {
-            width: 250px;
-            transition: 0.5s;
-            transform: translateX(0);
-            -webkit-transform: translateX(0);
-            overflow-x: auto;
-        }
-
-        ul {
-            margin-top: 10px;
-            padding-left: 3px;
-            list-style: none;
-            font-size: 12px;
-
-            li {
-                padding-bottom: 8px;
-
-                span {
-                    padding: 3px 6px;
-
-                    &.total {
-                        font-size: 10px;
-                        background: #ddd;
-                        border-radius: 3px;
-                    }
-                }
+        a {
+            &.disabled {
+                background-color: #f1f1f1;
+                pointer-events: auto;
+                cursor: no-drop;
             }
         }
-
     }
 
     .o_map_button {

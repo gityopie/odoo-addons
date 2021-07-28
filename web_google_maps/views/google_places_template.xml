@@ -22,6 +22,7 @@
         <xpath expr="." position="inside">
             <link rel="stylesheet" type="text/scss" href="/web_google_maps/static/src/scss/view_google_map.scss"/>
             <link rel="stylesheet" type="text/scss" href="/web_google_maps/static/src/scss/view_google_map_mobile.scss"/>
+            <script type="text/javascript" src="/web_google_maps/static/src/js/view/google_map/google_map_sidebar.js"></script>
             <script type="text/javascript" src="/web_google_maps/static/src/js/view/google_map/google_map_model.js"></script>
             <script type="text/javascript" src="/web_google_maps/static/src/js/view/google_map/google_map_controller.js"></script>
             <script type="text/javascript" src="/web_google_maps/static/src/js/view/google_map/google_map_renderer.js"></script>

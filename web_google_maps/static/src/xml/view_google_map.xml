@@ -2,25 +2,11 @@
 <templates id="template" xml:space="preserve">
     <div t-name="GoogleMapView.MapView" class="o_google_map_container">
         <div class="o_google_map_view"></div>
+        <div class="o_map_right_sidebar"></div>
     </div>
-    <t t-name="GoogleMapView.MapViewGroupInfo">
-        <ul t-if="widget.groups">
-            <t t-foreach="widget.groups" t-as="group">
-                <li>
-                    <img t-att-src="group.marker"/>
-                    <span class="title">
-                        <t t-esc="group.title"/>
-                    </span>
-                    <span class="total">
-                        <t t-esc="group.count"/>
-                    </span>
-                </li>
-            </t>
-        </ul>
-    </t>
     <t t-name="GoogleMapView.buttons">
         <div class="o_list_buttons">
-            <div class="o_form_marker_buttons_actions">
+            <div class="o_form_marker_buttons_actions pb-2">
                 <t t-if="widget.is_action_enabled('create')">
                     <button type="button" class="btn btn-primary o-map-button-new" accesskey="c">
                         <t t-esc="create_text || _t('Create')"/>
@@ -46,5 +32,21 @@
                 <t t-esc="_('Edit Geolocation')"/>
             </button>
         </t>
+    </t>
+    <t t-name="GoogleMapView.Sidebar">
+        <div class="o_map_sidebar">
+            <div class="list-group">
+                <t t-foreach="widget.records" t-as="record">
+                    <t t-set="display_name" t-value="widget.getDisplayName(record)"/>
+                    <t t-set="has_geolocation" t-value="widget.hasGeolocation(record)"/>
+                    <t t-if="has_geolocation">
+                        <a href="javascript:void(0)" class="list-group-item list-group-item-action o_map_sidebar_record" t-att-data-id="record.id"><span t-esc="display_name"/></a>
+                    </t>
+                    <t t-else="">
+                        <a href="javascript:void(0)" class="list-group-item list-group-item-action o_map_sidebar_record disabled" title="No geolocation" ><span t-esc="display_name"/></a>
+                    </t>
+                </t>
+            </div>
+        </div>
     </t>
 </templates>
