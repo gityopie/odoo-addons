@@ -128,15 +128,7 @@ Example:
 
 # New widget `"gplaces_address_autocomplete"`
 
-New widget to integrate [Place Autocomplete Address Form](https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete-addressform) in Odoo.  
-The widget has four options that can be modify:
- - `component_form`
- - `fillfields`
- - `lat`
- - `lng`
- - `mode`
- - `types`
-
+New widget to integrate [Place Autocomplete Address Form](https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete-addressform).  
  ## Widget options:
 
  1. Google componennt "`component_form`"   
