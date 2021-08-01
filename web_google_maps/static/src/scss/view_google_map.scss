@@ -29,12 +29,6 @@
         bottom: 0;
         position: absolute;
         z-index: 3;
-        transform: translate3d(0, 0, 0);
-        -webkit-transform: translate3d(0, 0, 0);
-        -moz-transform: translate3d(0, 0, 0);
-        box-shadow: 0px 0px 1px 0px rgba(181, 181, 181, 0.75);
-        width: 400px;
-        position: relative;
         overflow-x: auto;
         color: rgb(253, 253, 253);
 
@@ -45,11 +39,24 @@
             -moz-transform: translate3d(100%, 0, 0);
         }
 
-        a {
+        &.open {
+            transform: translate3d(0, 0, 0);
+            -webkit-transform: translate3d(0, 0, 0);
+            -moz-transform: translate3d(0, 0, 0);
+            box-shadow: 0px 0px 1px 0px rgba(181, 181, 181, 0.75);
+            width: 400px;
+            position: relative;
+        }
+
+        li {
             &.disabled {
                 background-color: #f1f1f1;
                 pointer-events: auto;
                 cursor: no-drop;
+                a {
+                    text-decoration: none;
+                    color: #989696;
+                }
             }
         }
     }

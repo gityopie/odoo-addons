@@ -165,6 +165,7 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
             this.markerColors = params.markerColors;
             this.markerClusterConfig = params.markerClusterConfig;
             this.disableClusterMarker = params.disableClusterMarker;
+            this.sidebarRender = null;
         },
         /**
          * @override
@@ -277,7 +278,6 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
                 map: this.gmap,
                 animation: google.maps.Animation.DROP,
                 _odooRecord: record,
-                odooId: record.id,
                 icon: {
                     path: google.maps.SymbolPath.CIRCLE,
                     fillColor: 'blue',
@@ -454,10 +454,12 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
          * Render list of `display_name` of records loaded in the map
          */
         _renderSidebar: function () {
-            const sidebar = new GoogleMapSidebar(this, this.state.data);
-            const $rightSidebar = this.$('.o_map_right_sidebar');
-            $rightSidebar.empty();
-            sidebar.appendTo($rightSidebar);
+            if (!this.sidebarRender) {
+                this.sidebarRender = new GoogleMapSidebar(this, this.state.data);
+                const $rightSidebar = this.$('.o_map_right_sidebar');
+                $rightSidebar.empty();
+                this.sidebarRender.appendTo($rightSidebar);
+            }
         },
     });
 

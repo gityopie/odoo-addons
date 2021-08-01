@@ -8,7 +8,7 @@ This module contains three new features:
  - New widget `"gplaces_autocomplete"`
  
 
-# Map view  `"google_map"`
+## Map view  `"google_map"`
 Enable you to display `res.partner` geolocation on map or any model contains geolocation.   
 This feature will work seamlessly with Odoo means you can search your partner location using Odoo search feature.     
 
@@ -16,7 +16,7 @@ There are available attributes that you can customize
  - `lat` : an attritube to tell the map the latitude field on the object __[mandatory]__
  - `lng` : an attritute to tell the map the longitude field on the object __[mandatory]__
  - `color` : an attribute to modify marker color (optional) any given color will set all markers color __[optional]__.
- - `colors` : work like attribute `color` but more configurable (you can set marker color depends on it's value) this attribute works similar to `colors` of tree view on Odoo 9.0 __[optional]__
+ - `colors` : work like attribute `color` but more configurable (you can set marker color depends on it's value)  __[optional]__
  - `library` : an attribute to indicates which google map library to load.    
     This options has two values:   
     1. `geometry` [default]
@@ -126,12 +126,12 @@ Example:
     </google_map>
 ```
 
-# New widget `"gplaces_address_autocomplete"`
+## New widget `"gplaces_address_autocomplete"`
 
 New widget to integrate [Place Autocomplete Address Form](https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete-addressform).  
- ## Widget options:
+ ### Widget options:
 
- 1. Google componennt "`component_form`"   
+ 1. Google componennt `component_form`   
 Is an option used to modify which value you want to take from an objects returned by the geocoder.    
 Full documentation about Google component types can be found [here](https://developers.google.com/maps/documentation/geocoding/intro#Types)
 By default this option are configured like the following value
@@ -186,7 +186,7 @@ Example:
     </record>
 ```
 
- 2. Odoo fields mapping "`fillfields`"   
+ 2. Odoo fields mapping `fillfields`   
 Is an option that will be influenced by `gplaces_address_autocomplete` widget.    
 This options should contains known `fields` that you want the widget to fulfill a value for each given field automatically.    
 A field can contains one or multiple elements of component form    
@@ -215,10 +215,10 @@ Example:
     </record>
 ```    
 
- 3. Geolocation fields latitude "`lat`" and longitude "`lng`"    
+ 3. Geolocation fields latitude `lat` and longitude `lng`    
 This options tell the widget the fields geolocation, in order to have this fields filled automatically.
 
- 4. Address mode "`mode`"    
+ 4. Address mode `mode`    
     Is an option that will be used to define the mode of the widget. Either by populate the Google address into Odoo fields or just simply take the Google address into your Char field.    
     Available values are `'address_format'` and `'no_address_format'`.    
     Example:
@@ -237,11 +237,11 @@ This options tell the widget the fields geolocation, in order to have this field
 
 
 
-# New widget `"gplaces_autocomplete"`
+## New widget `"gplaces_autocomplete"`
 
 New widget to integrate [Place Autocomplete](https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete) in Odoo.
 
-## Widget options:
+### Widget options:
 This widget have similar configuration to `gplaces_address_autocomplete` except for ```mode``` option.
 
 1. Fill fields `fillfields`   
@@ -268,7 +268,7 @@ By default this options are configured like following value:
         }
     };
 ```
-# Technical
+## Technical
 This module will install `base_setup` and `base_geolocalize`.    
 *I recommend you to setup __Google Maps Key API__ and add it into Odoo `Settings > General` Settings when you installed this module*
 

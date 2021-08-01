@@ -7,6 +7,7 @@ odoo.define('web_google_maps.GoogleMapSidebar', function (require) {
         template: 'GoogleMapView.Sidebar',
         events: {
             'click .o_map_sidebar_record': 'onClickSidebarRecord',
+            'click button#open-record': 'openRecord',
         },
         init: function (parent, records) {
             this._super.apply(this, arguments);
@@ -20,9 +21,9 @@ odoo.define('web_google_maps.GoogleMapSidebar', function (require) {
          */
         onClickSidebarRecord: function (ev) {
             ev.preventDefault();
-            const data_id = $(ev.target).parent().attr('data-id');
+            const data_id = $(ev.currentTarget).data('res-id');
             if (data_id) {
-                const marker = _.find(this.parent.markers, (m) => m.odooId === data_id);
+                const marker = _.find(this.parent.markers, (m) => m._odooRecord.res_id === data_id);
                 if (marker) {
                     this.parent.gmap.panTo(marker.getPosition());
                     google.maps.event.addListenerOnce(this.parent.gmap, 'idle', () => {
@@ -74,6 +75,17 @@ odoo.define('web_google_maps.GoogleMapSidebar', function (require) {
                 console.error(error);
             }
             return result;
+        },
+        /**
+         * Open form view
+         * @param {Object} event
+         */
+        openRecord: function (ev) {
+            ev.preventDefault();
+            const record_id = $(ev.currentTarget).parent().find('a').data('id');
+            if (record_id) {
+                this.trigger_up('open_record', { id: record_id });
+            }
         },
     });
 
