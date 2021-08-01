@@ -53,6 +53,9 @@ odoo.define('web_google_maps.Utils', function (require) {
         country_id: 'country_id',
     };
 
+    const ADDRESS_MODE = ['address_format', 'no_address_format'];
+    const AUTOCOMPLETE_TYPES = ['geocode', 'address', 'establishment', 'regions', 'cities'];
+
     /**
      *
      * @param {*} model
@@ -94,12 +97,7 @@ odoo.define('web_google_maps.Utils', function (require) {
                     model: model,
                     method: 'search_read',
                     args: [
-                        [
-                            ['country_id', '=', country],
-                            '|',
-                            ['code', '=', state],
-                            ['name', '=', state],
-                        ],
+                        [['country_id', '=', country], '|', ['code', '=', state], ['name', '=', state]],
                         ['display_name'],
                     ],
                     limit: 1,
@@ -1467,6 +1465,8 @@ odoo.define('web_google_maps.Utils', function (require) {
         GOOGLE_PLACES_COMPONENT_FORM: GOOGLE_PLACES_COMPONENT_FORM,
         ADDRESS_FORM: ADDRESS_FORM,
         MAP_THEMES: MAP_THEMES,
+        ADDRESS_MODE: ADDRESS_MODE,
+        AUTOCOMPLETE_TYPES: AUTOCOMPLETE_TYPES,
         gmaps_populate_address: gmaps_populate_address,
         gmaps_populate_places: gmaps_populate_places,
         gmaps_get_geolocation: gmaps_get_geolocation,

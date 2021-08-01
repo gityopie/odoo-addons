@@ -64,6 +64,7 @@ odoo.define('web_google_maps.GoogleMapView', function (require) {
             this.rendererParams.markerColors = colors;
             this.rendererParams.fieldLat = attrs.lat;
             this.rendererParams.fieldLng = attrs.lng;
+            this.rendererParams.disableClusterMarker = attrs.disable_cluster_marker !== undefined ? !!pyUtils.py_eval(attrs.disable_cluster_marker) : false;
             this._setClusterParams(attrs);
         },
         _setMarkersColor: function (colors) {

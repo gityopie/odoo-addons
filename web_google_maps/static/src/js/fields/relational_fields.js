@@ -41,7 +41,9 @@ odoo.define('web_google_maps.relational_fields', function (require) {
                 fieldLat: arch.attrs.lat,
                 fieldLng: arch.attrs.lng,
                 markerColor: arch.attrs.color,
+                disableClusterMarker: arch.attrs.disable_cluster_marker,
                 mapMode: this.mapMode,
+                markerClusterConfig: {}
             });
         },
         /**
