@@ -197,6 +197,29 @@ odoo.define('web_google_maps.Utils', function (require) {
         return result;
     }
 
+    /**
+     * Parse config markerColor given in google_map view
+     * @param {string} colors
+     */
+    function parseMarkersColor (colors) {
+        if (!colors) {
+            return false;
+        }
+        let pair;
+        let color;
+        let expr;
+        return _(colors.split(';'))
+            .chain()
+            .compact()
+            .map(function (color_pair) {
+                pair = color_pair.split(':');
+                color = pair[0];
+                expr = pair[1];
+                return [color, py.parse(py.tokenize(expr)), expr];
+            })
+            .value();
+    }
+
     const MAP_THEMES = {
         default: [],
         aubergine: [
@@ -1472,5 +1495,6 @@ odoo.define('web_google_maps.Utils', function (require) {
         gmaps_get_geolocation: gmaps_get_geolocation,
         fetchValues: fetchValues,
         fetchCountryState: fetchCountryState,
+        parseMarkersColor: parseMarkersColor,
     };
 });

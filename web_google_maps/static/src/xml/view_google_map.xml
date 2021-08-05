@@ -39,9 +39,10 @@
                 <t t-foreach="widget.records" t-as="record">
                     <t t-set="display_name" t-value="widget.getDisplayName(record)"/>
                     <t t-set="has_geolocation" t-value="widget.hasGeolocation(record)"/>
+                    <t t-set="marker_color" t-value="widget.getMarkerColor(record)"/>
                     <t t-if="has_geolocation">
                         <li class="list-group-item d-flex justify-content-between align-items-center pb-2 pt-2">
-                            <a href="#" class="flex-grow-1 o_map_sidebar_record" t-att-data-id="record.id" t-att-data-res-id="record.res_id">
+                            <a href="#" class="flex-grow-1 o_map_sidebar_record" t-att-data-id="record.id" t-att-data-res-id="record.res_id" t-attf-style="color: #{marker_color};">
                                 <span t-esc="display_name"/>
                             </a>
                             <button type="button" class="btn btn-sm btn-light" id="open-record" data-toggle="tooltip" title="Open form">
@@ -51,7 +52,7 @@
                     </t>
                     <t t-else="">
                         <li class="list-group-item d-flex justify-content-between align-items-center pb-2 pt-2 disabled">
-                            <a href="#" class="flex-grow-1 o_map_sidebar_record" data-toggle="tooltip" title="No geolocation" t-att-data-id="record.id">
+                            <a href="#" class="flex-grow-1 o_map_sidebar_record" data-toggle="tooltip" title="No geolocation" t-att-data-id="record.id" t-attf-style="color: #{marker_color};">
                                 <span t-esc="display_name"/>
                             </a>
                             <button type="button" class="btn btn-sm btn-light" id="open-record" data-toggle="tooltip" title="Open form">

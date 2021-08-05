@@ -35,6 +35,18 @@ odoo.define('web_google_maps.GoogleMapSidebar', function (require) {
             }
         },
         /**
+         * Get marker color
+         * @param {Object} record
+         */
+        getMarkerColor: function(record) {
+            let color = '#989696';
+            const marker = _.find(this.parent.markers, (m) => m._odooRecord.res_id === record.res_id);
+            if (marker) {
+                color = marker._odooMarkerColor
+            }
+            return color;
+        },
+        /**
          * Get display_name of record
          * @param {Object} record
          */

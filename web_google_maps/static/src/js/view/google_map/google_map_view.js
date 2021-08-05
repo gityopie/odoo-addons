@@ -8,6 +8,7 @@ odoo.define('web_google_maps.GoogleMapView', function (require) {
     const GoogleMapModel = require('web_google_maps.GoogleMapModel');
     const GoogleMapRenderer = require('web_google_maps.GoogleMapRenderer').GoogleMapRenderer;
     const GoogleMapController = require('web_google_maps.GoogleMapController');
+    const Utils = require('web_google_maps.Utils');
 
     const _lt = core._lt;
 
@@ -59,31 +60,14 @@ odoo.define('web_google_maps.GoogleMapView', function (require) {
             this[func_name].call(this, attrs);
         },
         set_property_geometry: function (attrs) {
-            const colors = this._setMarkersColor(attrs.colors);
+            const colors = Utils.parseMarkersColor(attrs.colors);
             this.rendererParams.markerColor = attrs.color;
             this.rendererParams.markerColors = colors;
             this.rendererParams.fieldLat = attrs.lat;
             this.rendererParams.fieldLng = attrs.lng;
+            this.rendererParams.gestureHandling = attrs.gesture_handling;
             this.rendererParams.disableClusterMarker = attrs.disable_cluster_marker !== undefined ? !!pyUtils.py_eval(attrs.disable_cluster_marker) : false;
             this._setClusterParams(attrs);
-        },
-        _setMarkersColor: function (colors) {
-            if (!colors) {
-                return false;
-            }
-            let pair = null;
-            let color = null;
-            let expr = null;
-            return _(colors.split(';'))
-                .chain()
-                .compact()
-                .map(function (color_pair) {
-                    pair = color_pair.split(':');
-                    color = pair[0];
-                    expr = pair[1];
-                    return [color, py.parse(py.tokenize(expr)), expr];
-                })
-                .value();
         },
         _setClusterParams: function (attrs) {
             const optionClusterConfig = {};
