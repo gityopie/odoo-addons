@@ -13,10 +13,10 @@ Enable you to display `res.partner` geolocation on map or any model contains geo
 This feature will work seamlessly with Odoo means you can search your partner location using Odoo search feature.     
 
 These are available attributes that you can customize
- - `lat` : an attritube to tell the map the latitude field on the object __[mandatory]__
- - `lng` : an attritute to tell the map the longitude field on the object __[mandatory]__
- - `color` : an attribute to modify marker color (optional) any given color will set all markers color __[optional]__.
- - `colors` : work like attribute `color` but more configurable (you can set marker color depends on it's value)  __[optional]__
+ - `lat` : an attritube to tell the map the latitude field __[mandatory]__
+ - `lng` : an attritute to tell the map the longitude field __[mandatory]__
+ - `color` : an attribute to modify marker color, any given color will set all markers color __[optional]__.
+ - `colors` : work like attribute `color` but more configurable (you can set marker color depends on condition you defined)  __[optional]__
  - `library` : an attribute to indicates which google map library to load.    
     This options has two values:   
     1. `geometry` [default]
