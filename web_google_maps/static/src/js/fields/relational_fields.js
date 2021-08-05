@@ -4,6 +4,7 @@ odoo.define('web_google_maps.relational_fields', function (require) {
     const core = require('web.core');
     const relational_fields = require('web.relational_fields');
     const GoogleMapRenderer = require('web_google_maps.GoogleMapRenderer').GoogleMapRenderer;
+    const Utils = require('web_google_maps.Utils');
 
     const qweb = core.qweb;
 
@@ -34,6 +35,10 @@ odoo.define('web_google_maps.relational_fields', function (require) {
                 deletable: true,
                 read_only_mode: this.isReadonly,
             };
+            let colors;
+            if (arch.attrs.colors) {
+                colors = Utils.parseMarkersColor(arch.attrs.colors);
+            }
             return new GoogleMapRenderer(this, this.value, {
                 arch: arch,
                 record_options: record_options,
@@ -41,7 +46,9 @@ odoo.define('web_google_maps.relational_fields', function (require) {
                 fieldLat: arch.attrs.lat,
                 fieldLng: arch.attrs.lng,
                 markerColor: arch.attrs.color,
+                markerColors: colors,
                 disableClusterMarker: arch.attrs.disable_cluster_marker,
+                gestureHandling: arch.attrs.gesture_handling,
                 mapMode: this.mapMode,
                 markerClusterConfig: {}
             });
