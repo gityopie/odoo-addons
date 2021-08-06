@@ -229,7 +229,7 @@ odoo.define('web_google_maps.GoogleMapController', function (require) {
         _onButtonMapCenter: function (event) {
             event.stopPropagation();
             const func_name = '_map_center_' + this.renderer.mapMode;
-            this.renderer[func_name].call(this.renderer, true);
+            this.renderer[func_name].call(this.renderer);
         },
         _onButtonNew: function (event) {
             event.stopPropagation();
