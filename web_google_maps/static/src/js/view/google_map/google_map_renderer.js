@@ -121,7 +121,6 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
         init: function (parent, state, params) {
             this._super.apply(this, arguments);
             this.widgets = [];
-            this.mapThemes = Utils.MAP_THEMES;
 
             this.qweb = new QWeb(
                 session.debug,
@@ -181,8 +180,9 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
          */
         _getMapTheme: async function () {
             const self = this;
+            const themes = Utils.MAP_THEMES;
             const update_map = function (style) {
-                const styledMapType = new google.maps.StyledMapType(self.mapThemes[style], {
+                const styledMapType = new google.maps.StyledMapType(themes[style], {
                     name: _lt('Styled Map'),
                 });
                 self.gmap.setOptions({
@@ -197,7 +197,7 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
             };
             if (!this.theme) {
                 const data = await this._rpc({ route: '/web/map_theme' });
-                if (data.theme && this.mapThemes.hasOwnProperty(data.theme)) {
+                if (data.theme && Object.prototype.hasOwnProperty.call(themes, data.theme)) {
                     this.theme = data.theme;
                     update_map(data.theme);
                 }
@@ -323,7 +323,7 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
             const existingRecords = [];
             if (markers.length > 0) {
                 const position = marker.getPosition();
-                markers.forEach(function (_cMarker) {
+                markers.forEach((_cMarker) => {
                     if (position && position.equals(_cMarker.getPosition())) {
                         marker.setMap(null);
                         existingRecords.push(_cMarker._odooRecord);
@@ -415,10 +415,7 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
         /**
          * Centering map
          */
-        _map_center_geometry: function (force_center) {
-            force_center = typeof force_center !== 'undefined' ? force_center : false;
-            if (this.map_has_centered !== undefined && !force_center) return;
-
+        _map_center_geometry: function () {
             const mapBounds = new google.maps.LatLngBounds();
 
             this.markers.forEach((marker) => {
@@ -458,12 +455,10 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
          * Render list of `display_name` of records loaded in the map
          */
         _renderSidebar: function () {
-            if (!this.sidebarRender) {
-                this.sidebarRender = new GoogleMapSidebar(this, this.state.data);
-                const $rightSidebar = this.$('.o_map_right_sidebar');
-                $rightSidebar.empty();
-                this.sidebarRender.appendTo($rightSidebar);
-            }
+            this.sidebarRender = new GoogleMapSidebar(this, this.state.data);
+            const $rightSidebar = this.$('.o_map_right_sidebar');
+            $rightSidebar.empty();
+            this.sidebarRender.appendTo($rightSidebar);
         },
     });
 
