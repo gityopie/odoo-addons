@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Web Google Maps',
-    'version': '14.0.2.0.2',
+    'version': '14.0.2.0.3',
     'author': 'Yopi Angi',
     'license': 'AGPL-3',
     'maintainer': 'Yopi Angi<yopiangi@gmail.com>',
