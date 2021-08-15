@@ -121,7 +121,7 @@ class ResConfigSettings(models.TransientModel):
                    ('shift_worker', 'Shift worker'),
                    ('even_lighter', 'Even lighter'),
                    ('unsaturated_brown', 'Unsaturated brown'),
-                   ('uber', 'Uber'),],
+                   ('uber', 'Uber')],
         string='Map theme',
         config_parameter='web_google_maps.theme')
     google_maps_libraries = fields.Char(

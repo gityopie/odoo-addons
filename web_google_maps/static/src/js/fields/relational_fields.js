@@ -50,7 +50,8 @@ odoo.define('web_google_maps.relational_fields', function (require) {
                 disableClusterMarker: arch.attrs.disable_cluster_marker,
                 gestureHandling: arch.attrs.gesture_handling,
                 mapMode: this.mapMode,
-                markerClusterConfig: {}
+                markerClusterConfig: {},
+                googleMapStyle: arch.attrs.map_style,
             });
         },
         /**
