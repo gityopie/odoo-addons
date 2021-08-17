@@ -173,4 +173,13 @@
         <field name="view_mode">google_map,tree,form</field>
         <field name="context">{'default_user_id': uid}</field>
     </record>
+    <record id="crm.crm_lead_action_my_activities" model="ir.actions.act_window">
+        <field name="view_mode">tree,kanban,graph,pivot,calendar,form,activity,google_map</field>
+    </record>
+    <record id="crm_lead_action_my_activities_view_google_map" model="ir.actions.act_window.view">
+        <field name="sequence" eval="8"/>
+        <field name="view_mode">google_map</field>
+        <field name="view_id" ref="view_crm_leads_google_map"/>
+        <field name="act_window_id" ref="crm.crm_lead_action_my_activities"/>
+    </record>
 </odoo>

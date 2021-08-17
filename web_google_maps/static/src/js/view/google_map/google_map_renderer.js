@@ -166,6 +166,7 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
             this.markerClusterConfig = params.markerClusterConfig;
             this.disableClusterMarker = params.disableClusterMarker;
             this.sidebarRender = null;
+            this.googleMapStyle = params.googleMapStyle;
         },
         /**
          * @override
@@ -195,7 +196,9 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
                 self.gmap.mapTypes.set('styled_map', styledMapType);
                 self.gmap.setMapTypeId('styled_map');
             };
-            if (!this.theme) {
+            if (this.googleMapStyle) {
+                update_map(this.googleMapStyle);
+            } else if (!this.theme) {
                 const data = await this._rpc({ route: '/web/map_theme' });
                 if (data.theme && Object.prototype.hasOwnProperty.call(themes, data.theme)) {
                     this.theme = data.theme;
