@@ -24,7 +24,7 @@
 
 ## [14.0.2.0.4] - 2021-08-15
 ### Added
-- Added eight new map styles: `muted_blue, pale_down, subtle_gray, shift_worker, even_lighter, unsaturated_brown, and uber`.
+- Added seven new map styles: `muted_blue, pale_down, subtle_gray, shift_worker, even_lighter, unsaturated_brown, and uber`.
 - Added new attribute `map_style` to the `google_map` view. This attribute allows you set different map style for different model. This new attribute will override global map style configuration.    
     Example: 
     ```xml
