@@ -1,7 +1,30 @@
 # Change Log
+
+## [14.0.2.0.5] - 2021-08-29
+### Added
+- Improved widget `gplaces_address_autocomplete` by added new options `force_override`. This options allows you to override the default options `fillfields`.    
+     Example:
+     ```xml
+     <field name="site_street" widget="gplaces_address_autocomplete" options="{
+        'lat': 'site_latitude',
+        'lng': 'site_longitude',
+        'fillfields': {
+            'site_street': ['street_number', 'route'],
+            'site_street2': ['administrative_area_level_3', 'administrative_area_level_4', 'administrative_area_level_5'],
+            'site_city': ['locality', 'administrative_area_level_2'],
+            'site_zip': 'postal_code',
+            'site_state_id': 'administrative_area_level_1',
+            'site_country_id': 'country',
+        },
+        'force_override': true,
+    }" placeholder="Street..." class="o_address_street"/>
+     ```
+### Changed
+### Fixed
+
 ## [14.0.2.0.4] - 2021-08-15
 ### Added
-- Added eight new map styles: `muted_blue, pale_down, subtle_gray, shift_worker, even_lighter, unsaturated_brown, and uber`.
+- Added seven new map styles: `muted_blue, pale_down, subtle_gray, shift_worker, even_lighter, unsaturated_brown, and uber`.
 - Added new attribute `map_style` to the `google_map` view. This attribute allows you set different map style for different model. This new attribute will override global map style configuration.    
     Example: 
     ```xml

@@ -276,12 +276,19 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
                         : 'address_format';
             }
             if (this.mode === 'edit' && this.attrs.options) {
+                if (Object.prototype.hasOwnProperty.call(this.attrs.options, 'force_override')) {
+                    this.force_override = true;
+                }
                 if (this.attrs.options.hasOwnProperty('fillfields')) {
-                    this.fillfields = _.defaults(
-                        {},
-                        this.attrs.options.fillfields,
-                        this.fillfields
-                    );
+                    if (this.force_override) {
+                        this.fillfields = this.attrs.options.fillfields;
+                    } else {
+                        this.fillfields = _.defaults(
+                            {},
+                            this.attrs.options.fillfields,
+                            this.fillfields
+                        );
+                    }
                 }
                 if (Object.prototype.hasOwnProperty.call(this.attrs.options, 'types')) {
                     this.autocomplete_types = this.attrs.options.types;
