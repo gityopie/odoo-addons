@@ -1,6 +1,6 @@
 # Change Log
 
-## [14.0.2.0.4] - 2021-08-29
+## [14.0.2.0.5] - 2021-08-29
 ### Added
 - Improved widget `gplaces_address_autocomplete` by added new options `force_override`. This options allows you to override the default options `fillfields`.    
      Example:
