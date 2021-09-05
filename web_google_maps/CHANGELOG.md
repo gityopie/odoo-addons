@@ -1,8 +1,9 @@
 # Change Log
 
-## [14.0.2.0.6] - 2021-09-05
+## [14.0.2.1.5] - 2021-09-05
 ### Added
 - Add toggle button (show/hide) google_map sidebar
+- Add new button (custom control) in the map, a button to center map
 ### Changed
 ### Fixed
 
