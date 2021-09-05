@@ -1,5 +1,11 @@
 # Change Log
 
+## [14.0.2.0.6] - 2021-09-05
+### Added
+- Add toggle button (show/hide) google_map sidebar
+### Changed
+### Fixed
+
 ## [14.0.2.0.5] - 2021-08-29
 ### Added
 - Improved widget `gplaces_address_autocomplete` by added new options `force_override`. This options allows you to override the default options `fillfields`.    

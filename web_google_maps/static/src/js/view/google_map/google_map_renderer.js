@@ -111,6 +111,20 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
     const GoogleMapRenderer = BasicRenderer.extend({
         className: 'o_google_map_view',
         template: 'GoogleMapView.MapView',
+        events: _.extend({}, BasicRenderer.prototype.events, {
+            'click .toggle_right_sidenav': 'onToggleRightSidenav',
+        }),
+        onToggleRightSidenav: function () {
+            this.$('.o_map_right_sidebar').toggleClass('closed').toggleClass('open');
+            this.$('.o_map_right_sidebar')
+                .find('.toggle_right_sidenav > button')
+                .toggleClass('closed');
+            if (this.$('.o_map_right_sidebar').hasClass('closed')) {
+                var current_center = this.gmap.getCenter();
+                google.maps.event.trigger(this.gmap, 'resize');
+                this.gmap.setCenter(current_center);
+            }
+        },
         /**
          * @override
          *
@@ -459,7 +473,7 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
          */
         _renderSidebar: function () {
             this.sidebarRender = new GoogleMapSidebar(this, this.state.data);
-            const $rightSidebar = this.$('.o_map_right_sidebar');
+            const $rightSidebar = this.$right_sidebar.find('.content');
             $rightSidebar.empty();
             this.sidebarRender.appendTo($rightSidebar);
         },
