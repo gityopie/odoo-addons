@@ -157,7 +157,7 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
                     ? 'auto'
                     : params.gestureHandling;
             this._initLibraryProperties(params);
-        },s
+        },
         /**
          *
          * @param {*} params
