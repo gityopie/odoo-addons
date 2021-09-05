@@ -21,6 +21,18 @@
         .gm-style-iw {
             min-width: 300px;
         }
+
+        .button_center_map {
+            .btn {
+                opacity: 1;
+                cursor: pointer;
+                padding: 8px 9px 8px 9px;
+                margin-right: 10px;
+                box-shadow: rgb(0, 0, 0 / 30%) 0px 0.5px 2px -1px !important;
+                border-radius: 2px;
+                background-color: rgb(255, 255, 255);
+            }
+        }
     }
 
     .o_map_right_sidebar {

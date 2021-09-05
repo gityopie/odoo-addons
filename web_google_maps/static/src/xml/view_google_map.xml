@@ -69,4 +69,13 @@
             </ul>
         </div>
     </t>
+    <t t-name="GoogleMapView.CenterInMap">
+        <div class="button-center-map">
+            <div class="button_center_map">
+                <button class="btn btn-sm btn-light mt-2" type="button" title="Center Map">
+                    <i class="fa fa-dot-circle-o fa-2x"></i>
+                </button>
+            </div>
+        </div>
+    </t>
 </templates>
