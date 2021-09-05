@@ -116,9 +116,7 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
         }),
         onToggleRightSidenav: function () {
             this.$('.o_map_right_sidebar').toggleClass('closed').toggleClass('open');
-            this.$('.o_map_right_sidebar')
-                .find('.toggle_right_sidenav > button')
-                .toggleClass('closed');
+            this.$('.o_map_right_sidebar').find('.toggle_right_sidenav > button').toggleClass('closed');
             if (this.$('.o_map_right_sidebar').hasClass('closed')) {
                 var current_center = this.gmap.getCenter();
                 google.maps.event.trigger(this.gmap, 'resize');
@@ -154,9 +152,12 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
             });
             this.state = state;
             this.mapMode = params.map_mode ? params.map_mode : 'geometry';
-            this.gestureHandling = ['cooperative', 'greedy'].indexOf(params.gestureHandling) === -1 ? 'auto' : params.gestureHandling;
+            this.gestureHandling =
+                ['cooperative', 'greedy', 'none', 'auto'].indexOf(params.gestureHandling) === -1
+                    ? 'auto'
+                    : params.gestureHandling;
             this._initLibraryProperties(params);
-        },
+        },s
         /**
          *
          * @param {*} params
@@ -247,20 +248,16 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
             if (!this.disableClusterMarker) {
                 this._initMarkerCluster();
             }
-            let $btn_center_in_map = $(
-                qweb.render('GoogleMapView.CenterInMap', { widget: this })
-            );
-            if (!this.$btn_center_in_map) {
-                this.gmap.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(
-                    $btn_center_in_map.get(0)
-                );
+            let $btn_center_in_map = $(qweb.render('GoogleMapView.CenterInMap', { widget: this }));
+            if (!this.$btn_center_in_map_loaded) {
+                this.btn_center_in_map_loaded = true;
+                this.gmap.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push($btn_center_in_map.get(0));
             }
             $btn_center_in_map.on('click', 'button', (ev) => {
                 ev.preventDefault();
                 const func_map_center = '_map_center_' + this.mapMode;
                 this[func_map_center].call(this);
             });
-
         },
         /**
          *
