@@ -21,6 +21,18 @@
         .gm-style-iw {
             min-width: 300px;
         }
+
+        .button_geolocate_user {
+            .btn {
+                opacity: 1;
+                cursor: pointer;
+                padding: 8px 9px 8px 9px;
+                margin-right: 10px;
+                box-shadow: rgb(0, 0, 0 / 30%) 0px 0.5px 2px -1px !important;
+                border-radius: 2px;
+                background-color: rgb(255, 255, 255);
+            }
+        }
     }
 
     .o_map_right_sidebar {
@@ -29,23 +41,33 @@
         bottom: 0;
         position: absolute;
         z-index: 3;
-        overflow-x: auto;
         color: rgb(253, 253, 253);
+        box-shadow: 0 0 8px rgba(181, 181, 181, 0.75);
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+            overflow: auto;
+            height: 100%;
+            padding: 0px 2px 0px 2px;
+        }
 
         &.closed {
             box-shadow: none;
-            transform: translate3d(100%, 0, 0);
-            -webkit-transform: translate3d(100%, 0, 0);
-            -moz-transform: translate3d(100%, 0, 0);
+            width: 0;
+
+            .content {
+                overflow: hidden;
+            }
         }
 
         &.open {
             transform: translate3d(0, 0, 0);
             -webkit-transform: translate3d(0, 0, 0);
             -moz-transform: translate3d(0, 0, 0);
-            box-shadow: 0px 0px 1px 0px rgba(181, 181, 181, 0.75);
-            width: 400px;
             position: relative;
+            width: 25%;
         }
 
         li {
@@ -58,6 +80,39 @@
                 }
             }
         }
+        .toggle_right_sidenav {
+            display: block;
+            position: absolute;
+            right: 100%;
+            top: 25%;
+            z-index: -1;
+
+            button {
+                width: 25px;
+                height: 60px;
+                cursor: pointer;
+                border-left: 1.5px solid #ddd;
+                border-top: 1.5px solid #ddd;
+                border-bottom: 1.5px solid #ddd;
+                border-right: 0px;
+                box-shadow: 0px 1px 0px #989898;
+                border-radius: 4px 0px 0px 4px;
+                font-size: 20px;
+                background-color: rgb(248, 248, 248);
+                &::before {
+                    content: '\203A';
+                }
+
+                &.closed::before {
+                    content: '\2039';
+                }
+            }
+
+            button:focus {
+                outline: none !important;
+            }
+        }
+
     }
 
     .o_map_button {

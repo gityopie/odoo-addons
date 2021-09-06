@@ -1,5 +1,13 @@
 # Change Log
 
+## [14.0.2.1.5] - 2021-09-05
+### Added
+- Add toggle button (show/hide) google_map sidebar
+- Add new button (custom control) in the map, a button to geolocate user current location
+### Changed
+- Updated map gestureHandling value, added all supported values `auto`, `greedy`, `cooperative`, and `none` (previous only two: `greedy` and `cooperative`). For more detail check https://developers.google.com/maps/documentation/javascript/interaction#controlling_gesture_handling
+### Fixed
+
 ## [14.0.2.0.5] - 2021-08-29
 ### Added
 - Improved widget `gplaces_address_autocomplete` by added new options `force_override`. This options allows you to override the default options `fillfields`.    

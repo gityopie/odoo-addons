@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 14.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-12 11:36+0000\n"
-"PO-Revision-Date: 2021-02-12 11:36+0000\n"
+"POT-Creation-Date: 2021-09-06 01:13+0000\n"
+"PO-Revision-Date: 2021-09-06 01:13+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -41,6 +41,13 @@ msgstr ""
 #. module: web_google_maps
 #: model:ir.model.fields.selection,name:web_google_maps.selection__res_config_settings__google_maps_lang_localization__am
 msgid "Amharic"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/js/view/google_map/google_map_controller.js:0
+#, python-format
+msgid "An unknown error occurred."
 msgstr ""
 
 #. module: web_google_maps
@@ -190,6 +197,18 @@ msgstr ""
 #. module: web_google_maps
 #: model:ir.model.fields.selection,name:web_google_maps.selection__res_config_settings__google_maps_lang_localization__et
 msgid "Estonian"
+msgstr ""
+
+#. module: web_google_maps
+#: model:ir.model.fields.selection,name:web_google_maps.selection__res_config_settings__google_maps_theme__even_lighter
+msgid "Even lighter"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/xml/view_google_map.xml:0
+#, python-format
+msgid "Expand side panel"
 msgstr ""
 
 #. module: web_google_maps
@@ -390,6 +409,13 @@ msgid "Lithuanian"
 msgstr ""
 
 #. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/js/view/google_map/google_map_controller.js:0
+#, python-format
+msgid "Location information is unavailable."
+msgstr ""
+
+#. module: web_google_maps
 #: model:ir.model.fields.selection,name:web_google_maps.selection__res_config_settings__google_maps_lang_localization__mk
 msgid "Macedonian"
 msgstr ""
@@ -420,6 +446,18 @@ msgid "Mongolian"
 msgstr ""
 
 #. module: web_google_maps
+#: model:ir.model.fields.selection,name:web_google_maps.selection__res_config_settings__google_maps_theme__muted_blue
+msgid "Muted blue"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/xml/view_google_map.xml:0
+#, python-format
+msgid "My Current location"
+msgstr ""
+
+#. module: web_google_maps
 #: model:ir.model.fields.selection,name:web_google_maps.selection__res_config_settings__google_maps_lang_localization__ne
 msgid "Nepali"
 msgstr ""
@@ -430,8 +468,28 @@ msgid "Night"
 msgstr ""
 
 #. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/xml/view_google_map.xml:0
+#, python-format
+msgid "No geolocation"
+msgstr ""
+
+#. module: web_google_maps
 #: model:ir.model.fields.selection,name:web_google_maps.selection__res_config_settings__google_maps_lang_localization__no
 msgid "Norwegian"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/xml/view_google_map.xml:0
+#: code:addons/web_google_maps/static/src/xml/view_google_map.xml:0
+#, python-format
+msgid "Open form"
+msgstr ""
+
+#. module: web_google_maps
+#: model:ir.model.fields.selection,name:web_google_maps.selection__res_config_settings__google_maps_theme__pale_down
+msgid "Pale down"
 msgstr ""
 
 #. module: web_google_maps
@@ -490,6 +548,11 @@ msgid "Set API keys and map localization"
 msgstr ""
 
 #. module: web_google_maps
+#: model:ir.model.fields.selection,name:web_google_maps.selection__res_config_settings__google_maps_theme__shift_worker
+msgid "Shift worker"
+msgstr ""
+
+#. module: web_google_maps
 #: model:ir.model.fields.selection,name:web_google_maps.selection__res_config_settings__google_maps_theme__silver
 msgid "Silver"
 msgstr ""
@@ -524,6 +587,11 @@ msgstr ""
 #: code:addons/web_google_maps/static/src/js/view/google_map/google_map_renderer.js:0
 #, python-format
 msgid "Styled Map"
+msgstr ""
+
+#. module: web_google_maps
+#: model:ir.model.fields.selection,name:web_google_maps.selection__res_config_settings__google_maps_theme__subtle_gray
+msgid "Subtle gray"
 msgstr ""
 
 #. module: web_google_maps
@@ -568,6 +636,13 @@ msgid ""
 msgstr ""
 
 #. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/js/view/google_map/google_map_controller.js:0
+#, python-format
+msgid "The request to get user location timed out."
+msgstr ""
+
+#. module: web_google_maps
 #: model_terms:ir.ui.view,arch_db:web_google_maps.res_config_settings_view_form
 msgid "Theme"
 msgstr ""
@@ -578,13 +653,32 @@ msgid "Turkish"
 msgstr ""
 
 #. module: web_google_maps
+#: model:ir.model.fields.selection,name:web_google_maps.selection__res_config_settings__google_maps_theme__uber
+msgid "Uber"
+msgstr ""
+
+#. module: web_google_maps
 #: model:ir.model.fields.selection,name:web_google_maps.selection__res_config_settings__google_maps_lang_localization__uk
 msgid "Ukrainian"
 msgstr ""
 
 #. module: web_google_maps
+#: model:ir.model.fields.selection,name:web_google_maps.selection__res_config_settings__google_maps_theme__unsaturated_brown
+msgid "Unsaturated brown"
+msgstr ""
+
+#. module: web_google_maps
 #: model:ir.model.fields.selection,name:web_google_maps.selection__res_config_settings__google_maps_lang_localization__ur
 msgid "Urdu"
+msgstr ""
+
+#. module: web_google_maps
+#. openerp-web
+#: code:addons/web_google_maps/static/src/js/view/google_map/google_map_controller.js:0
+#, python-format
+msgid ""
+"User denied the request for Geolocation. Please update your configuration to"
+" allow browser detect your current location"
 msgstr ""
 
 #. module: web_google_maps

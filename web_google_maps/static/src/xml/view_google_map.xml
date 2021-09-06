@@ -2,7 +2,12 @@
 <templates id="template" xml:space="preserve">
     <div t-name="GoogleMapView.MapView" class="o_google_map_container">
         <div class="o_google_map_view"></div>
-        <div class="o_map_right_sidebar open"></div>
+        <div class="o_map_right_sidebar open">
+            <div class="content"/>
+            <div class="toggle_right_sidenav">
+                <button data-toggle="tooltip" data-placement="right" title="Expand side panel"></button>
+            </div>
+        </div>
     </div>
     <t t-name="GoogleMapView.buttons">
         <div class="o_list_buttons">
@@ -62,6 +67,15 @@
                     </t>
                 </t>
             </ul>
+        </div>
+    </t>
+    <t t-name="GoogleMapView.GeolocateUser">
+        <div class="button-geolocate-user">
+            <div class="button_geolocate_user">
+                <button class="btn btn-sm btn-light mt-2" type="button" title="My Current location">
+                    <i class="fa fa-location-arrow fa-2x"></i>
+                </button>
+            </div>
         </div>
     </t>
 </templates>
