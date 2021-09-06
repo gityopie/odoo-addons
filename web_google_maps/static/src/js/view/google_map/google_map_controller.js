@@ -7,6 +7,7 @@ odoo.define('web_google_maps.GoogleMapController', function (require) {
     const Domain = require('web.Domain');
 
     const qweb = core.qweb;
+    const _t = core._t;
 
     const GoogleMapController = BasicController.extend({
         custom_events: _.extend({}, BasicController.prototype.custom_events, {
@@ -14,6 +15,7 @@ odoo.define('web_google_maps.GoogleMapController', function (require) {
             kanban_record_delete: '_onRecordDelete',
             kanban_record_update: '_onUpdateRecord',
             kanban_column_archive_records: '_onArchiveRecords',
+            geolocate_user_location: '_geolocate',
         }),
         /**
          * @override
@@ -49,11 +51,11 @@ odoo.define('web_google_maps.GoogleMapController', function (require) {
             const recordModel = this.model.localData[params.record.id];
             const group = this.model.localData[recordModel.parentID];
             const parent = this.model.localData[group.parentID];
-    
+
             this.model.reload(params.record.id).then((db_id) => {
                 const data = this.model.get(db_id);
                 kanbanRecord.update(data);
-    
+
                 // Check if we still need to display the record. Some fields of the domain are
                 // not guaranteed to be in data. This is for example the case if the action
                 // contains a domain on a field which is not in the Kanban view. Therefore,
@@ -61,14 +63,14 @@ odoo.define('web_google_maps.GoogleMapController', function (require) {
                 // domInData: all domain fields are in the data
                 // activeInDomain: 'active' is already in the domain
                 // activeInData: 'active' is available in the data
-    
+
                 const domain = (parent ? parent.domain : group.domain) || [];
                 const domInData = _.every(domain, function (d) {
                     return d[0] in data.data;
                 });
                 const activeInDomain = _.pluck(domain, 0).indexOf('active') !== -1;
                 const activeInData = 'active' in data.data;
-    
+
                 // Case # | domInData | activeInDomain | activeInData
                 //   1    |   true    |      true      |      true     => no domain change
                 //   2    |   true    |      true      |      false    => not possible
@@ -78,11 +80,11 @@ odoo.define('web_google_maps.GoogleMapController', function (require) {
                 //   6    |   false   |      true      |      false    => no evaluation
                 //   7    |   false   |      false     |      true     => replace domain
                 //   8    |   false   |      false     |      false    => no evaluation
-    
+
                 // There are 3 cases which cannot be evaluated since we don't have all the
                 // necessary information. The complete solution would be to perform a RPC in
                 // these cases, but this is out of scope. A simpler one is to do a try / catch.
-    
+
                 if (domInData && !activeInDomain && activeInData) {
                     domain = domain.concat([['active', '=', true]]);
                 } else if (!domInData && !activeInDomain && activeInData) {
@@ -203,27 +205,14 @@ odoo.define('web_google_maps.GoogleMapController', function (require) {
                     })
                 );
                 this.$buttons.on('click', 'button.o-map-button-new', this._onButtonNew.bind(this));
-                this.$buttons.on(
-                    'click',
-                    'button.o-map-button-center-map',
-                    this._onButtonMapCenter.bind(this)
-                );
-                this.$buttons.on(
-                    'click',
-                    'button.o-map-button-marker-save',
-                    this._onButtonSaveMarker.bind(this)
-                );
-                this.$buttons.on(
-                    'click',
-                    'button.o-map-button-marker-discard',
-                    this._onButtonDiscardMarker.bind(this)
-                );
+                this.$buttons.on('click', 'button.o-map-button-center-map', this._onButtonMapCenter.bind(this));
+                this.$buttons.on('click', 'button.o-map-button-marker-save', this._onButtonSaveMarker.bind(this));
+                this.$buttons.on('click', 'button.o-map-button-marker-discard', this._onButtonDiscardMarker.bind(this));
                 this.$buttons.appendTo($node);
             }
         },
         _isMarkerEditable: function () {
-            const is_editable =
-                this.initialState.count === 1 && this.renderer.mapLibrary === 'geometry';
+            const is_editable = this.initialState.count === 1 && this.renderer.mapLibrary === 'geometry';
             return is_editable;
         },
         _onButtonMapCenter: function (event) {
@@ -283,12 +272,52 @@ odoo.define('web_google_maps.GoogleMapController', function (require) {
             }
         },
         _updateMarkerButtons: function () {
-            this.$buttons
-                .find('.o_form_marker_buttons_actions')
-                .toggleClass('o_hidden', this.is_marker_edit);
-            this.$buttons
-                .find('.o_form_marker_buttons_edit')
-                .toggleClass('o_hidden', !this.is_marker_edit);
+            this.$buttons.find('.o_form_marker_buttons_actions').toggleClass('o_hidden', this.is_marker_edit);
+            this.$buttons.find('.o_form_marker_buttons_edit').toggleClass('o_hidden', !this.is_marker_edit);
+        },
+        _handleGeolocationFailed: function (error) {
+            let msg = '';
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    msg = _t(
+                        'User denied the request for Geolocation. Please update your configuration to allow browser detect your current location'
+                    );
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    msg = _t('Location information is unavailable.');
+                    break;
+                case error.TIMEOUT:
+                    msg = _t('The request to get user location timed out.');
+                    break;
+                case error.UNKNOWN_ERROR:
+                    msg = _t('An unknown error occurred.');
+                    break;
+            }
+            if (msg) {
+                this.do_warn(msg);
+            }
+        },
+        _handleGeolocationSuccess: function (position) {
+            const latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+            const marker = new google.maps.Marker({
+                position: latLng,
+                map: this.renderer.gmap,
+            });
+            this.renderer.gmap.panTo(marker.getPosition());
+            google.maps.event.addListenerOnce(this.renderer.gmap, 'idle', () => {
+                google.maps.event.trigger(this.renderer.gmap, 'resize');
+                if (this.renderer.gmap.getZoom() < 19) this.renderer.gmap.setZoom(19);
+                google.maps.event.trigger(marker, 'click');
+            });
+        },
+        _geolocate: function () {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    this._handleGeolocationSuccess.bind(this),
+                    this._handleGeolocationFailed.bind(this),
+                    { enableHighAccuracy: true }
+                );
+            }
         },
     });
 

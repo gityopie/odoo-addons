@@ -3,7 +3,7 @@
 ## [14.0.2.1.5] - 2021-09-05
 ### Added
 - Add toggle button (show/hide) google_map sidebar
-- Add new button (custom control) in the map, a button to center map
+- Add new button (custom control) in the map, a button to geolocate user current location
 ### Changed
 - Updated map gestureHandling value, added all supported values `auto`, `greedy`, `cooperative`, and `none` (previous only two: `greedy` and `cooperative`). For more detail check https://developers.google.com/maps/documentation/javascript/interaction#controlling_gesture_handling
 ### Fixed

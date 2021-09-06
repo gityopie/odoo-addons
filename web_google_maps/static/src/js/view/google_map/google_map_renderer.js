@@ -248,15 +248,14 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
             if (!this.disableClusterMarker) {
                 this._initMarkerCluster();
             }
-            let $btn_center_in_map = $(qweb.render('GoogleMapView.CenterInMap', { widget: this }));
-            if (!this.$btn_center_in_map_loaded) {
-                this.btn_center_in_map_loaded = true;
-                this.gmap.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push($btn_center_in_map.get(0));
+            let $btn_geolocate_user = $(qweb.render('GoogleMapView.GeolocateUser', { widget: this }));
+            if (!this.$btn_geolocate_user_loaded) {
+                this.btn_geolocate_user_loaded = true;
+                this.gmap.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push($btn_geolocate_user.get(0));
             }
-            $btn_center_in_map.on('click', 'button', (ev) => {
+            $btn_geolocate_user.on('click', 'button', (ev) => {
                 ev.preventDefault();
-                const func_map_center = '_map_center_' + this.mapMode;
-                this[func_map_center].call(this);
+                this.trigger_up('geolocate_user_location', {});
             });
         },
         /**
