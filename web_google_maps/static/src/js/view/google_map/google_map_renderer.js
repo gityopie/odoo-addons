@@ -117,7 +117,7 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
         onToggleRightSidenav: function () {
             this.$('.o_map_right_sidebar').toggleClass('closed').toggleClass('open');
             this.$('.o_map_right_sidebar').find('.toggle_right_sidenav > button').toggleClass('closed');
-            if (this.$('.o_map_right_sidebar').hasClass('closed')) {
+            if (this.$('.o_map_right_sidebar').hasClass('closed') && this.gmap) {
                 var current_center = this.gmap.getCenter();
                 google.maps.event.trigger(this.gmap, 'resize');
                 this.gmap.setCenter(current_center);
@@ -248,11 +248,8 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
             if (!this.disableClusterMarker) {
                 this._initMarkerCluster();
             }
-            let $btn_geolocate_user = $(qweb.render('GoogleMapView.GeolocateUser', { widget: this }));
-            if (!this.$btn_geolocate_user_loaded) {
-                this.btn_geolocate_user_loaded = true;
-                this.gmap.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push($btn_geolocate_user.get(0));
-            }
+            const $btn_geolocate_user = $(qweb.render('GoogleMapView.GeolocateUser', { widget: this }));
+            this.gmap.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push($btn_geolocate_user.get(0));
             $btn_geolocate_user.on('click', 'button', (ev) => {
                 ev.preventDefault();
                 this.trigger_up('geolocate_user_location', {});
@@ -482,10 +479,10 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
          * Render list of `display_name` of records loaded in the map
          */
         _renderSidebar: function () {
-            this.sidebarRender = new GoogleMapSidebar(this, this.state.data);
+            const sidebarRender = new GoogleMapSidebar(this, this.state.data);
             const $rightSidebar = this.$right_sidebar.find('.content');
             $rightSidebar.empty();
-            this.sidebarRender.appendTo($rightSidebar);
+            sidebarRender.appendTo($rightSidebar);
         },
     });
 
