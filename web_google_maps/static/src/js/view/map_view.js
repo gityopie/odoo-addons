@@ -855,8 +855,7 @@ odoo.define('web.MapView', function (require) {
         init_map: function () {
             this.map = new google.maps.Map(this.$('.o_map_view').get(0), {
                 mapTypeId: google.maps.MapTypeId.ROADMAP,
-                zoom: 3,
-                minZoom: 3,
+                minZoom: 2,
                 maxZoom: 20,
                 fullscreenControl: true,
                 mapTypeControl: true,
@@ -868,7 +867,7 @@ odoo.define('web.MapView', function (require) {
             });
             this.set_map_theme();
             this.marker_cluster = new MarkerClusterer(this.map, [], {
-                imagePath: '/web_google_maps/static/src/img/m',
+                imagePath: '/web_google_maps/static/lib/markerclusterer/img/m',
                 gridSize: 20,
                 maxZoom: 17
             });
@@ -1095,10 +1094,12 @@ odoo.define('web.MapView', function (require) {
             var markerInClusters = this.marker_cluster.getMarkers();
             var existing_records = [];
             if (markerInClusters.length > 0) {
+                var mrker_position = marker.getPosition();
                 markerInClusters.forEach(function (_cMarker) {
-                    var _position = _cMarker.getPosition();
-                    if (marker.getPosition().equals(_position)) {
+                    var mrker_in_cluster_position = _cMarker.getPosition();
+                    if (mrker_position && mrker_position.equals(mrker_in_cluster_position)) {
                         existing_records.push(_cMarker._odoo_record);
+                        mrker_in_cluster_position.setMap(null);
                     }
                 });
             }

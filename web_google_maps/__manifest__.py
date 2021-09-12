@@ -2,7 +2,7 @@
 # License AGPL-3
 {
     'name': 'Web Google Maps',
-    'version': '10.0.1.0.6',
+    'version': '10.0.2.0.6',
     'author': 'Yopi Angi',
     'license': 'AGPL-3',
     'maintainer': 'yopiangi@gmail.com',
