@@ -1094,11 +1094,12 @@ odoo.define('web.MapView', function (require) {
             var markerInClusters = this.marker_cluster.getMarkers();
             var existing_records = [];
             if (markerInClusters.length > 0) {
-                var position = marker.getPosition();
+                var mrker_position = marker.getPosition();
                 markerInClusters.forEach(function (_cMarker) {
-                    var _position = _cMarker.getPosition();
-                    if (position && position.equals(_position)) {
+                    var mrker_in_cluster_position = _cMarker.getPosition();
+                    if (mrker_position && mrker_position.equals(mrker_in_cluster_position)) {
                         existing_records.push(_cMarker._odoo_record);
+                        mrker_in_cluster_position.setMap(null);
                     }
                 });
             }
