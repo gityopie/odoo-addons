@@ -6,12 +6,12 @@
             <t t-set="google_maps_lang_localization" t-value="request.env['ir.config_parameter'].sudo().get_param('google.lang_localization')"/>
             <t t-set="google_maps_region_localization" t-value="request.env['ir.config_parameter'].sudo().get_param('google.region_localization')"/>
             <t t-if="google_maps_api_key">
-                <script t-att-async="async" t-att-defer="defer" t-attf-src="https://maps.googleapis.com/maps/api/js?v=3.33&amp;key=#{google_maps_api_key}&amp;libraries=geometry,places#{google_maps_region_localization}#{google_maps_lang_localization}"></script>
+                <script t-att-async="async" t-att-defer="defer" t-attf-src="https://maps.googleapis.com/maps/api/js?v=quarterly&amp;key=#{google_maps_api_key}&amp;libraries=geometry,places#{google_maps_region_localization}#{google_maps_lang_localization}"></script>
             </t>
             <t t-if="not google_maps_api_key">
-                <script t-att-async="'async'" t-att-defer="'defer'" t-attf-src="https://maps.googleapis.com/maps/api/js?v=3.33&amp;libraries=geometry,places#{google_maps_region_localization}#{google_maps_lang_localization}"></script>
+                <script t-att-async="'async'" t-att-defer="'defer'" t-attf-src="https://maps.googleapis.com/maps/api/js?v=quarterly&amp;libraries=geometry,places#{google_maps_region_localization}#{google_maps_lang_localization}"></script>
             </t>
-            <script src="https://cdn.rawgit.com/gityopie/v3-utility-library/master.2018-09-29.cdde3b2/markerclusterer/src/markerclusterer.js"></script>
+            <script type="text/javascript" src="/web_google_maps/static/lib/markerclusterer/markerclusterer.min.js"></script>
         </template>
         <!-- Load gmaps assets -->
         <!-- Didn't load the assets like how Odoo call and manage the assets (t-call-assets) -->
