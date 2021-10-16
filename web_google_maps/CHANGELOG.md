@@ -1,5 +1,20 @@
 # Change Log
 
+
+## [14.0.2.1.6] - 2021-09-05
+### Added
+- Add two new attributes: `sidebar_title` and `sidebar_subtitle`. These two attributes are used to display record title and subtitle on the sidebar.    
+    Example:
+    ```xml
+        <google_map sidebar_title="display_name" sidebar_subtitle="contact_address">
+           ...
+        </google_map>
+    ```
+  Note: Only fields type `Char` is supported.
+### Changed
+### Fixed
+
+
 ## [14.0.2.1.5] - 2021-09-05
 ### Added
 - Add toggle button (show/hide) google_map sidebar

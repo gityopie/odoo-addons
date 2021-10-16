@@ -9,11 +9,13 @@ odoo.define('web_google_maps.GoogleMapSidebar', function (require) {
             'click .o_map_sidebar_record': 'onClickSidebarRecord',
             'click button#open-record': 'openRecord',
         },
-        init: function (parent, records) {
+        init: function (parent, records, title, subtitle) {
             this._super.apply(this, arguments);
             this.parent = parent;
             this.records = records;
             this.editable = parent.editable;
+            this.fieldTitle = title;
+            this.fieldSubtitle = subtitle;
         },
         /**
          * Click handler for the sidebar record
@@ -38,11 +40,11 @@ odoo.define('web_google_maps.GoogleMapSidebar', function (require) {
          * Get marker color
          * @param {Object} record
          */
-        getMarkerColor: function(record) {
+        getMarkerColor: function (record) {
             let color = '#989696';
             const marker = _.find(this.parent.markers, (m) => m._odooRecord.res_id === record.res_id);
             if (marker) {
-                color = marker._odooMarkerColor
+                color = marker._odooMarkerColor;
             }
             return color;
         },
@@ -50,13 +52,20 @@ odoo.define('web_google_maps.GoogleMapSidebar', function (require) {
          * Get display_name of record
          * @param {Object} record
          */
-        getDisplayName: function (record) {
-            let default_display_name = 'Unknown display_name';
-            if (Object.prototype.hasOwnProperty.call(record.data, 'display_name')) {
+        getTitle: function (record) {
+            let default_display_name = 'Unknown';
+            if (this.fieldTitle) {
+                let title = record.data[this.fieldTitle];
+                if (typeof title !== 'string') {
+                    console.warn('Title field is not a string!');
+                    return default_display_name;
+                }
+                default_display_name = title;
+            } else if (record.data.hasOwnProperty('display_name')) {
                 default_display_name = record.data.display_name;
-            } else if (Object.prototype.hasOwnProperty.call(record.data, 'name')) {
+            } else if (record.data.hasOwnProperty('name')) {
                 default_display_name = record.data.name;
-            } else if (Object.prototype.hasOwnProperty.call(record.fields, 'display_name')) {
+            } else if (record.fields.hasOwnProperty('display_name')) {
                 const display_name_field =
                     record.fields['display_name'].depends.length > 0 ? record.fields['display_name'].depends[0] : false;
                 if (display_name_field) {
@@ -68,6 +77,27 @@ odoo.define('web_google_maps.GoogleMapSidebar', function (require) {
                 }
             }
             return default_display_name;
+        },
+        /**
+         * Get subtitle of record
+         * @param {*} record
+         */
+        getSubtitle: function (record) {
+            let subtitle;
+            if (this.fieldSubtitle) {
+                let val = record.data[this.fieldSubtitle];
+                if (typeof val !== 'string') {
+                    console.warn('Subtitle field is not a string!');
+                    return subtitle;
+                }
+                if (val) {
+                    subtitle = val
+                        .split('\n')
+                        .filter((val) => val.trim())
+                        .join(', ');
+                }
+            }
+            return subtitle;
         },
         /**
          * Check if record has geolocated
