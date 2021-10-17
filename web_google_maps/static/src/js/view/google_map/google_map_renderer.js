@@ -182,6 +182,8 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
             this.disableClusterMarker = params.disableClusterMarker;
             this.sidebarRender = null;
             this.googleMapStyle = params.googleMapStyle;
+            this.sidebarTitle = params.sidebarTitle;
+            this.sidebarSubtitle = params.sidebarSubtitle;
         },
         /**
          * @override
@@ -479,7 +481,7 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
          * Render list of `display_name` of records loaded in the map
          */
         _renderSidebar: function () {
-            const sidebarRender = new GoogleMapSidebar(this, this.state.data);
+            const sidebarRender = new GoogleMapSidebar(this, this.state.data, this.sidebarTitle, this.sidebarSubtitle);
             const $rightSidebar = this.$right_sidebar.find('.content');
             $rightSidebar.empty();
             sidebarRender.appendTo($rightSidebar);
