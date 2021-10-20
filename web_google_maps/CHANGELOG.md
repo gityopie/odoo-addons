@@ -1,7 +1,12 @@
 # Change Log
+## [14.0.2.1.7] - 2021-10-20
+### Added
+### Changed
+### Fixed
+- Fixed `google_map` sidebar issue when the view is loaded inside form view.
+- Added missing `google_map` attributes when it's instantiate inside form view (used to display one2many fields)
 
-
-## [14.0.2.1.6] - 2021-09-05
+## [14.0.2.1.6] - 2021-10-17
 ### Added
 - Add two new attributes: `sidebar_title` and `sidebar_subtitle`. These two attributes are used to display record title and subtitle on the sidebar.    
     Example:
