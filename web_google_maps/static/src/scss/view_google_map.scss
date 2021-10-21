@@ -8,6 +8,18 @@
     margin-top: 10px;
 }
 
+.o_form_view {
+    .o_google_map_container {
+        max-height: 600px;
+
+        .o_map_right_sidebar {
+            &.closed {
+                position: relative;
+            }
+        }
+    }
+}
+
 .o_google_map_container {
     display: flex;
     align-content: stretch;
@@ -40,7 +52,7 @@
         right: 0;
         bottom: 0;
         position: absolute;
-        z-index: 3;
+        z-index: 1;
         color: rgb(253, 253, 253);
         box-shadow: 0 0 8px rgba(181, 181, 181, 0.75);
 
