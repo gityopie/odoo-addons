@@ -10,9 +10,9 @@
                 <attribute name="color">marker_color</attribute>
                 <attribute name="colors"></attribute>
             </xpath>
-            <field name="company_type" position="after">
+            <xpath expr="//field[@name='company_type']" position="after">
                 <field name="marker_color"/>
-            </field>
+            </xpath>
         </field>
     </record>
     <record id="action_view_res_partner_google_map" model="ir.actions.act_window">
@@ -59,9 +59,9 @@
                     icon="fa-map-marker" string="Google Map" 
                     attrs="{'invisible': ['|',('partner_latitude', '=', 0.0), ('partner_longitude', '=', 0.0)]}"/>
             </div>
-            <field name="child_ids" position="attributes">
+            <xpath expr="//field[@name='child_ids']" position="attributes">
                 <attribute name="context">{'default_parent_id': active_id, 'default_street': street, 'default_street2': street2, 'default_city': city, 'default_state_id': state_id, 'default_zip': zip, 'default_country_id': country_id, 'default_lang': lang, 'default_user_id': user_id, 'default_type': 'other', 'default_partner_latitude': partner_latitude, 'default_partner_longitude': partner_longitude}</attribute>
-            </field>
+            </xpath>
         </field>
     </record>
     <record id="action_contacts_view_google_map" model="ir.actions.act_window.view">

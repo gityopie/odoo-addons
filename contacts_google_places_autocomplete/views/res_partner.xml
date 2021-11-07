@@ -4,9 +4,9 @@
         <field name="name">Contacts Google Places Auto Complete</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
-        <field name="priority">1000</field>
+        <field name="priority">5000</field>
         <field name="arch" type="xml">
-            <field name="name" position="attributes">
+            <xpath expr="//div[hasclass('oe_title')]/h1/field[@id='company']" position="attributes">
                 <attribute name="widget">gplaces_autocomplete</attribute>
                 <attribute name="options">{
                     'fillfields': {
@@ -16,7 +16,18 @@
                         }
                     }
                 }</attribute>
-            </field>
+            </xpath>
+            <xpath expr="//div[hasclass('oe_title')]/h1/field[@id='individual']" position="attributes">
+                <attribute name="widget">gplaces_autocomplete</attribute>
+                <attribute name="options">{
+                    'fillfields': {
+                        'geolocation': {
+                            'partner_latitude': 'latitude',
+                            'partner_longitude': 'longitude'
+                        }
+                    }
+                }</attribute>
+            </xpath>
         </field>
     </record>
 </odoo>

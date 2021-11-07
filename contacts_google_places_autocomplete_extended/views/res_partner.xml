@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="priority">1100</field>
         <field name="arch" type="xml">
-            <field name="name" position="attributes">
+            <xpath expr="//div[hasclass('oe_title')]/h1/field[@id='company']" position="attributes">
                 <attribute name="options">{
                     'fillfields': {
                         'address': {
@@ -24,7 +24,7 @@
                         }
                     }
                 }</attribute>
-            </field>
+            </xpath>
         </field>
     </record>
 </odoo>
