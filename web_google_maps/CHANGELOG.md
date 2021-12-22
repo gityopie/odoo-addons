@@ -1,4 +1,21 @@
 # Change Log
+
+
+## [14.0.2.1.8] - 2021-12-22
+### Added
+- Added button navigate on marker info window. This button will open Google maps website with direction enabled on new browser tab. This feature is enable by default, if you don't want to use this feature, you can disable it via view attribute.   
+Example:
+```xml
+    <google_map disable_navigation="1">
+        ...
+    </google_map>
+```
+- Added new button "Open" on marker info window. You will need to click this button to switch to form view.
+### Changed
+- Marker info window is no longer open record form view when it's clicked. Need to click "Open" button to open record form view.
+### Fixed
+
+
 ## [14.0.2.1.7] - 2021-10-20
 ### Added
 ### Changed

@@ -16,7 +16,7 @@
                 <progressbar field="activity_state" colors='{"planned": "success", "today": "warning", "overdue": "danger"}'/>
                 <templates>
                     <t t-name="kanban-box">
-                        <div t-attf-class="oe_kanban_content oe_kanban_global_click">
+                        <div t-attf-class="oe_kanban_content">
                             <div>
                                 <strong class="o_kanban_record_title"><span><field name="name"/></span></strong>
                             </div>
