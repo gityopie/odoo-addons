@@ -16,6 +16,7 @@ odoo.define('web_google_maps.GoogleMapController', function (require) {
             kanban_record_update: '_onUpdateRecord',
             kanban_column_archive_records: '_onArchiveRecords',
             geolocate_user_location: '_geolocate',
+            navigate_to_location: '_navigateToLocation',
         }),
         /**
          * @override
@@ -317,6 +318,14 @@ odoo.define('web_google_maps.GoogleMapController', function (require) {
                     this._handleGeolocationFailed.bind(this),
                     { enableHighAccuracy: true }
                 );
+            }
+        },
+        _navigateToLocation: function (event) {
+            if (event.data.latLng) {
+                let google_url = 'https://www.google.com/maps/dir/?api=1';
+                const window_reference = window.open();
+                google_url += '&destination=' + event.data.latLng.lat() + ',' + event.data.latLng.lng();
+                window_reference.location = google_url;
             }
         },
     });

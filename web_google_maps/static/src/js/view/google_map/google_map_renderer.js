@@ -39,6 +39,19 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
             this._super.apply(this, arguments);
             this.fieldsInfo = state.fieldsInfo.google_map;
         },
+        _render: function () {
+            this.defs = [];
+
+            this._replaceElement(this.qweb.render('kanban-box', this.qweb_context));
+            this.$el.addClass('o_kanban_record').attr('tabindex', 0);
+            this.$el.attr('role', 'article');
+            this.$el.data('record', this);
+
+            this._processFields();
+            this._processWidgets();
+
+            return Promise.all(this.defs);
+        },
     });
 
     function findInNode(node, predicate) {
@@ -184,13 +197,14 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
             this.googleMapStyle = params.googleMapStyle;
             this.sidebarTitle = params.sidebarTitle;
             this.sidebarSubtitle = params.sidebarSubtitle;
+            this.disableNavigation = params.disableNavigation;
         },
         /**
          * @override
          */
         start: function () {
             this._initMap();
-            return this._super();
+            return this._super.apply(this, arguments);
         },
         /**
          * Style the map
@@ -370,7 +384,7 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
          */
         _markerInfoWindow: function (marker, currentRecords) {
             let _content = '';
-            const markerRecords = [];
+            let _buttonActions = '';
 
             const markerDiv = document.createElement('div');
             markerDiv.className = 'o_kanban_view';
@@ -381,17 +395,42 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
             if (currentRecords.length > 0) {
                 currentRecords.forEach((_record) => {
                     _content = this._generateMarkerInfoWindow(_record);
-                    markerRecords.push(_content);
-                    _content.appendTo(markerContent);
+                    _buttonActions = this._markerInfoWindowActionButton(_record);
+
+                    _content.appendTo(_buttonActions);
+                    _buttonActions.appendTo(markerContent);
                 });
             }
-
             const markerIwContent = this._generateMarkerInfoWindow(marker._odooRecord);
-            markerIwContent.appendTo(markerContent);
+            const buttonNavigate = this._markerInfoWindowActionButton(marker._odooRecord);
 
+            markerIwContent.appendTo(buttonNavigate);
+            buttonNavigate.appendTo(markerContent);
             markerDiv.appendChild(markerContent);
+
             this.infoWindow.setContent(markerDiv);
             this.infoWindow.open(this.gmap, marker);
+        },
+        /**
+         * Marker button navigate to
+         * @private
+         * @returns jQuery Element
+         */
+        _markerInfoWindowActionButton: function (record) {
+            const $buttons = $(qweb.render('GoogleMapView.InfoMarkerButtonAction', { widget: this }));
+            $buttons.on('click', '#btn-open_form', () => {
+                if (record.res_id) {
+                    this.trigger_up('switch_view', {
+                        view_type: 'form',
+                        res_id: record.res_id,
+                    });
+                }
+            });
+            $buttons.on('click', '#btn-navigate_to', () => {
+                const latLng = this.infoWindow.getPosition();
+                this.trigger_up('navigate_to_location', { latLng });
+            });
+            return $buttons;
         },
         /**
          * @private
