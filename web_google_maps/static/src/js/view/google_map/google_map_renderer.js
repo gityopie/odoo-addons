@@ -419,10 +419,9 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
         _markerInfoWindowActionButton: function (record) {
             const lat = record.data[this.fieldLat];
             const lng = record.data[this.fieldLng];
-            const destination = lat & lng ? `${lat},${lng}` : false;
 
             const $buttons = $(
-                qweb.render('GoogleMapView.InfoMarkerButtonAction', { widget: this, destination: destination })
+                qweb.render('GoogleMapView.InfoMarkerButtonAction', { widget: this, destination: `${lat},${lng}` })
             );
 
             $buttons.on('click', '#btn-open_form', (ev) => {
