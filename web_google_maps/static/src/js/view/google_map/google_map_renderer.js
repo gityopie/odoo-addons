@@ -327,10 +327,13 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
                     fillOpacity: 0.9,
                     strokeWeight: 2,
                     strokeColor: '#ededed',
-                    rotation: 0,
-                    scale: 8,
+                    scale: 9,
                 },
             };
+            const title = this.fieldTitle ? record.data[this.fieldTitle] : record.data.name || record.data.display_name;
+            if (title) {
+                options['title'] = title;
+            }
             if (color) {
                 options.icon.fillColor = color;
                 options._odooMarkerColor = color;
@@ -354,12 +357,7 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
          * Handle Multiple Markers present at the same coordinates
          */
         _clusterAddMarker: function (marker) {
-            let markers;
-            if (this.disableClusterMarker) {
-                markers = this.markers;
-            } else {
-                markers = this.markerCluster.getMarkers();
-            }
+            const markers = this.disableClusterMarker ? this.markers : this.markerCluster.getMarkers();
             const existingRecords = [];
             if (markers.length > 0) {
                 const position = marker.getPosition();

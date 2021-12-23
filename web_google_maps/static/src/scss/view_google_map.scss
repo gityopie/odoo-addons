@@ -125,6 +125,17 @@
             }
         }
 
+        .o_map_sidebar {
+            small {
+                &.text-mutex {
+                    letter-spacing: -0.5px;
+                }
+            }
+            span.title {
+                text-shadow: 1px 1px 1px #ddd;
+            }
+        }
+
     }
 
     .o_map_button {
