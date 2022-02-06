@@ -201,7 +201,7 @@ odoo.define('web_google_maps.Utils', function (require) {
      * Parse config markerColor given in google_map view
      * @param {string} colors
      */
-    function parseMarkersColor (colors) {
+    function parseMarkersColor(colors) {
         if (!colors) {
             return false;
         }
@@ -219,6 +219,11 @@ odoo.define('web_google_maps.Utils', function (require) {
             })
             .value();
     }
+
+    const MARKER_ICON_SVG_PATH =
+        'M172.268 501.67C26.97 291.031 0 269.413 0 192 0 85.961 85.961 0 192 0s192 85.961 192 192c0 77.413-26.97 99.031-172.268 309.67-9.535 13.774-29.93 13.773-39.464 0zM192 272c44.183 0 80-35.817 80-80s-35.817-80-80-80-80 35.817-80 80 35.817 80 80 80z';
+    const MARKER_ICON_WIDTH = 384;
+    const MARKER_ICON_HEIGHT = 512;
 
     const MAP_THEMES = {
         default: [],
@@ -1484,967 +1489,967 @@ odoo.define('web_google_maps.Utils', function (require) {
         ],
         muted_blue: [
             {
-                "featureType": "all",
-                "stylers": [
+                featureType: 'all',
+                stylers: [
                     {
-                        "saturation": 0
+                        saturation: 0,
                     },
                     {
-                        "hue": "#e7ecf0"
-                    }
-                ]
+                        hue: '#e7ecf0',
+                    },
+                ],
             },
             {
-                "featureType": "road",
-                "stylers": [
+                featureType: 'road',
+                stylers: [
                     {
-                        "saturation": -70
-                    }
-                ]
+                        saturation: -70,
+                    },
+                ],
             },
             {
-                "featureType": "transit",
-                "stylers": [
+                featureType: 'transit',
+                stylers: [
                     {
-                        "visibility": "off"
-                    }
-                ]
+                        visibility: 'off',
+                    },
+                ],
             },
             {
-                "featureType": "poi",
-                "stylers": [
+                featureType: 'poi',
+                stylers: [
                     {
-                        "visibility": "off"
-                    }
-                ]
+                        visibility: 'off',
+                    },
+                ],
             },
             {
-                "featureType": "water",
-                "stylers": [
+                featureType: 'water',
+                stylers: [
                     {
-                        "visibility": "simplified"
+                        visibility: 'simplified',
                     },
                     {
-                        "saturation": -60
-                    }
-                ]
-            }
+                        saturation: -60,
+                    },
+                ],
+            },
         ],
         pale_down: [
             {
-                "featureType": "administrative",
-                "elementType": "all",
-                "stylers": [
+                featureType: 'administrative',
+                elementType: 'all',
+                stylers: [
                     {
-                        "visibility": "on"
+                        visibility: 'on',
                     },
                     {
-                        "lightness": 33
-                    }
-                ]
+                        lightness: 33,
+                    },
+                ],
             },
             {
-                "featureType": "landscape",
-                "elementType": "all",
-                "stylers": [
+                featureType: 'landscape',
+                elementType: 'all',
+                stylers: [
                     {
-                        "color": "#f2e5d4"
-                    }
-                ]
+                        color: '#f2e5d4',
+                    },
+                ],
             },
             {
-                "featureType": "poi.park",
-                "elementType": "geometry",
-                "stylers": [
+                featureType: 'poi.park',
+                elementType: 'geometry',
+                stylers: [
                     {
-                        "color": "#c5dac6"
-                    }
-                ]
+                        color: '#c5dac6',
+                    },
+                ],
             },
             {
-                "featureType": "poi.park",
-                "elementType": "labels",
-                "stylers": [
+                featureType: 'poi.park',
+                elementType: 'labels',
+                stylers: [
                     {
-                        "visibility": "on"
+                        visibility: 'on',
                     },
                     {
-                        "lightness": 20
-                    }
-                ]
+                        lightness: 20,
+                    },
+                ],
             },
             {
-                "featureType": "road",
-                "elementType": "all",
-                "stylers": [
+                featureType: 'road',
+                elementType: 'all',
+                stylers: [
                     {
-                        "lightness": 20
-                    }
-                ]
+                        lightness: 20,
+                    },
+                ],
             },
             {
-                "featureType": "road.highway",
-                "elementType": "geometry",
-                "stylers": [
+                featureType: 'road.highway',
+                elementType: 'geometry',
+                stylers: [
                     {
-                        "color": "#c5c6c6"
-                    }
-                ]
+                        color: '#c5c6c6',
+                    },
+                ],
             },
             {
-                "featureType": "road.arterial",
-                "elementType": "geometry",
-                "stylers": [
+                featureType: 'road.arterial',
+                elementType: 'geometry',
+                stylers: [
                     {
-                        "color": "#e4d7c6"
-                    }
-                ]
+                        color: '#e4d7c6',
+                    },
+                ],
             },
             {
-                "featureType": "road.local",
-                "elementType": "geometry",
-                "stylers": [
+                featureType: 'road.local',
+                elementType: 'geometry',
+                stylers: [
                     {
-                        "color": "#fbfaf7"
-                    }
-                ]
+                        color: '#fbfaf7',
+                    },
+                ],
             },
             {
-                "featureType": "water",
-                "elementType": "all",
-                "stylers": [
+                featureType: 'water',
+                elementType: 'all',
+                stylers: [
                     {
-                        "visibility": "on"
+                        visibility: 'on',
                     },
                     {
-                        "color": "#acbcc9"
-                    }
-                ]
-            }
+                        color: '#acbcc9',
+                    },
+                ],
+            },
         ],
         subtle_gray: [
             {
-                "featureType": "administrative",
-                "elementType": "all",
-                "stylers": [
+                featureType: 'administrative',
+                elementType: 'all',
+                stylers: [
                     {
-                        "saturation": "-100"
-                    }
-                ]
+                        saturation: '-100',
+                    },
+                ],
             },
             {
-                "featureType": "administrative.province",
-                "elementType": "all",
-                "stylers": [
+                featureType: 'administrative.province',
+                elementType: 'all',
+                stylers: [
                     {
-                        "visibility": "off"
-                    }
-                ]
+                        visibility: 'off',
+                    },
+                ],
             },
             {
-                "featureType": "landscape",
-                "elementType": "all",
-                "stylers": [
+                featureType: 'landscape',
+                elementType: 'all',
+                stylers: [
                     {
-                        "saturation": -100
+                        saturation: -100,
                     },
                     {
-                        "lightness": 65
+                        lightness: 65,
                     },
                     {
-                        "visibility": "on"
-                    }
-                ]
+                        visibility: 'on',
+                    },
+                ],
             },
             {
-                "featureType": "poi",
-                "elementType": "all",
-                "stylers": [
+                featureType: 'poi',
+                elementType: 'all',
+                stylers: [
                     {
-                        "saturation": -100
+                        saturation: -100,
                     },
                     {
-                        "lightness": "50"
+                        lightness: '50',
                     },
                     {
-                        "visibility": "simplified"
-                    }
-                ]
+                        visibility: 'simplified',
+                    },
+                ],
             },
             {
-                "featureType": "road",
-                "elementType": "all",
-                "stylers": [
+                featureType: 'road',
+                elementType: 'all',
+                stylers: [
                     {
-                        "saturation": "-100"
-                    }
-                ]
+                        saturation: '-100',
+                    },
+                ],
             },
             {
-                "featureType": "road.highway",
-                "elementType": "all",
-                "stylers": [
+                featureType: 'road.highway',
+                elementType: 'all',
+                stylers: [
                     {
-                        "visibility": "simplified"
-                    }
-                ]
+                        visibility: 'simplified',
+                    },
+                ],
             },
             {
-                "featureType": "road.arterial",
-                "elementType": "all",
-                "stylers": [
+                featureType: 'road.arterial',
+                elementType: 'all',
+                stylers: [
                     {
-                        "lightness": "30"
-                    }
-                ]
+                        lightness: '30',
+                    },
+                ],
             },
             {
-                "featureType": "road.local",
-                "elementType": "all",
-                "stylers": [
+                featureType: 'road.local',
+                elementType: 'all',
+                stylers: [
                     {
-                        "lightness": "40"
-                    }
-                ]
+                        lightness: '40',
+                    },
+                ],
             },
             {
-                "featureType": "transit",
-                "elementType": "all",
-                "stylers": [
+                featureType: 'transit',
+                elementType: 'all',
+                stylers: [
                     {
-                        "saturation": -100
+                        saturation: -100,
                     },
                     {
-                        "visibility": "simplified"
-                    }
-                ]
+                        visibility: 'simplified',
+                    },
+                ],
             },
             {
-                "featureType": "water",
-                "elementType": "geometry",
-                "stylers": [
+                featureType: 'water',
+                elementType: 'geometry',
+                stylers: [
                     {
-                        "hue": "#ffff00"
+                        hue: '#ffff00',
                     },
                     {
-                        "lightness": -25
+                        lightness: -25,
                     },
                     {
-                        "saturation": -97
-                    }
-                ]
+                        saturation: -97,
+                    },
+                ],
             },
             {
-                "featureType": "water",
-                "elementType": "labels",
-                "stylers": [
+                featureType: 'water',
+                elementType: 'labels',
+                stylers: [
                     {
-                        "lightness": -25
+                        lightness: -25,
                     },
                     {
-                        "saturation": -100
-                    }
-                ]
-            }
+                        saturation: -100,
+                    },
+                ],
+            },
         ],
         shift_worker: [
             {
-                "stylers": [
+                stylers: [
                     {
-                        "saturation": -100
+                        saturation: -100,
                     },
                     {
-                        "gamma": 1
-                    }
-                ]
+                        gamma: 1,
+                    },
+                ],
             },
             {
-                "elementType": "labels.text.stroke",
-                "stylers": [
+                elementType: 'labels.text.stroke',
+                stylers: [
                     {
-                        "visibility": "off"
-                    }
-                ]
+                        visibility: 'off',
+                    },
+                ],
             },
             {
-                "featureType": "poi.business",
-                "elementType": "labels.text",
-                "stylers": [
+                featureType: 'poi.business',
+                elementType: 'labels.text',
+                stylers: [
                     {
-                        "visibility": "off"
-                    }
-                ]
+                        visibility: 'off',
+                    },
+                ],
             },
             {
-                "featureType": "poi.business",
-                "elementType": "labels.icon",
-                "stylers": [
+                featureType: 'poi.business',
+                elementType: 'labels.icon',
+                stylers: [
                     {
-                        "visibility": "off"
-                    }
-                ]
+                        visibility: 'off',
+                    },
+                ],
             },
             {
-                "featureType": "poi.place_of_worship",
-                "elementType": "labels.text",
-                "stylers": [
+                featureType: 'poi.place_of_worship',
+                elementType: 'labels.text',
+                stylers: [
                     {
-                        "visibility": "off"
-                    }
-                ]
+                        visibility: 'off',
+                    },
+                ],
             },
             {
-                "featureType": "poi.place_of_worship",
-                "elementType": "labels.icon",
-                "stylers": [
+                featureType: 'poi.place_of_worship',
+                elementType: 'labels.icon',
+                stylers: [
                     {
-                        "visibility": "off"
-                    }
-                ]
+                        visibility: 'off',
+                    },
+                ],
             },
             {
-                "featureType": "road",
-                "elementType": "geometry",
-                "stylers": [
+                featureType: 'road',
+                elementType: 'geometry',
+                stylers: [
                     {
-                        "visibility": "simplified"
-                    }
-                ]
+                        visibility: 'simplified',
+                    },
+                ],
             },
             {
-                "featureType": "water",
-                "stylers": [
+                featureType: 'water',
+                stylers: [
                     {
-                        "visibility": "on"
+                        visibility: 'on',
                     },
                     {
-                        "saturation": 50
+                        saturation: 50,
                     },
                     {
-                        "gamma": 0
+                        gamma: 0,
                     },
                     {
-                        "hue": "#50a5d1"
-                    }
-                ]
+                        hue: '#50a5d1',
+                    },
+                ],
             },
             {
-                "featureType": "administrative.neighborhood",
-                "elementType": "labels.text.fill",
-                "stylers": [
+                featureType: 'administrative.neighborhood',
+                elementType: 'labels.text.fill',
+                stylers: [
                     {
-                        "color": "#333333"
-                    }
-                ]
+                        color: '#333333',
+                    },
+                ],
             },
             {
-                "featureType": "road.local",
-                "elementType": "labels.text",
-                "stylers": [
+                featureType: 'road.local',
+                elementType: 'labels.text',
+                stylers: [
                     {
-                        "weight": 0.5
+                        weight: 0.5,
                     },
                     {
-                        "color": "#333333"
-                    }
-                ]
+                        color: '#333333',
+                    },
+                ],
             },
             {
-                "featureType": "transit.station",
-                "elementType": "labels.icon",
-                "stylers": [
+                featureType: 'transit.station',
+                elementType: 'labels.icon',
+                stylers: [
                     {
-                        "gamma": 1
+                        gamma: 1,
                     },
                     {
-                        "saturation": 50
-                    }
-                ]
-            }
+                        saturation: 50,
+                    },
+                ],
+            },
         ],
         even_lighter: [
             {
-                "featureType": "administrative",
-                "elementType": "labels.text.fill",
-                "stylers": [
+                featureType: 'administrative',
+                elementType: 'labels.text.fill',
+                stylers: [
                     {
-                        "color": "#6195a0"
-                    }
-                ]
+                        color: '#6195a0',
+                    },
+                ],
             },
             {
-                "featureType": "landscape",
-                "elementType": "all",
-                "stylers": [
+                featureType: 'landscape',
+                elementType: 'all',
+                stylers: [
                     {
-                        "color": "#f2f2f2"
-                    }
-                ]
+                        color: '#f2f2f2',
+                    },
+                ],
             },
             {
-                "featureType": "landscape",
-                "elementType": "geometry.fill",
-                "stylers": [
+                featureType: 'landscape',
+                elementType: 'geometry.fill',
+                stylers: [
                     {
-                        "color": "#ffffff"
-                    }
-                ]
+                        color: '#ffffff',
+                    },
+                ],
             },
             {
-                "featureType": "poi",
-                "elementType": "all",
-                "stylers": [
+                featureType: 'poi',
+                elementType: 'all',
+                stylers: [
                     {
-                        "visibility": "off"
-                    }
-                ]
+                        visibility: 'off',
+                    },
+                ],
             },
             {
-                "featureType": "poi.park",
-                "elementType": "geometry.fill",
-                "stylers": [
+                featureType: 'poi.park',
+                elementType: 'geometry.fill',
+                stylers: [
                     {
-                        "color": "#e6f3d6"
+                        color: '#e6f3d6',
                     },
                     {
-                        "visibility": "on"
-                    }
-                ]
+                        visibility: 'on',
+                    },
+                ],
             },
             {
-                "featureType": "road",
-                "elementType": "all",
-                "stylers": [
+                featureType: 'road',
+                elementType: 'all',
+                stylers: [
                     {
-                        "saturation": -100
+                        saturation: -100,
                     },
                     {
-                        "lightness": 45
+                        lightness: 45,
                     },
                     {
-                        "visibility": "simplified"
-                    }
-                ]
+                        visibility: 'simplified',
+                    },
+                ],
             },
             {
-                "featureType": "road.highway",
-                "elementType": "all",
-                "stylers": [
+                featureType: 'road.highway',
+                elementType: 'all',
+                stylers: [
                     {
-                        "visibility": "simplified"
-                    }
-                ]
+                        visibility: 'simplified',
+                    },
+                ],
             },
             {
-                "featureType": "road.highway",
-                "elementType": "geometry.fill",
-                "stylers": [
+                featureType: 'road.highway',
+                elementType: 'geometry.fill',
+                stylers: [
                     {
-                        "color": "#f4d2c5"
+                        color: '#f4d2c5',
                     },
                     {
-                        "visibility": "simplified"
-                    }
-                ]
+                        visibility: 'simplified',
+                    },
+                ],
             },
             {
-                "featureType": "road.highway",
-                "elementType": "labels.text",
-                "stylers": [
+                featureType: 'road.highway',
+                elementType: 'labels.text',
+                stylers: [
                     {
-                        "color": "#4e4e4e"
-                    }
-                ]
+                        color: '#4e4e4e',
+                    },
+                ],
             },
             {
-                "featureType": "road.arterial",
-                "elementType": "geometry.fill",
-                "stylers": [
+                featureType: 'road.arterial',
+                elementType: 'geometry.fill',
+                stylers: [
                     {
-                        "color": "#f4f4f4"
-                    }
-                ]
+                        color: '#f4f4f4',
+                    },
+                ],
             },
             {
-                "featureType": "road.arterial",
-                "elementType": "labels.text.fill",
-                "stylers": [
+                featureType: 'road.arterial',
+                elementType: 'labels.text.fill',
+                stylers: [
                     {
-                        "color": "#787878"
-                    }
-                ]
+                        color: '#787878',
+                    },
+                ],
             },
             {
-                "featureType": "road.arterial",
-                "elementType": "labels.icon",
-                "stylers": [
+                featureType: 'road.arterial',
+                elementType: 'labels.icon',
+                stylers: [
                     {
-                        "visibility": "off"
-                    }
-                ]
+                        visibility: 'off',
+                    },
+                ],
             },
             {
-                "featureType": "transit",
-                "elementType": "all",
-                "stylers": [
+                featureType: 'transit',
+                elementType: 'all',
+                stylers: [
                     {
-                        "visibility": "off"
-                    }
-                ]
+                        visibility: 'off',
+                    },
+                ],
             },
             {
-                "featureType": "water",
-                "elementType": "all",
-                "stylers": [
+                featureType: 'water',
+                elementType: 'all',
+                stylers: [
                     {
-                        "color": "#eaf6f8"
+                        color: '#eaf6f8',
                     },
                     {
-                        "visibility": "on"
-                    }
-                ]
+                        visibility: 'on',
+                    },
+                ],
             },
             {
-                "featureType": "water",
-                "elementType": "geometry.fill",
-                "stylers": [
+                featureType: 'water',
+                elementType: 'geometry.fill',
+                stylers: [
                     {
-                        "color": "#eaf6f8"
-                    }
-                ]
-            }
+                        color: '#eaf6f8',
+                    },
+                ],
+            },
         ],
         unsaturated_brown: [
             {
-                "elementType": "geometry",
-                "stylers": [
+                elementType: 'geometry',
+                stylers: [
                     {
-                        "hue": "#ff4400"
+                        hue: '#ff4400',
                     },
                     {
-                        "saturation": -68
+                        saturation: -68,
                     },
                     {
-                        "lightness": -4
+                        lightness: -4,
                     },
                     {
-                        "gamma": 0.72
-                    }
-                ]
+                        gamma: 0.72,
+                    },
+                ],
             },
             {
-                "featureType": "road",
-                "elementType": "labels.icon"
+                featureType: 'road',
+                elementType: 'labels.icon',
             },
             {
-                "featureType": "landscape.man_made",
-                "elementType": "geometry",
-                "stylers": [
+                featureType: 'landscape.man_made',
+                elementType: 'geometry',
+                stylers: [
                     {
-                        "hue": "#0077ff"
+                        hue: '#0077ff',
                     },
                     {
-                        "gamma": 3.1
-                    }
-                ]
+                        gamma: 3.1,
+                    },
+                ],
             },
             {
-                "featureType": "water",
-                "stylers": [
+                featureType: 'water',
+                stylers: [
                     {
-                        "hue": "#00ccff"
+                        hue: '#00ccff',
                     },
                     {
-                        "gamma": 0.44
+                        gamma: 0.44,
                     },
                     {
-                        "saturation": -33
-                    }
-                ]
+                        saturation: -33,
+                    },
+                ],
             },
             {
-                "featureType": "poi.park",
-                "stylers": [
+                featureType: 'poi.park',
+                stylers: [
                     {
-                        "hue": "#44ff00"
+                        hue: '#44ff00',
                     },
                     {
-                        "saturation": -23
-                    }
-                ]
+                        saturation: -23,
+                    },
+                ],
             },
             {
-                "featureType": "water",
-                "elementType": "labels.text.fill",
-                "stylers": [
+                featureType: 'water',
+                elementType: 'labels.text.fill',
+                stylers: [
                     {
-                        "hue": "#007fff"
+                        hue: '#007fff',
                     },
                     {
-                        "gamma": 0.77
+                        gamma: 0.77,
                     },
                     {
-                        "saturation": 65
+                        saturation: 65,
                     },
                     {
-                        "lightness": 99
-                    }
-                ]
+                        lightness: 99,
+                    },
+                ],
             },
             {
-                "featureType": "water",
-                "elementType": "labels.text.stroke",
-                "stylers": [
+                featureType: 'water',
+                elementType: 'labels.text.stroke',
+                stylers: [
                     {
-                        "gamma": 0.11
+                        gamma: 0.11,
                     },
                     {
-                        "weight": 5.6
+                        weight: 5.6,
                     },
                     {
-                        "saturation": 99
+                        saturation: 99,
                     },
                     {
-                        "hue": "#0091ff"
+                        hue: '#0091ff',
                     },
                     {
-                        "lightness": -86
-                    }
-                ]
+                        lightness: -86,
+                    },
+                ],
             },
             {
-                "featureType": "transit.line",
-                "elementType": "geometry",
-                "stylers": [
+                featureType: 'transit.line',
+                elementType: 'geometry',
+                stylers: [
                     {
-                        "lightness": -48
+                        lightness: -48,
                     },
                     {
-                        "hue": "#ff5e00"
+                        hue: '#ff5e00',
                     },
                     {
-                        "gamma": 1.2
+                        gamma: 1.2,
                     },
                     {
-                        "saturation": -23
-                    }
-                ]
+                        saturation: -23,
+                    },
+                ],
             },
             {
-                "featureType": "transit",
-                "elementType": "labels.text.stroke",
-                "stylers": [
+                featureType: 'transit',
+                elementType: 'labels.text.stroke',
+                stylers: [
                     {
-                        "saturation": -64
+                        saturation: -64,
                     },
                     {
-                        "hue": "#ff9100"
+                        hue: '#ff9100',
                     },
                     {
-                        "lightness": 16
+                        lightness: 16,
                     },
                     {
-                        "gamma": 0.47
+                        gamma: 0.47,
                     },
                     {
-                        "weight": 2.7
-                    }
-                ]
-            }
+                        weight: 2.7,
+                    },
+                ],
+            },
         ],
         uber: [
             {
-                "featureType": "administrative",
-                "elementType": "geometry.fill",
-                "stylers": [
+                featureType: 'administrative',
+                elementType: 'geometry.fill',
+                stylers: [
                     {
-                        "color": "#d6e2e6"
-                    }
-                ]
+                        color: '#d6e2e6',
+                    },
+                ],
             },
             {
-                "featureType": "administrative",
-                "elementType": "geometry.stroke",
-                "stylers": [
+                featureType: 'administrative',
+                elementType: 'geometry.stroke',
+                stylers: [
                     {
-                        "color": "#cfd4d5"
-                    }
-                ]
+                        color: '#cfd4d5',
+                    },
+                ],
             },
             {
-                "featureType": "administrative",
-                "elementType": "labels.text.fill",
-                "stylers": [
+                featureType: 'administrative',
+                elementType: 'labels.text.fill',
+                stylers: [
                     {
-                        "color": "#7492a8"
-                    }
-                ]
+                        color: '#7492a8',
+                    },
+                ],
             },
             {
-                "featureType": "administrative.neighborhood",
-                "elementType": "labels.text.fill",
-                "stylers": [
+                featureType: 'administrative.neighborhood',
+                elementType: 'labels.text.fill',
+                stylers: [
                     {
-                        "lightness": 25
-                    }
-                ]
+                        lightness: 25,
+                    },
+                ],
             },
             {
-                "featureType": "landscape.man_made",
-                "elementType": "geometry.fill",
-                "stylers": [
+                featureType: 'landscape.man_made',
+                elementType: 'geometry.fill',
+                stylers: [
                     {
-                        "color": "#dde2e3"
-                    }
-                ]
+                        color: '#dde2e3',
+                    },
+                ],
             },
             {
-                "featureType": "landscape.man_made",
-                "elementType": "geometry.stroke",
-                "stylers": [
+                featureType: 'landscape.man_made',
+                elementType: 'geometry.stroke',
+                stylers: [
                     {
-                        "color": "#cfd4d5"
-                    }
-                ]
+                        color: '#cfd4d5',
+                    },
+                ],
             },
             {
-                "featureType": "landscape.natural",
-                "elementType": "geometry.fill",
-                "stylers": [
+                featureType: 'landscape.natural',
+                elementType: 'geometry.fill',
+                stylers: [
                     {
-                        "color": "#dde2e3"
-                    }
-                ]
+                        color: '#dde2e3',
+                    },
+                ],
             },
             {
-                "featureType": "landscape.natural",
-                "elementType": "labels.text.fill",
-                "stylers": [
+                featureType: 'landscape.natural',
+                elementType: 'labels.text.fill',
+                stylers: [
                     {
-                        "color": "#7492a8"
-                    }
-                ]
+                        color: '#7492a8',
+                    },
+                ],
             },
             {
-                "featureType": "landscape.natural.terrain",
-                "elementType": "all",
-                "stylers": [
+                featureType: 'landscape.natural.terrain',
+                elementType: 'all',
+                stylers: [
                     {
-                        "visibility": "off"
-                    }
-                ]
+                        visibility: 'off',
+                    },
+                ],
             },
             {
-                "featureType": "poi",
-                "elementType": "geometry.fill",
-                "stylers": [
+                featureType: 'poi',
+                elementType: 'geometry.fill',
+                stylers: [
                     {
-                        "color": "#dde2e3"
-                    }
-                ]
+                        color: '#dde2e3',
+                    },
+                ],
             },
             {
-                "featureType": "poi",
-                "elementType": "labels.text.fill",
-                "stylers": [
+                featureType: 'poi',
+                elementType: 'labels.text.fill',
+                stylers: [
                     {
-                        "color": "#588ca4"
-                    }
-                ]
+                        color: '#588ca4',
+                    },
+                ],
             },
             {
-                "featureType": "poi",
-                "elementType": "labels.icon",
-                "stylers": [
+                featureType: 'poi',
+                elementType: 'labels.icon',
+                stylers: [
                     {
-                        "saturation": -100
-                    }
-                ]
+                        saturation: -100,
+                    },
+                ],
             },
             {
-                "featureType": "poi.park",
-                "elementType": "geometry.fill",
-                "stylers": [
+                featureType: 'poi.park',
+                elementType: 'geometry.fill',
+                stylers: [
                     {
-                        "color": "#a9de83"
-                    }
-                ]
+                        color: '#a9de83',
+                    },
+                ],
             },
             {
-                "featureType": "poi.park",
-                "elementType": "geometry.stroke",
-                "stylers": [
+                featureType: 'poi.park',
+                elementType: 'geometry.stroke',
+                stylers: [
                     {
-                        "color": "#bae6a1"
-                    }
-                ]
+                        color: '#bae6a1',
+                    },
+                ],
             },
             {
-                "featureType": "poi.sports_complex",
-                "elementType": "geometry.fill",
-                "stylers": [
+                featureType: 'poi.sports_complex',
+                elementType: 'geometry.fill',
+                stylers: [
                     {
-                        "color": "#c6e8b3"
-                    }
-                ]
+                        color: '#c6e8b3',
+                    },
+                ],
             },
             {
-                "featureType": "poi.sports_complex",
-                "elementType": "geometry.stroke",
-                "stylers": [
+                featureType: 'poi.sports_complex',
+                elementType: 'geometry.stroke',
+                stylers: [
                     {
-                        "color": "#bae6a1"
-                    }
-                ]
+                        color: '#bae6a1',
+                    },
+                ],
             },
             {
-                "featureType": "road",
-                "elementType": "labels.text.fill",
-                "stylers": [
+                featureType: 'road',
+                elementType: 'labels.text.fill',
+                stylers: [
                     {
-                        "color": "#41626b"
-                    }
-                ]
+                        color: '#41626b',
+                    },
+                ],
             },
             {
-                "featureType": "road",
-                "elementType": "labels.icon",
-                "stylers": [
+                featureType: 'road',
+                elementType: 'labels.icon',
+                stylers: [
                     {
-                        "saturation": -45
+                        saturation: -45,
                     },
                     {
-                        "lightness": 10
+                        lightness: 10,
                     },
                     {
-                        "visibility": "on"
-                    }
-                ]
+                        visibility: 'on',
+                    },
+                ],
             },
             {
-                "featureType": "road.highway",
-                "elementType": "geometry.fill",
-                "stylers": [
+                featureType: 'road.highway',
+                elementType: 'geometry.fill',
+                stylers: [
                     {
-                        "color": "#c1d1d6"
-                    }
-                ]
+                        color: '#c1d1d6',
+                    },
+                ],
             },
             {
-                "featureType": "road.highway",
-                "elementType": "geometry.stroke",
-                "stylers": [
+                featureType: 'road.highway',
+                elementType: 'geometry.stroke',
+                stylers: [
                     {
-                        "color": "#a6b5bb"
-                    }
-                ]
+                        color: '#a6b5bb',
+                    },
+                ],
             },
             {
-                "featureType": "road.highway",
-                "elementType": "labels.icon",
-                "stylers": [
+                featureType: 'road.highway',
+                elementType: 'labels.icon',
+                stylers: [
                     {
-                        "visibility": "on"
-                    }
-                ]
+                        visibility: 'on',
+                    },
+                ],
             },
             {
-                "featureType": "road.highway.controlled_access",
-                "elementType": "geometry.fill",
-                "stylers": [
+                featureType: 'road.highway.controlled_access',
+                elementType: 'geometry.fill',
+                stylers: [
                     {
-                        "color": "#9fb6bd"
-                    }
-                ]
+                        color: '#9fb6bd',
+                    },
+                ],
             },
             {
-                "featureType": "road.arterial",
-                "elementType": "geometry.fill",
-                "stylers": [
+                featureType: 'road.arterial',
+                elementType: 'geometry.fill',
+                stylers: [
                     {
-                        "color": "#ffffff"
-                    }
-                ]
+                        color: '#ffffff',
+                    },
+                ],
             },
             {
-                "featureType": "road.local",
-                "elementType": "geometry.fill",
-                "stylers": [
+                featureType: 'road.local',
+                elementType: 'geometry.fill',
+                stylers: [
                     {
-                        "color": "#ffffff"
-                    }
-                ]
+                        color: '#ffffff',
+                    },
+                ],
             },
             {
-                "featureType": "transit",
-                "elementType": "labels.icon",
-                "stylers": [
+                featureType: 'transit',
+                elementType: 'labels.icon',
+                stylers: [
                     {
-                        "saturation": -70
-                    }
-                ]
+                        saturation: -70,
+                    },
+                ],
             },
             {
-                "featureType": "transit.line",
-                "elementType": "geometry.fill",
-                "stylers": [
+                featureType: 'transit.line',
+                elementType: 'geometry.fill',
+                stylers: [
                     {
-                        "color": "#b4cbd4"
-                    }
-                ]
+                        color: '#b4cbd4',
+                    },
+                ],
             },
             {
-                "featureType": "transit.line",
-                "elementType": "labels.text.fill",
-                "stylers": [
+                featureType: 'transit.line',
+                elementType: 'labels.text.fill',
+                stylers: [
                     {
-                        "color": "#588ca4"
-                    }
-                ]
+                        color: '#588ca4',
+                    },
+                ],
             },
             {
-                "featureType": "transit.station",
-                "elementType": "all",
-                "stylers": [
+                featureType: 'transit.station',
+                elementType: 'all',
+                stylers: [
                     {
-                        "visibility": "off"
-                    }
-                ]
+                        visibility: 'off',
+                    },
+                ],
             },
             {
-                "featureType": "transit.station",
-                "elementType": "labels.text.fill",
-                "stylers": [
+                featureType: 'transit.station',
+                elementType: 'labels.text.fill',
+                stylers: [
                     {
-                        "color": "#008cb5"
+                        color: '#008cb5',
                     },
                     {
-                        "visibility": "on"
-                    }
-                ]
+                        visibility: 'on',
+                    },
+                ],
             },
             {
-                "featureType": "transit.station.airport",
-                "elementType": "geometry.fill",
-                "stylers": [
+                featureType: 'transit.station.airport',
+                elementType: 'geometry.fill',
+                stylers: [
                     {
-                        "saturation": -100
+                        saturation: -100,
                     },
                     {
-                        "lightness": -5
-                    }
-                ]
+                        lightness: -5,
+                    },
+                ],
             },
             {
-                "featureType": "water",
-                "elementType": "geometry.fill",
-                "stylers": [
+                featureType: 'water',
+                elementType: 'geometry.fill',
+                stylers: [
                     {
-                        "color": "#a6cbe3"
-                    }
-                ]
-            }
-        ]
+                        color: '#a6cbe3',
+                    },
+                ],
+            },
+        ],
     };
 
     return {
@@ -2453,6 +2458,9 @@ odoo.define('web_google_maps.Utils', function (require) {
         MAP_THEMES: MAP_THEMES,
         ADDRESS_MODE: ADDRESS_MODE,
         AUTOCOMPLETE_TYPES: AUTOCOMPLETE_TYPES,
+        MARKER_ICON_SVG_PATH: MARKER_ICON_SVG_PATH,
+        MARKER_ICON_WIDTH: MARKER_ICON_WIDTH,
+        MARKER_ICON_HEIGHT: MARKER_ICON_HEIGHT,
         gmaps_populate_address: gmaps_populate_address,
         gmaps_populate_places: gmaps_populate_places,
         gmaps_get_geolocation: gmaps_get_geolocation,

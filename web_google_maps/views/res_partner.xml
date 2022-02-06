@@ -30,7 +30,7 @@
                 <field name="contact_address"/>
                 <templates>
                     <t t-name="kanban-box">
-                        <div class="oe_kanban_global_click o_kanban_record_has_image_fill o_res_partner_kanban">
+                        <div class="o_kanban_record_has_image_fill o_res_partner_kanban">
                             <t t-if="!record.is_company.raw_value">
                                 <t t-if="record.type.raw_value === 'delivery'" t-set="placeholder" t-value="'/base/static/img/truck.png'"/>
                                 <t t-elif="record.type.raw_value === 'invoice'" t-set="placeholder" t-value="'/base/static/img/money.png'"/>

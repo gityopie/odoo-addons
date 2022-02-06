@@ -7,37 +7,29 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
     const session = require('web.session');
     const utils = require('web.utils');
     const KanbanRecord = require('web.KanbanRecord');
-    const Utils = require('web_google_maps.Utils');
+    const GoogleMapUtils = require('web_google_maps.Utils');
     const GoogleMapSidebar = require('web_google_maps.GoogleMapSidebar');
 
     const qweb = core.qweb;
     const _lt = core._lt;
 
-    const MARKER_COLORS = [
-        'black',
-        'blue',
-        'brown',
-        'cyan',
-        'fuchsia',
-        'green',
-        'grey',
-        'lime',
-        'maroon',
-        'navy',
-        'olive',
-        'orange',
-        'pink',
-        'purple',
-        'red',
-        'teal',
-        'white',
-        'yellow',
-    ];
-
     const GoogleMapRecord = KanbanRecord.extend({
         init: function (parent, state, options) {
             this._super.apply(this, arguments);
             this.fieldsInfo = state.fieldsInfo.google_map;
+        },
+        _render: function () {
+            this.defs = [];
+
+            this._replaceElement(this.qweb.render('kanban-box', this.qweb_context));
+            this.$el.addClass('o_kanban_record').attr('tabindex', 0);
+            this.$el.attr('role', 'article');
+            this.$el.data('record', this);
+
+            this._processFields();
+            this._processWidgets();
+
+            return Promise.all(this.defs);
         },
     });
 
@@ -118,7 +110,7 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
             this.$('.o_map_right_sidebar').toggleClass('closed').toggleClass('open');
             this.$('.o_map_right_sidebar').find('.toggle_right_sidenav > button').toggleClass('closed');
             if (this.$('.o_map_right_sidebar').hasClass('closed') && this.gmap) {
-                var current_center = this.gmap.getCenter();
+                const current_center = this.gmap.getCenter();
                 google.maps.event.trigger(this.gmap, 'resize');
                 this.gmap.setCenter(current_center);
             }
@@ -167,13 +159,12 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
             this[func_name].call(this, params);
         },
         /**
-         *
+         * 
          * @param {*} params
          */
         set_property_geometry: function (params) {
             this.defaultMarkerColor = 'red';
             this.markers = [];
-            this.iconUrl = '/web_google_maps/static/src/img/markers/';
             this.fieldLat = params.fieldLat;
             this.fieldLng = params.fieldLng;
             this.markerColor = params.markerColor;
@@ -198,7 +189,7 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
          */
         _getMapTheme: async function () {
             const self = this;
-            const themes = Utils.MAP_THEMES;
+            const themes = GoogleMapUtils.MAP_THEMES;
             const update_map = function (style) {
                 const styledMapType = new google.maps.StyledMapType(themes[style], {
                     name: _lt('Styled Map'),
@@ -308,33 +299,28 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
                 _odooRecord: record,
                 _odooMarkerColor: color,
                 icon: {
-                    path: google.maps.SymbolPath.CIRCLE,
-                    fillColor: 'red',
-                    fillOpacity: 0.9,
-                    strokeWeight: 2,
-                    strokeColor: '#ededed',
-                    rotation: 0,
-                    scale: 8,
+                    path: GoogleMapUtils.MARKER_ICON_SVG_PATH,
+                    fillColor: color,
+                    fillOpacity: 1,
+                    strokeWeight: 0.75,
+                    strokeColor: '#444',
+                    scale: 0.06,
+                    anchor: new google.maps.Point(
+                        GoogleMapUtils.MARKER_ICON_WIDTH / 2,
+                        GoogleMapUtils.MARKER_ICON_HEIGHT,
+                    ),
                 },
             };
+            const title = this.sidebarTitle ? record.data[this.sidebarTitle] : record.data.name || record.data.display_name;
+            if (title) {
+                options['title'] = title;
+            }
             if (color) {
                 options.icon.fillColor = color;
                 options._odooMarkerColor = color;
             }
             const marker = new google.maps.Marker(options);
             this._clusterAddMarker(marker);
-        },
-        /**
-         * Get marker icon color path
-         * @param {String} color
-         * DEPRECATED
-         */
-        _getIconColorPath: function (color) {
-            const defaultPath = '/web_google_maps/static/src/img/markers/';
-            if (MARKER_COLORS.indexOf(color) >= 0) {
-                return defaultPath + color + '.png';
-            }
-            return this.iconUrl + color + '.png';
         },
         /**
          * Handle Multiple Markers present at the same coordinates
@@ -368,9 +354,9 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
          * @param {any} record
          * @return function
          */
-        _markerInfoWindow: function (marker, currentRecords) {
+         _markerInfoWindow: function (marker, currentRecords) {
             let _content = '';
-            const markerRecords = [];
+            let _buttonActions = '';
 
             const markerDiv = document.createElement('div');
             markerDiv.className = 'o_kanban_view';
@@ -381,18 +367,44 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
             if (currentRecords.length > 0) {
                 currentRecords.forEach((_record) => {
                     _content = this._generateMarkerInfoWindow(_record);
-                    markerRecords.push(_content);
-                    _content.appendTo(markerContent);
+                    _buttonActions = this._markerInfoWindowActionButton(_record);
+
+                    _content.appendTo(_buttonActions);
+                    _buttonActions.appendTo(markerContent);
                 });
             }
-
             const markerIwContent = this._generateMarkerInfoWindow(marker._odooRecord);
-            markerIwContent.appendTo(markerContent);
+            const buttonNavigate = this._markerInfoWindowActionButton(marker._odooRecord);
 
+            markerIwContent.appendTo(buttonNavigate);
+            buttonNavigate.appendTo(markerContent);
             markerDiv.appendChild(markerContent);
+
             this.infoWindow.setContent(markerDiv);
             this.infoWindow.open(this.gmap, marker);
         },
+        /**
+        * Marker button navigate to
+        * @private
+        * @returns jQuery Element
+        */
+       _markerInfoWindowActionButton: function (record) {
+           const lat = record.data[this.fieldLat];
+           const lng = record.data[this.fieldLng];
+
+           const $buttons = $(
+               qweb.render('GoogleMapView.InfoMarkerButtonAction', { widget: this, destination: `${lat},${lng}` })
+           );
+
+           $buttons.on('click', '#btn-open_form', (ev) => {
+               ev.preventDefault();
+               this.trigger_up('open_record', {
+                   id: record.id,
+               });
+           });
+
+           return $buttons;
+       },
         /**
          * @private
          */
@@ -439,21 +451,24 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
                 .then(this._renderSidebar.bind(this));
         },
         /**
-         * Centering map
+         * Center map
+         * @param {boolean} no_delay
          */
-        _map_center_geometry: function () {
-            const mapBounds = new google.maps.LatLngBounds();
+         _map_center_geometry: function (no_delay) {
+            let delay_ms = no_delay ? 100 : 1000;
+            window.setTimeout(() => {
+                const mapBounds = new google.maps.LatLngBounds();
 
-            this.markers.forEach((marker) => {
-                mapBounds.extend(marker.getPosition());
-            });
-            this.gmap.fitBounds(mapBounds);
+                this.markers.forEach((marker) => {
+                    mapBounds.extend(marker.getPosition());
+                });
+                this.gmap.fitBounds(mapBounds);
 
-            this.map_has_centered = true;
-            google.maps.event.addListenerOnce(this.gmap, 'idle', () => {
-                google.maps.event.trigger(this.gmap, 'resize');
-                if (this.gmap.getZoom() > 17) this.gmap.setZoom(17);
-            });
+                google.maps.event.addListenerOnce(this.gmap, 'idle', () => {
+                    google.maps.event.trigger(this.gmap, 'resize');
+                    if (this.gmap.getZoom() > 17) this.gmap.setZoom(17);
+                });
+            }, delay_ms);
         },
         /**
          * Clear marker clusterer and list markers

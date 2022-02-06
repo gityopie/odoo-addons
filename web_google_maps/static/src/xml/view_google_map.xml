@@ -87,4 +87,20 @@
             </div>
         </div>
     </t>
+    <t t-name="GoogleMapView.InfoMarkerButtonAction">
+        <div>
+            <div class="row float-right pt-1 pb-1">
+                <div class="col-md-12">
+                    <button type="button" class="btn btn-primary" id="btn-open_form" data-toggle="tooltip" title="Open form view">
+                        <i class="fa fa-wpforms"></i>
+                        <span class="text-uppercase">Open</span>
+                    </button>
+                    <a t-attf-href="https://www.google.com/maps/dir/?api=1&amp;destination={{ destination }}" target="_blank" class="btn btn-info" id="btn-navigate_to" data-toggle="tooltip" title="Navigate to this location" t-if="!widget.disableNavigation">
+                        <i class="fa fa-external-link-square"></i>
+                        <span class="text-uppercase">Navigate to</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </t>
 </templates>

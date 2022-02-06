@@ -1,4 +1,7 @@
 # Change Log
+## [15.0.1.0.0] - 2022-02-06
+Migration to version 15.0
+
 ## [14.0.2.1.7] - 2021-10-20
 ### Added
 ### Changed
