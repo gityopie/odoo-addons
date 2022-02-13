@@ -16,12 +16,14 @@ Google Marker Icon Picker
 """,
     "depends": ["web_google_maps"],
     "assets": {
-      "web.assets_backend": [
-          "/google_marker_icon_picker/static/src/js/view/google_map/google_map_view.js",
-          "/google_marker_icon_picker/static/src/js/view/google_map/google_map_renderer.js",
-          "/google_marker_icon_picker/static/src/js/widget/field_marker.js",
-      ],
-      "web.assets_qweb": ["/google_marker_icon_picker/static/src/xml/marker_color.xml"],
+        "web.assets_backend": [
+            "/google_marker_icon_picker/static/src/js/view/google_map/google_map_view.js",
+            "/google_marker_icon_picker/static/src/js/view/google_map/google_map_renderer.js",
+            "/google_marker_icon_picker/static/src/js/widget/field_marker.js",
+        ],
+        "web.assets_qweb": [
+            "/google_marker_icon_picker/static/src/xml/marker_color.xml"
+        ],
     },
     "website": "",
     "data": [],

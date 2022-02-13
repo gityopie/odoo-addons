@@ -159,7 +159,7 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
             this[func_name].call(this, params);
         },
         /**
-         * 
+         *
          * @param {*} params
          */
         set_property_geometry: function (params) {
@@ -307,11 +307,13 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
                     scale: 0.06,
                     anchor: new google.maps.Point(
                         GoogleMapUtils.MARKER_ICON_WIDTH / 2,
-                        GoogleMapUtils.MARKER_ICON_HEIGHT,
+                        GoogleMapUtils.MARKER_ICON_HEIGHT
                     ),
                 },
             };
-            const title = this.sidebarTitle ? record.data[this.sidebarTitle] : record.data.name || record.data.display_name;
+            const title = this.sidebarTitle
+                ? record.data[this.sidebarTitle]
+                : record.data.name || record.data.display_name;
             if (title) {
                 options['title'] = title;
             }
@@ -354,7 +356,7 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
          * @param {any} record
          * @return function
          */
-         _markerInfoWindow: function (marker, currentRecords) {
+        _markerInfoWindow: function (marker, currentRecords) {
             let _content = '';
             let _buttonActions = '';
 
@@ -384,27 +386,27 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
             this.infoWindow.open(this.gmap, marker);
         },
         /**
-        * Marker button navigate to
-        * @private
-        * @returns jQuery Element
-        */
-       _markerInfoWindowActionButton: function (record) {
-           const lat = record.data[this.fieldLat];
-           const lng = record.data[this.fieldLng];
+         * Marker button navigate to
+         * @private
+         * @returns jQuery Element
+         */
+        _markerInfoWindowActionButton: function (record) {
+            const lat = record.data[this.fieldLat];
+            const lng = record.data[this.fieldLng];
 
-           const $buttons = $(
-               qweb.render('GoogleMapView.InfoMarkerButtonAction', { widget: this, destination: `${lat},${lng}` })
-           );
+            const $buttons = $(
+                qweb.render('GoogleMapView.InfoMarkerButtonAction', { widget: this, destination: `${lat},${lng}` })
+            );
 
-           $buttons.on('click', '#btn-open_form', (ev) => {
-               ev.preventDefault();
-               this.trigger_up('open_record', {
-                   id: record.id,
-               });
-           });
+            $buttons.on('click', '#btn-open_form', (ev) => {
+                ev.preventDefault();
+                this.trigger_up('open_record', {
+                    id: record.id,
+                });
+            });
 
-           return $buttons;
-       },
+            return $buttons;
+        },
         /**
          * @private
          */
@@ -454,7 +456,7 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
          * Center map
          * @param {boolean} no_delay
          */
-         _map_center_geometry: function (no_delay) {
+        _map_center_geometry: function (no_delay) {
             let delay_ms = no_delay ? 100 : 1000;
             window.setTimeout(() => {
                 const mapBounds = new google.maps.LatLngBounds();

@@ -8,7 +8,7 @@ odoo.define('web_google_maps.relational_fields', function (require) {
 
     const qweb = core.qweb;
 
-    relational_fields.FieldOne2Many.include({
+    const FieldX2ManyGoogleMap = {
         init: function () {
             this._super.apply(this, arguments);
             if (this.view && this.view.arch.tag === 'google_map') {
@@ -48,7 +48,7 @@ odoo.define('web_google_maps.relational_fields', function (require) {
                 markerColor: arch.attrs.color,
                 markerColors: colors,
                 disableClusterMarker: arch.attrs.disable_cluster_marker,
-                gestureHandling: arch.attrs.gesture_handling,
+                gestureHandling: arch.attrs.gesture_handling || 'cooperative',
                 mapMode: this.mapMode,
                 markerClusterConfig: {},
                 googleMapStyle: arch.attrs.map_style,
@@ -70,19 +70,19 @@ odoo.define('web_google_maps.relational_fields', function (require) {
             const options = { create_text: this.nodeOptions.create_text, widget: this };
             this.$buttons = $(qweb.render('GoogleMapView.buttons', options));
             this.$buttons.on('click', 'button.o-map-button-new', this._onAddRecord.bind(this));
-            this.$buttons.on(
-                'click',
-                'button.o-map-button-center-map',
-                this._onMapCenter.bind(this)
-            );
+            this.$buttons.on('click', 'button.o-map-button-center-map', this._onMapCenter.bind(this));
         },
         _onMapCenter: function (event) {
             event.stopPropagation();
             const func_name = '_map_center_' + this.renderer.mapMode;
-            this.renderer[func_name].call(this.renderer, true);
+            this.renderer[func_name].call(this.renderer);
         },
         is_action_enabled: function (action) {
             return this.activeActions[action];
         },
-    });
+    };
+
+    relational_fields.FieldOne2Many.include(FieldX2ManyGoogleMap);
+
+    relational_fields.FieldMany2Many.include(FieldX2ManyGoogleMap);
 });

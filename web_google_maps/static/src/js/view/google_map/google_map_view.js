@@ -38,11 +38,7 @@ odoo.define('web_google_maps.GoogleMapView', function (require) {
 
             const modes = this._map_mode();
             const defaultMode = 'geometry';
-            const map_mode = attrs.mode
-                ? modes.indexOf(attrs.mode) > -1
-                    ? attrs.mode
-                    : defaultMode
-                : defaultMode;
+            const map_mode = attrs.mode ? (modes.indexOf(attrs.mode) > -1 ? attrs.mode : defaultMode) : defaultMode;
             this.rendererParams.arch = arch;
             this.rendererParams.map_mode = map_mode;
             this.rendererParams.record_options = {
@@ -50,8 +46,7 @@ odoo.define('web_google_maps.GoogleMapView', function (require) {
                 deletable: activeActions.delete,
                 read_only_mode: params.readOnlyMode || true,
             };
-            this.controllerParams.mode =
-                arch.attrs.editable && !params.readonly ? 'edit' : 'readonly';
+            this.controllerParams.mode = arch.attrs.editable && !params.readonly ? 'edit' : 'readonly';
             this.controllerParams.hasButtons = true;
             if (attrs.options && !_.isObject(attrs.options)) {
                 attrs.options = attrs.options ? pyUtils.py_eval(attrs.options) : {};
@@ -67,7 +62,8 @@ odoo.define('web_google_maps.GoogleMapView', function (require) {
             this.rendererParams.fieldLng = attrs.lng;
             this.rendererParams.gestureHandling = attrs.gesture_handling;
             this.rendererParams.googleMapStyle = attrs.map_style || false;
-            this.rendererParams.disableClusterMarker = attrs.disable_cluster_marker !== undefined ? !!pyUtils.py_eval(attrs.disable_cluster_marker) : false;
+            this.rendererParams.disableClusterMarker =
+                attrs.disable_cluster_marker !== undefined ? !!pyUtils.py_eval(attrs.disable_cluster_marker) : false;
             this.rendererParams.sidebarTitle = attrs.sidebar_title || false;
             this.rendererParams.sidebarSubtitle = attrs.sidebar_subtitle || false;
             this._setClusterParams(attrs);
@@ -84,14 +80,11 @@ odoo.define('web_google_maps.GoogleMapView', function (require) {
                     }
                 }
             }
-            this.rendererParams.markerClusterConfig = _.defaults(
-                optionClusterConfig,
-                defaultMarkerClusterConfig
-            );
+            this.rendererParams.markerClusterConfig = _.defaults(optionClusterConfig, defaultMarkerClusterConfig);
         },
         _getClusterMarkerConfigMapper: function () {
             // more options can be check on this link: https://googlemaps.github.io/v3-utility-library/interfaces/_google_markerclustererplus.markerclustereroptions.html
-            // override this function and the `_getDefaultClusterMarkerConfig` if you want cover more 
+            // override this function and the `_getDefaultClusterMarkerConfig` if you want cover more
             return {
                 cluster_grid_size: 'gridSize',
                 cluster_max_zoom_level: 'maxZoom',
