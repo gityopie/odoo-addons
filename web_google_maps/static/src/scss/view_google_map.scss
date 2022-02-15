@@ -169,3 +169,65 @@
     }
 
 }
+
+.o_settings_container {
+    div[name="google_maps_theme"] {
+        .o_radio_item {
+            .o_form_label {
+                cursor:pointer;
+                background-size:contain;
+                background-repeat:no-repeat;
+                display:inline-block;
+                width:200px;
+                height:120px;
+                color: white;
+                text-shadow: 1px 1px $o-main-color-muted;
+                &:hover {
+                    color: gold;
+                }
+            }
+        }
+        input[data-value="pale_down"] + label {
+            background-image: url('/web_google_maps/static/src/img/google_map_theme/pale_down.png');
+        }
+        input[data-value="default"] + label {
+            background-image: url('/web_google_maps/static/src/img/google_map_theme/default.png');
+        }
+        input[data-value="atlas"] + label {
+            background-image: url('/web_google_maps/static/src/img/google_map_theme/atlas.png');
+        }
+        input[data-value="aubergine"] + label {
+            background-image: url('/web_google_maps/static/src/img/google_map_theme/aubergini.png');
+        }
+        input[data-value="dark"] + label {
+            background-image: url('/web_google_maps/static/src/img/google_map_theme/dark.png');
+        }
+        input[data-value="even_lighter"] + label {
+            background-image: url('/web_google_maps/static/src/img/google_map_theme/even_lighter.png');
+        }
+        input[data-value="muted_blue"] + label {
+            background-image: url('/web_google_maps/static/src/img/google_map_theme/muted_blue.png');
+        }
+        input[data-value="night"] + label {
+            background-image: url('/web_google_maps/static/src/img/google_map_theme/night.png');
+        }
+        input[data-value="retro"] + label {
+            background-image: url('/web_google_maps/static/src/img/google_map_theme/retro.png');
+        }
+        input[data-value="shift_worker"] + label {
+            background-image: url('/web_google_maps/static/src/img/google_map_theme/shift_worker.png');
+        }
+        input[data-value="silver"] + label {
+            background-image: url('/web_google_maps/static/src/img/google_map_theme/silver.png');
+        }
+        input[data-value="subtle_gray"] + label {
+            background-image: url('/web_google_maps/static/src/img/google_map_theme/subtle_grey.png');
+        }
+        input[data-value="uber"] + label {
+            background-image: url('/web_google_maps/static/src/img/google_map_theme/uber.png');
+        }
+        input[data-value="unsaturated_brown"] + label {
+            background-image: url('/web_google_maps/static/src/img/google_map_theme/unsaturated_brown.png');
+        }
+    }
+}

@@ -234,8 +234,6 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
     const GplaceAddressAutocompleteField = GplaceAutocomplete.extend({
         className: 'o_field_char o_field_google_address_autocomplete',
         /**
-         * A hacky way of doing this, but it works
-         * This issue caught up only on enterprise version
          * @param {*} values
          */
         _onUpdateWidgetFields: function (values) {
@@ -245,6 +243,8 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
                     [this.lat]: values[this.lat],
                     [this.lng]: values[this.lng],
                 };
+                // need to delay the call to apply the geolocation fields
+                // send these value with address fields won't update the geolocation fields
                 setTimeout(() => {
                     this.trigger_up('field_changed', {
                         dataPointID: this.dataPointID,
@@ -540,7 +540,6 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
             return res;
         },
         _onUpdateWidgetFields: function (values) {
-            const self = this;
             values = typeof values !== 'undefined' ? values : {};
             let geometry = {};
             if (this.lat && this.lng) {
@@ -556,11 +555,6 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
                     }
                 });
             }
-            this.trigger_up('field_changed', {
-                dataPointID: this.dataPointID,
-                changes: values,
-                viewType: this.viewType,
-            });
             if (Object.keys(geometry).length > 0) {
                 setTimeout(() => {
                     this.trigger_up('field_changed', {

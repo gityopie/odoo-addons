@@ -29,7 +29,7 @@
                                         </div>
                                         <div class="mt16">
                                             <label for="google_maps_theme" string="Theme"/>
-                                            <field name="google_maps_theme"/>
+                                            <field name="google_maps_theme" widget="radio"/>
                                         </div>
                                         <div class="mt16">
                                             <label for="google_maps_lang_localization" string="Language"/>
