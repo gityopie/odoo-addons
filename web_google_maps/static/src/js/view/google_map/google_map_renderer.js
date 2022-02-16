@@ -454,19 +454,18 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
          */
         _map_center_geometry: function (no_delay) {
             let delay_ms = no_delay ? 100 : 1000;
-            window.setTimeout(() => {
-                const mapBounds = new google.maps.LatLngBounds();
+            const mapBounds = new google.maps.LatLngBounds();
+            this.markers.forEach((marker) => {
+                mapBounds.extend(marker.getPosition());
+            });
+            this.gmap.fitBounds(mapBounds);
 
-                this.markers.forEach((marker) => {
-                    mapBounds.extend(marker.getPosition());
-                });
-                this.gmap.fitBounds(mapBounds);
-
-                google.maps.event.addListenerOnce(this.gmap, 'idle', () => {
+            google.maps.event.addListener(this.gmap, 'idle', () => {
+                window.setTimeout(() => {
                     google.maps.event.trigger(this.gmap, 'resize');
                     if (this.gmap.getZoom() > 17) this.gmap.setZoom(17);
-                });
-            }, delay_ms);
+                }, delay_ms);
+            });
         },
         /**
          * Clear marker clusterer and list markers
