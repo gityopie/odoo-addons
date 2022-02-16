@@ -16,7 +16,7 @@ This module brings two features:
 2. Enabled google places autocomplete address form into partner
 form view, provide autocomplete feature when typing address of partner
 """,
-    'depends': ['base_setup', 'base_geolocalize',],
+    'depends': ['base_setup', 'base_geolocalize'],
     'website': '',
     'data': [
         'data/google_maps_libraries.xml',
