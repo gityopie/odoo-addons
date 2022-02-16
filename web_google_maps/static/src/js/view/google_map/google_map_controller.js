@@ -294,7 +294,7 @@ odoo.define('web_google_maps.GoogleMapController', function (require) {
                     break;
             }
             if (msg) {
-                this.do_warn(msg);
+                this.displayNotification({ message: msg, type: 'danger' });
             }
         },
         _handleGeolocationSuccess: function (position) {

@@ -1,27 +1,6 @@
 # Change Log
-
-
-## [14.0.2.1.9] - 2021-12-23
-### Added
-### Changed
-### Fixed
-- Fixed map center does not working properly on every condition (include when map is loaded inside form view). The solution applied is by add a delay to the map center function execution.
-- Fixed button 'Navigate to' does not fired when the map is loaded inside form view.
-- Fixed button 'Open' issue when the map is loaded inside form view.
-## [14.0.2.1.8] - 2021-12-22
-### Added
-- Added button navigate on marker info window. This button will open Google maps website with direction enabled on new browser tab. This feature is enable by default, if you don't want to use this feature, you can disable it via view attribute.   
-Example:
-```xml
-    <google_map disable_navigation="1">
-        ...
-    </google_map>
-```
-- Added new button "Open" on marker info window. You will need to click this button to switch to form view.
-### Changed
-- Marker info window is no longer open record form view when it's clicked. Need to click "Open" button to open record form view.
-### Fixed
-
+## [15.0.1.0.0] - 2022-02-16
+Migration to version 15.0
 
 ## [14.0.2.1.7] - 2021-10-20
 ### Added

@@ -6,12 +6,12 @@
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="priority">1000</field>
         <field name="arch" type="xml">
-            <field name="street" position="attributes">
+            <xpath expr="//field[@name='street']" position="attributes">
                 <attribute name="widget">gplaces_address_autocomplete</attribute>
                 <!-- the same for address_form widget -->
                 <!-- <attribute name="options">{'lat': 'partner_latitude', 'lng': 'partner_longitude', 'fillfields': {'street': ['route', 'street_number']}}</attribute> -->
                 <attribute name="options">{'lat': 'partner_latitude', 'lng': 'partner_longitude'}</attribute>
-            </field>
+            </xpath>
         </field>
     </record>
 </odoo>

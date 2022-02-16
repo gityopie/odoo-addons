@@ -7,32 +7,11 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
     const session = require('web.session');
     const utils = require('web.utils');
     const KanbanRecord = require('web.KanbanRecord');
-    const Utils = require('web_google_maps.Utils');
+    const GoogleMapUtils = require('web_google_maps.Utils');
     const GoogleMapSidebar = require('web_google_maps.GoogleMapSidebar');
 
     const qweb = core.qweb;
     const _lt = core._lt;
-
-    const MARKER_COLORS = [
-        'black',
-        'blue',
-        'brown',
-        'cyan',
-        'fuchsia',
-        'green',
-        'grey',
-        'lime',
-        'maroon',
-        'navy',
-        'olive',
-        'orange',
-        'pink',
-        'purple',
-        'red',
-        'teal',
-        'white',
-        'yellow',
-    ];
 
     const GoogleMapRecord = KanbanRecord.extend({
         init: function (parent, state, options) {
@@ -131,7 +110,7 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
             this.$('.o_map_right_sidebar').toggleClass('closed').toggleClass('open');
             this.$('.o_map_right_sidebar').find('.toggle_right_sidenav > button').toggleClass('closed');
             if (this.$('.o_map_right_sidebar').hasClass('closed') && this.gmap) {
-                var current_center = this.gmap.getCenter();
+                const current_center = this.gmap.getCenter();
                 google.maps.event.trigger(this.gmap, 'resize');
                 this.gmap.setCenter(current_center);
             }
@@ -186,7 +165,6 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
         set_property_geometry: function (params) {
             this.defaultMarkerColor = 'red';
             this.markers = [];
-            this.iconUrl = '/web_google_maps/static/src/img/markers/';
             this.fieldLat = params.fieldLat;
             this.fieldLng = params.fieldLng;
             this.markerColor = params.markerColor;
@@ -212,7 +190,7 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
          */
         _getMapTheme: async function () {
             const self = this;
-            const themes = Utils.MAP_THEMES;
+            const themes = GoogleMapUtils.MAP_THEMES;
             const update_map = function (style) {
                 const styledMapType = new google.maps.StyledMapType(themes[style], {
                     name: _lt('Styled Map'),
@@ -322,15 +300,21 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
                 _odooRecord: record,
                 _odooMarkerColor: color,
                 icon: {
-                    path: google.maps.SymbolPath.CIRCLE,
-                    fillColor: 'red',
-                    fillOpacity: 0.9,
-                    strokeWeight: 2,
-                    strokeColor: '#ededed',
-                    scale: 9,
+                    path: GoogleMapUtils.MARKER_ICON_SVG_PATH,
+                    fillColor: color,
+                    fillOpacity: 1,
+                    strokeWeight: 0.75,
+                    strokeColor: '#444',
+                    scale: 0.06,
+                    anchor: new google.maps.Point(
+                        GoogleMapUtils.MARKER_ICON_WIDTH / 2,
+                        GoogleMapUtils.MARKER_ICON_HEIGHT
+                    ),
                 },
             };
-            const title = this.fieldTitle ? record.data[this.fieldTitle] : record.data.name || record.data.display_name;
+            const title = this.sidebarTitle
+                ? record.data[this.sidebarTitle]
+                : record.data.name || record.data.display_name;
             if (title) {
                 options['title'] = title;
             }
@@ -340,18 +324,6 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
             }
             const marker = new google.maps.Marker(options);
             this._clusterAddMarker(marker);
-        },
-        /**
-         * Get marker icon color path
-         * @param {String} color
-         * DEPRECATED
-         */
-        _getIconColorPath: function (color) {
-            const defaultPath = '/web_google_maps/static/src/img/markers/';
-            if (MARKER_COLORS.indexOf(color) >= 0) {
-                return defaultPath + color + '.png';
-            }
-            return this.iconUrl + color + '.png';
         },
         /**
          * Handle Multiple Markers present at the same coordinates

@@ -58,16 +58,20 @@
         <field name="arch" type="xml">
             <xpath expr="//notebook" position="inside">
                 <page name="geolocalize" string="Geolocalize">
-                    <group colspan="2" col="2">
-                        <separator string="Geolocation" colspan="2"/>
-                        <button string="Geolocalize" name="geo_localize" type="object" icon="fa-check" colspan="2"/>
+                    <group>
                         <div>
-                            <span class="oe_inline"> ( </span>
-                            <span> Lat : </span>
-                            <field name="customer_latitude" class="oe_inline" no_label="1"/>
-                            <span> : Long : </span>
-                            <field name="customer_longitude" class="oe_inline" nolabel="1"/>
-                            <span>) </span>
+                            <span>Lat : </span>
+                            <field name="customer_latitude" nolabel="1" class="oe_inline"/>
+                            <span>, Long: </span>
+                            <field name="customer_longitude" nolabel="1" class="oe_inline"/>
+                            <br/>
+                            <span class="oe_inline">
+                                <button
+                                    string="(refresh)"
+                                    name="geo_localize"
+                                    class="btn btn-link"
+                                    type="object"/>
+                            </span>
                         </div>
                     </group>
                 </page>

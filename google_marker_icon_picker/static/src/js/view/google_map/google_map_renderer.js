@@ -9,9 +9,10 @@ odoo.define('google_marker_icon_picker.GoogleMapRenderer', function (require) {
             this.fieldMarkerColor = params.fieldMarkerColor;
         },
         _createMarker: function (latLng, record, color) {
-            color =
-                (typeof record.data[this.fieldMarkerColor] !== 'undefined' ? record.data[this.fieldMarkerColor] : color) ||
-                'red';
+            const marker_color = this.fieldMarkerColor || this.markerColor;
+            if (marker_color && typeof record.data[marker_color] !== 'undefined') {
+                color = record.data[marker_color] || color || this.defaultMarkerColor;
+            }
             this._super(latLng, record, color);
         },
     });
