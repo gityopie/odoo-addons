@@ -7,7 +7,7 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
     const session = require('web.session');
     const utils = require('web.utils');
     const KanbanRecord = require('web.KanbanRecord');
-    const Utils = require('web_google_maps.Utils');
+    const GoogleMapUtils = require('web_google_maps.Utils');
     const GoogleMapSidebar = require('web_google_maps.GoogleMapSidebar');
 
     const qweb = core.qweb;
@@ -212,7 +212,7 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
          */
         _getMapTheme: async function () {
             const self = this;
-            const themes = Utils.MAP_THEMES;
+            const themes = GoogleMapUtils.MAP_THEMES;
             const update_map = function (style) {
                 const styledMapType = new google.maps.StyledMapType(themes[style], {
                     name: _lt('Styled Map'),
@@ -322,12 +322,16 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
                 _odooRecord: record,
                 _odooMarkerColor: color,
                 icon: {
-                    path: google.maps.SymbolPath.CIRCLE,
-                    fillColor: 'red',
-                    fillOpacity: 0.9,
-                    strokeWeight: 2,
-                    strokeColor: '#ededed',
-                    scale: 9,
+                    path: GoogleMapUtils.MARKER_ICON_SVG_PATH,
+                    fillColor: color,
+                    fillOpacity: 1,
+                    strokeWeight: 0.75,
+                    strokeColor: '#444',
+                    scale: 0.06,
+                    anchor: new google.maps.Point(
+                        GoogleMapUtils.MARKER_ICON_WIDTH / 2,
+                        GoogleMapUtils.MARKER_ICON_HEIGHT
+                    ),
                 },
             };
             const title = this.fieldTitle ? record.data[this.fieldTitle] : record.data.name || record.data.display_name;
