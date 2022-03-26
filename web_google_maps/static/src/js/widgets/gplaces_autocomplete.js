@@ -242,6 +242,34 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
     const GplaceAddressAutocompleteField = GplaceAutocomplete.extend({
         className: 'o_field_char o_field_google_address_autocomplete',
         /**
+        * @param {*} values
+        */
+       _onUpdateWidgetFields: function (values) {
+            values = typeof values !== 'undefined' ? values : {};
+            if (values.hasOwnProperty(this.lat) || values.hasOwnProperty(this.lng)) {
+                const geometry = {
+                    [this.lat]: values[this.lat],
+                    [this.lng]: values[this.lng],
+                };
+                // need to delay the call to apply the geolocation fields
+                // send these value with address fields won't update the geolocation fields
+                setTimeout(() => {
+                    this.trigger_up('field_changed', {
+                        dataPointID: this.dataPointID,
+                        changes: geometry,
+                        viewType: this.viewType,
+                    });
+                }, 500);
+                delete values[this.lat];
+                delete values[this.lng];
+            }
+            this.trigger_up('field_changed', {
+                dataPointID: this.dataPointID,
+                changes: values,
+                viewType: this.viewType,
+            });
+        },
+        /**
          * @override
          */
         setDefault: function () {
@@ -467,6 +495,38 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
 
     const GplacesAutocompleteField = GplaceAutocomplete.extend({
         className: 'o_field_char o_field_google_places_autocomplete',
+        _onUpdateWidgetFields: function (values) {
+            values = typeof values !== 'undefined' ? values : {};
+            let geometry = {};
+            if (this.lat && this.lng) {
+                geometry[this.lat] = values[this.lat];
+                geometry[this.lng] = values[this.lng];
+            } else if (this.fillfields.geolocation) {
+                _.each(this.fillfields.geolocation, (alias, field) => {
+                    if (alias === 'latitude' && values[field]) {
+                        geometry[field] = values[field];
+                    }
+                    if (alias === 'longitude' && values[field]) {
+                        geometry[field] = values[field];
+                    }
+                });
+            }
+            if (Object.keys(geometry).length > 0) {
+                setTimeout(() => {
+                    this.trigger_up('field_changed', {
+                        dataPointID: this.dataPointID,
+                        changes: geometry,
+                        viewType: this.viewType,
+                    });
+                }, 500);
+                Object.keys(geometry).forEach((field) => delete values[field]);
+            }
+            this.trigger_up('field_changed', {
+                dataPointID: this.dataPointID,
+                changes: values,
+                viewType: this.viewType,
+            });
+        },
         setDefault: function () {
             this._super.apply(this, arguments);
             this.fillfields = {
