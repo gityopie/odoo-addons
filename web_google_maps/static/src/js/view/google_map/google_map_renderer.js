@@ -404,7 +404,7 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
                 });
             }
             const markerIwContent = this._generateMarkerInfoWindow(marker._odooRecord);
-            const buttonNavigate = this._markerInfoWindowActionButton(marker._odooRecord, marker);
+            const buttonNavigate = this._markerInfoWindowActionButton(marker._odooRecord);
 
             markerIwContent.appendTo(buttonNavigate);
             buttonNavigate.appendTo(markerContent);
