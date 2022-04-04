@@ -1,5 +1,12 @@
 # Change Log
 
+## [14.0.1.0.4] - 2022-04-05
+### Added
+- Added "Edit geolocation" button on crm.lead form view
+
+### Changed
+### Fixed
+
 ## [14.0.1.0.3] - 2021-12-22
 ### Added
 
