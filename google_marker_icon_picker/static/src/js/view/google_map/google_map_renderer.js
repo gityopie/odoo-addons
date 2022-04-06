@@ -8,12 +8,20 @@ odoo.define('google_marker_icon_picker.GoogleMapRenderer', function (require) {
             this._super(params);
             this.fieldMarkerColor = params.fieldMarkerColor;
         },
+        /**
+         * Overrided
+         * Used dynamic color from record's color
+         * @param {*} latLng
+         * @param {*} record
+         * @param {*} color
+         * @returns GoogleMarker
+         */
         _createMarker: function (latLng, record, color) {
-            const marker_color = this.fieldMarkerColor || this.markerColor;
-            if (marker_color && typeof record.data[marker_color] !== 'undefined') {
-                color = record.data[marker_color] || color || this.defaultMarkerColor;
-            }
-            this._super(latLng, record, color);
+            color =
+                (typeof record.data[this.fieldMarkerColor] !== 'undefined'
+                    ? record.data[this.fieldMarkerColor]
+                    : color) || this.defaultMarkerColor;
+            return this._super(latLng, record, color);
         },
     });
 });
