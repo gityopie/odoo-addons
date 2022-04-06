@@ -1,0 +1,33 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* contacts_maps
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 15.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-04-06 13:05+0000\n"
+"PO-Revision-Date: 2022-04-06 13:05+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: contacts_maps
+#: model:ir.model,name:contacts_maps.model_res_partner
+msgid "Contact"
+msgstr ""
+
+#. module: contacts_maps
+#: model:ir.actions.act_window,name:contacts_maps.action_view_res_partner_google_map
+#: model_terms:ir.ui.view,arch_db:contacts_maps.view_partner_form
+msgid "Google Map"
+msgstr ""
+
+#. module: contacts_maps
+#: model:ir.model.fields,field_description:contacts_maps.field_res_partner__marker_color
+#: model:ir.model.fields,field_description:contacts_maps.field_res_users__marker_color
+msgid "Marker Color"
+msgstr ""
