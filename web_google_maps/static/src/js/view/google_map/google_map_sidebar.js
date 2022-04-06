@@ -66,8 +66,12 @@ odoo.define('web_google_maps.GoogleMapSidebar', function (require) {
             } else if (record.data.hasOwnProperty('name')) {
                 default_display_name = record.data.name;
             } else if (record.fields.hasOwnProperty('display_name')) {
-                const display_name_field =
-                    record.fields['display_name'].depends.length > 0 ? record.fields['display_name'].depends[0] : false;
+                let display_name_field;
+                if (record.fields.display_name.type === 'char') {
+                    display_name_field = record.fields.display_name;
+                } else if (record.fields['display_name'].hasOwnProperty('depends') && record.fields['display_name'].depends.length > 0) {
+                    display_name_field = record.fields[record.fields['display_name'].depends[0]];
+                }
                 if (display_name_field) {
                     try {
                         default_display_name = record.data[display_name_field].data.display_name;
