@@ -24,6 +24,8 @@ msgid ""
 "<i class=\"fa fa-fw fa-calendar\" aria-label=\"Meetings\" role=\"img\" "
 "title=\"Meetings\"/>"
 msgstr ""
+"<i class=\"fa fa-fw fa-calendar\" aria-label=\"Réunions\" role=\"img\" "
+"title=\"Réunions\"/>"
 
 #. module: crm_maps
 #: model_terms:ir.ui.view,arch_db:crm_maps.crm_lead_partner_google_map_view
@@ -31,6 +33,8 @@ msgid ""
 "<i class=\"fa fa-fw fa-star\" aria-label=\"Favorites\" role=\"img\" "
 "title=\"Favorites\"/>"
 msgstr ""
+"<i class=\"fa fa-fw fa-star\" aria-label=\"Favoris\" role=\"img\" "
+"title=\"Favoris\"/>"
 
 #. module: crm_maps
 #: model_terms:ir.ui.view,arch_db:crm_maps.view_crm_leads_form_google_maps_inherit
@@ -83,12 +87,12 @@ msgstr ""
 #. module: crm_maps
 #: model:ir.model.fields,field_description:crm_maps.field_crm_lead____last_update
 msgid "Last Modified on"
-msgstr ""
+msgstr "Dernière modification le"
 
 #. module: crm_maps
 #: model:ir.model,name:crm_maps.model_crm_lead
 msgid "Lead/Opportunity"
-msgstr ""
+msgstr "Piste/Opportunité"
 
 #. module: crm_maps
 #: model_terms:ir.ui.view,arch_db:crm_maps.view_crm_leads_google_map
