@@ -2,6 +2,7 @@ odoo.define('web_google_maps.relational_fields', function (require) {
     'use strict';
 
     const core = require('web.core');
+    var dom = require('web.dom');
     const relational_fields = require('web.relational_fields');
     const GoogleMapRenderer = require('web_google_maps.GoogleMapRenderer').GoogleMapRenderer;
     const Utils = require('web_google_maps.Utils');
@@ -16,7 +17,8 @@ odoo.define('web_google_maps.relational_fields', function (require) {
             }
         },
         _render: function () {
-            if (!this.view || this.renderer) {
+            const self = this;
+            if (!this.view) {
                 return this._super();
             }
             const arch = this.view.arch;
@@ -24,7 +26,22 @@ odoo.define('web_google_maps.relational_fields', function (require) {
                 const func_name = '_render_map_' + this.mapMode;
                 this.renderer = this[func_name].call(this, arch);
                 this.$el.addClass('o_field_x2many o_field_x2many_google_map');
-                return this.renderer.appendTo(this.$el);
+                if (this.renderer) {
+                    return this.renderer.appendTo(document.createDocumentFragment()).then(function () {
+                        dom.append(self.$el, self.renderer.$el, {
+                            in_DOM: self.isInDOM,
+                            callbacks: [{widget: self.renderer}],
+                        });
+                    });
+                } else {
+                    return this._super();
+                }
+            }
+            return this._super();
+        },
+        _getRenderer: function() {
+            if (this.view.arch.tag === 'google_map') {
+                return GoogleMapRenderer;
             }
             return this._super();
         },
@@ -39,7 +56,8 @@ odoo.define('web_google_maps.relational_fields', function (require) {
             if (arch.attrs.colors) {
                 colors = Utils.parseMarkersColor(arch.attrs.colors);
             }
-            return new GoogleMapRenderer(this, this.value, {
+            const Renderer = this._getRenderer();
+            return new Renderer(this, this.value, {
                 arch: arch,
                 record_options: record_options,
                 viewType: 'google_map',
@@ -48,7 +66,7 @@ odoo.define('web_google_maps.relational_fields', function (require) {
                 markerColor: arch.attrs.color,
                 markerColors: colors,
                 disableClusterMarker: arch.attrs.disable_cluster_marker,
-                gestureHandling: arch.attrs.gesture_handling,
+                gestureHandling: arch.attrs.gesture_handling || 'cooperative',
                 mapMode: this.mapMode,
                 markerClusterConfig: {},
                 googleMapStyle: arch.attrs.map_style,

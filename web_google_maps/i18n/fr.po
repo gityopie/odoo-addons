@@ -6,9 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 14.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-04-09 16:28+0000\n"
-"PO-Revision-Date: 2022-04-09 16:28+0000\n"
-"Last-Translator: \n"
+"POT-Creation-Date: 2021-12-22 04:24+0000\n"
+"PO-Revision-Date: 2022-03-03 09:19+0100\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,7 +19,6 @@ msgstr ""
 
 #. module: web_google_maps
 #. openerp-web
-#: code:addons/web_google_maps/static/src/js/widgets/gplaces_autocomplete.js:0
 #: code:addons/web_google_maps/static/src/js/widgets/gplaces_autocomplete.js:0
 #, python-format
 msgid "<ul><li></li></ul>"
@@ -261,8 +259,6 @@ msgstr "Restriction de langue de Google Autocomplete"
 
 #. module: web_google_maps
 #. openerp-web
-#: code:addons/web_google_maps/static/src/js/view/google_map/google_map_view
-#: copy.js:0
 #: code:addons/web_google_maps/static/src/js/view/google_map/google_map_view.js:0
 #: model_terms:ir.ui.view,arch_db:web_google_maps.view_res_partner_google_map
 #, python-format
@@ -336,8 +332,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:web_google_maps.res_config_settings_view_form
 msgid ""
 "If you set the language of the map, it's important to consider setting the "
-"region too. This helps ensure that your application complies with local "
-"laws."
+"region too. This helps ensure that your application complies with local laws."
 msgstr ""
 "Si vous choisissez une langue, il est recommandé de choisir une région "
 "aussi. Cela garantit la prise en compte des spécificités locales."
@@ -510,7 +505,6 @@ msgstr "Ouvrir"
 #. module: web_google_maps
 #. openerp-web
 #: code:addons/web_google_maps/static/src/xml/view_google_map.xml:0
-#: code:addons/web_google_maps/static/src/xml/view_google_map.xml:0
 #, python-format
 msgid "Open form"
 msgstr "Ouvrir le formulaire"
@@ -657,7 +651,6 @@ msgstr ""
 #. module: web_google_maps
 #. openerp-web
 #: code:addons/web_google_maps/static/src/js/widgets/gplaces_autocomplete.js:0
-#: code:addons/web_google_maps/static/src/js/widgets/gplaces_autocomplete.js:0
 #, python-format
 msgid "The following fields are invalid:"
 msgstr "Les champs suivants ne sont pas disponibles :"
@@ -741,20 +734,6 @@ msgstr "Vue"
 #: model:ir.model.fields,field_description:web_google_maps.field_ir_ui_view__type
 msgid "View Type"
 msgstr "Type de vue"
-
-#. module: web_google_maps
-#. openerp-web
-#: code:addons/web_google_maps/static/src/xml/view_google_map.xml:0
-#, python-format
-msgid "View on Google Maps"
-msgstr "Voir sur Google Maps"
-
-#. module: web_google_maps
-#. openerp-web
-#: code:addons/web_google_maps/static/src/xml/view_google_map.xml:0
-#, python-format
-msgid "View on Google Maps website"
-msgstr "Voir sur le site Google Maps"
 
 #. module: web_google_maps
 #: model_terms:ir.ui.view,arch_db:web_google_maps.res_config_settings_view_form
