@@ -56,6 +56,9 @@
         <field name="inherit_id" ref="crm.crm_lead_view_form"/>
         <field name="priority" eval="1000"/>
         <field name="arch" type="xml">
+            <xpath expr="//form" position="attributes">
+                <attribute name="geo_field">{'lat': 'customer_latitude', 'lng': 'customer_longitude'}</attribute>
+            </xpath>
             <xpath expr="//notebook" position="inside">
                 <page name="geolocalize" string="Geolocalize">
                     <group colspan="2" col="2">
