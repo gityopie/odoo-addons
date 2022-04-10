@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'CRM Maps',
-    'version': '15.0.1.0.1',
+    'version': '15.0.1.0.2',
     'author': 'Yopi Angi',
     'license': 'AGPL-3',
     'maintainer': 'Yopi Angi<yopiangi@gmail.com>',
@@ -12,7 +12,7 @@
 CRM Maps
 ========
 
-Added google_map view on your pipeline
+Added google_map view on your leads/opportunities
 """,
     'depends': ['crm', 'web_google_maps'],
     'website': '',
@@ -21,5 +21,6 @@ Added google_map view on your pipeline
         'views/res_partner.xml',
     ],
     'demo': [],
+    'images': ['static/description/crm_maps.png'],
     'installable': True
 }
