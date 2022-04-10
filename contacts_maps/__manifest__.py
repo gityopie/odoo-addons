@@ -11,7 +11,7 @@
 Contacts Maps
 =============
 
-Added map view on contacts
+Added Google Map view on contacts
 """,
     'depends': [
         'contacts',
@@ -24,5 +24,6 @@ Added map view on contacts
         'views/res_partner.xml',
     ],
     'demo': [],
+    'images': ['static/description/contacts_maps.png'],
     'installable': True
 }

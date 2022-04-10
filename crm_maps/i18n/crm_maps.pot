@@ -1,0 +1,81 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* crm_maps
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 15.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-04-06 13:05+0000\n"
+"PO-Revision-Date: 2022-04-06 13:05+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: crm_maps
+#: model_terms:ir.ui.view,arch_db:crm_maps.view_crm_leads_form_google_maps_inherit
+msgid "(refresh)"
+msgstr ""
+
+#. module: crm_maps
+#: model_terms:ir.ui.view,arch_db:crm_maps.crm_lead_partner_google_map_view
+msgid ""
+"<i class=\"fa fa-fw fa-calendar\" aria-label=\"Meetings\" role=\"img\" "
+"title=\"Meetings\"/>"
+msgstr ""
+
+#. module: crm_maps
+#: model_terms:ir.ui.view,arch_db:crm_maps.crm_lead_partner_google_map_view
+msgid ""
+"<i class=\"fa fa-fw fa-star\" aria-label=\"Favorites\" role=\"img\" "
+"title=\"Favorites\"/>"
+msgstr ""
+
+#. module: crm_maps
+#: model_terms:ir.ui.view,arch_db:crm_maps.view_crm_leads_form_google_maps_inherit
+msgid "<span>, Long: </span>"
+msgstr ""
+
+#. module: crm_maps
+#: model_terms:ir.ui.view,arch_db:crm_maps.view_crm_leads_form_google_maps_inherit
+msgid "<span>Lat : </span>"
+msgstr ""
+
+#. module: crm_maps
+#: model:ir.model.fields,field_description:crm_maps.field_crm_lead__customer_latitude
+msgid "Customer Latitude"
+msgstr ""
+
+#. module: crm_maps
+#: model:ir.model.fields,field_description:crm_maps.field_crm_lead__customer_longitude
+msgid "Customer Longitude"
+msgstr ""
+
+#. module: crm_maps
+#: model_terms:ir.ui.view,arch_db:crm_maps.view_crm_leads_form_google_maps_inherit
+msgid "Geolocalize"
+msgstr ""
+
+#. module: crm_maps
+#: model:ir.actions.act_window,name:crm_maps.action_crm_lead_map
+#: model_terms:ir.ui.view,arch_db:crm_maps.view_crm_leads_form_google_maps_inherit
+msgid "Google Map"
+msgstr ""
+
+#. module: crm_maps
+#: model:ir.model,name:crm_maps.model_crm_lead
+msgid "Lead/Opportunity"
+msgstr ""
+
+#. module: crm_maps
+#: model_terms:ir.ui.view,arch_db:crm_maps.view_crm_leads_google_map
+msgid "Maps"
+msgstr ""
+
+#. module: crm_maps
+#: model:ir.actions.act_window,name:crm_maps.action_your_maps
+msgid "My Maps"
+msgstr ""

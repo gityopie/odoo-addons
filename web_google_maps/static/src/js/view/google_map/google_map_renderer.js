@@ -296,7 +296,7 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
             const options = {
                 position: latLng,
                 map: this.gmap,
-                animation: google.maps.Animation.DROP,
+                optimized: true,
                 _odooRecord: record,
                 _odooMarkerColor: color,
                 icon: {
@@ -312,9 +312,7 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
                     ),
                 },
             };
-            const title = this.sidebarTitle
-                ? record.data[this.sidebarTitle]
-                : record.data.name || record.data.display_name;
+            const title = this.fieldTitle ? record.data[this.fieldTitle] : record.data.name || record.data.display_name;
             if (title) {
                 options['title'] = title;
             }
@@ -323,12 +321,13 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
                 options._odooMarkerColor = color;
             }
             const marker = new google.maps.Marker(options);
-            this._clusterAddMarker(marker);
+            this.markers.push(marker);
+            return marker;
         },
         /**
          * Handle Multiple Markers present at the same coordinates
          */
-        _clusterAddMarker: function (marker) {
+        _onMarkerClusterAddMarker: function (marker) {
             const markers = this.disableClusterMarker ? this.markers : this.markerCluster.getMarkers();
             const existingRecords = [];
             if (markers.length > 0) {
@@ -340,7 +339,6 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
                     }
                 });
             }
-            this.markers.push(marker);
             if (!this.disableClusterMarker) {
                 this.markerCluster.addMarker(marker);
             }
@@ -416,17 +414,15 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
          * @param {Object} record
          */
         _renderMarkers: function () {
-            let color = null;
-            let latLng = null;
-            let lat = null;
-            let lng = null;
+            let color, latLng, lat, lng, marker;
             this.state.data.forEach((record) => {
                 color = this._getIconColor(record);
                 lat = typeof record.data[this.fieldLat] === 'number' ? record.data[this.fieldLat] : 0.0;
                 lng = typeof record.data[this.fieldLng] === 'number' ? record.data[this.fieldLng] : 0.0;
                 if (lat !== 0.0 || lng !== 0.0) {
                     latLng = new google.maps.LatLng(lat, lng);
-                    this._createMarker(latLng, record, color);
+                    marker = this._createMarker(latLng, record, color);
+                    this._onMarkerClusterAddMarker(marker);
                 }
             });
         },
@@ -454,18 +450,19 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
          */
         _map_center_geometry: function (no_delay) {
             let delay_ms = no_delay ? 100 : 1000;
-            const mapBounds = new google.maps.LatLngBounds();
-            this.markers.forEach((marker) => {
-                mapBounds.extend(marker.getPosition());
-            });
-            this.gmap.fitBounds(mapBounds);
+            window.setTimeout(() => {
+                const mapBounds = new google.maps.LatLngBounds();
 
-            google.maps.event.addListener(this.gmap, 'idle', () => {
-                window.setTimeout(() => {
+                this.markers.forEach((marker) => {
+                    mapBounds.extend(marker.getPosition());
+                });
+                this.gmap.fitBounds(mapBounds);
+
+                google.maps.event.addListenerOnce(this.gmap, 'idle', () => {
                     google.maps.event.trigger(this.gmap, 'resize');
                     if (this.gmap.getZoom() > 17) this.gmap.setZoom(17);
-                }, delay_ms);
-            });
+                });
+            }, delay_ms);
         },
         /**
          * Clear marker clusterer and list markers
@@ -478,16 +475,45 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
             this.markers = [];
         },
         setMarkerDraggable: function () {
-            this.markers[0].setOptions({
+            let editableMarker;
+            if (this.markers.length === 0) {
+                let latLng = this._getDefaultCoordinate();
+                let record = this.state.data[0];
+                let color = this._getIconColor(record);
+                editableMarker = this._createMarker(latLng, record, color);
+            } else {
+                editableMarker = this.markers[0];
+            }
+            editableMarker.setOptions({
+                optimized: false,
                 draggable: true,
                 animation: google.maps.Animation.BOUNCE,
             });
+            this.editableMarkerIdle = google.maps.event.addListenerOnce(this.gmap, 'idle', () => {
+                setTimeout(() => {
+                    google.maps.event.trigger(this.gmap, 'resize');
+                    this.gmap.setZoom(3);
+                }, 2000);
+            });
+            this.editableMarkerDragEnd1 = google.maps.event.addListenerOnce(editableMarker, 'dragend', () => {
+                this.gmap.setZoom(10);
+                this.gmap.setCenter(editableMarker.getPosition());
+            });
+            this.editableMarkerDragEnd2 = google.maps.event.addListener(editableMarker, 'dragend', () => {
+                this.gmap.panTo(editableMarker.getPosition());
+            });
         },
         disableMarkerDraggable: function () {
-            this.markers[0].setOptions({
-                draggable: false,
-                animation: google.maps.Animation.DROP,
-            });
+            this.markers[0].setOptions({ draggable: false });
+            if (this.editableMarkerIdle) {
+                google.maps.event.removeListener(this.editableMarkerIdle);
+            }
+            if (this.editableMarkerDragEnd1) {
+                google.maps.event.removeListener(this.editableMarkerDragEnd1);
+            }
+            if (this.editableMarkerDragEnd2) {
+                google.maps.event.removeListener(this.editableMarkerDragEnd2);
+            }
         },
         /**
          * Render list of `display_name` of records loaded in the map

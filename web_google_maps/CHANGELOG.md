@@ -1,4 +1,14 @@
 # Change Log
+
+## [15.0.1.0.1] - 2022-04-10
+### Added
+- Improved "Edit geolocation" button functionality. Make easier for user to edit geolocation.
+- Added "View on Google Maps" button on marker info window.
+### Changed
+### Fixed
+- Fixed "Edit geolocation" button raised an error when record's geolocation is not set.
+
+Migration to version 15.0
 ## [15.0.1.0.0] - 2022-02-16
 Migration to version 15.0
 

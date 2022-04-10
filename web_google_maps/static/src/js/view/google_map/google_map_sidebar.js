@@ -55,24 +55,39 @@ odoo.define('web_google_maps.GoogleMapSidebar', function (require) {
         getTitle: function (record) {
             let default_display_name = 'Unknown';
             if (this.fieldTitle) {
-                let title = record.data[this.fieldTitle];
-                if (typeof title !== 'string') {
-                    console.warn('Title field is not a string!');
+                if (record.fields.hasOwnProperty(this.fieldTitle)) {
+                    if (record.fields[this.fieldTitle].type === 'many2one') {
+                        default_display_name = record.data[this.fieldTitle].data.display_name;
+                    } else if (record.fields[this.fieldTitle].type === 'char') {
+                        default_display_name = record.data[this.fieldTitle];
+                    }
                     return default_display_name;
                 }
-                default_display_name = title;
+                console.warn(
+                    'Field "' +
+                        this.fieldTitle +
+                        '" not found in record. Field type supported are "many2one" and "char".'
+                );
+                return default_display_name;
             } else if (record.data.hasOwnProperty('display_name')) {
                 default_display_name = record.data.display_name;
             } else if (record.data.hasOwnProperty('name')) {
                 default_display_name = record.data.name;
             } else if (record.fields.hasOwnProperty('display_name')) {
-                const display_name_field =
-                    record.fields['display_name'].depends.length > 0 ? record.fields['display_name'].depends[0] : false;
-                if (display_name_field) {
-                    try {
-                        default_display_name = record.data[display_name_field].data.display_name;
-                    } catch (error) {
-                        console.warn(error);
+                let display_name_field;
+                if (record.fields.display_name.type === 'char') {
+                    default_display_name = record.data.display_name;
+                } else if (
+                    record.fields['display_name'].hasOwnProperty('depends') &&
+                    record.fields['display_name'].depends.length > 0
+                ) {
+                    display_name_field = record.fields[record.fields['display_name'].depends[0]];
+                    if (display_name_field) {
+                        try {
+                            default_display_name = record.data[display_name_field].data.display_name;
+                        } catch (error) {
+                            console.warn(error);
+                        }
                     }
                 }
             }
