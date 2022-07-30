@@ -22,7 +22,8 @@
                             'partner_latitude': 'latitude',
                             'partner_longitude': 'longitude'
                         }
-                    }
+                    },
+                'force_override': true,
                 }</attribute>
             </field>
         </field>
