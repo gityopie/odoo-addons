@@ -145,7 +145,9 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
          */
         init: function (parent, state, params) {
             this._super.apply(this, arguments);
+            this.viewTitle = params.arch.attrs.string || 'Google Maps';
             this.widgets = [];
+            this.context = params.context;
 
             this.qweb = new QWeb(
                 session.debug,
@@ -483,15 +485,13 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
          * @param {boolean} no_delay
          */
         _map_center_geometry: function (no_delay) {
-            let delay_ms = no_delay ? 100 : 1000;
+            let delay_ms = no_delay ? 100 : 50;
+            const mapBounds = new google.maps.LatLngBounds();
+            this.markers.forEach((marker) => {
+                mapBounds.extend(marker.getPosition());
+            });
             window.setTimeout(() => {
-                const mapBounds = new google.maps.LatLngBounds();
-
-                this.markers.forEach((marker) => {
-                    mapBounds.extend(marker.getPosition());
-                });
                 this.gmap.fitBounds(mapBounds);
-
                 google.maps.event.addListenerOnce(this.gmap, 'idle', () => {
                     google.maps.event.trigger(this.gmap, 'resize');
                     if (this.gmap.getZoom() > 17) this.gmap.setZoom(17);
