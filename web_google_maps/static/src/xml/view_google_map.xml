@@ -40,6 +40,11 @@
     </t>
     <t t-name="GoogleMapView.Sidebar">
         <div class="o_map_sidebar">
+            <div class="pt-3 ml-3">
+                <h3>
+                    <t t-esc="widget.viewTitle"/>
+                </h3>
+            </div>
             <ul class="list-group">
                 <t t-foreach="widget.records" t-as="record">
                     <t t-set="title" t-value="widget.getTitle(record)"/>
