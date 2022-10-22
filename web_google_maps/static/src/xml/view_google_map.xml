@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates id="template" xml:space="preserve">
     <div t-name="GoogleMapView.MapView" class="o_google_map_container">
-        <div class="o_google_map_view"></div>
+        <div class="o_google_map_view" tabindex="-1"></div>
         <div class="o_map_right_sidebar open">
             <div class="content"/>
             <div class="toggle_right_sidenav">
@@ -40,6 +40,11 @@
     </t>
     <t t-name="GoogleMapView.Sidebar">
         <div class="o_map_sidebar">
+            <div class="pt-3 ml-3">
+                <h3>
+                    <t t-esc="widget.viewTitle"/>
+                </h3>
+            </div>
             <ul class="list-group">
                 <t t-foreach="widget.records" t-as="record">
                     <t t-set="title" t-value="widget.getTitle(record)"/>
@@ -50,8 +55,9 @@
                         <li class="list-group-item d-flex justify-content-between align-items-center pb-1 pt-1">
                             <a href="#" class="flex-grow-1 o_map_sidebar_record" t-att-data-id="record.id" t-att-data-res-id="record.res_id" t-attf-style="color: #{marker_color};">
                                 <span class="title" t-esc="title"/>
+                                <br/>
+                                <i class="fa fa-map-marker"></i>
                                 <t t-if="subtitle">
-                                    <br/>
                                     <small class="text-muted" t-esc="subtitle"/>
                                 </t>
                             </a>
