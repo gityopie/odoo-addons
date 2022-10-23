@@ -16,6 +16,7 @@ odoo.define('web_google_maps.GoogleMapSidebar', function (require) {
             this.editable = parent.editable;
             this.fieldTitle = title;
             this.fieldSubtitle = subtitle;
+            this.viewTitle = parent.viewTitle;
         },
         /**
          * Click handler for the sidebar record
