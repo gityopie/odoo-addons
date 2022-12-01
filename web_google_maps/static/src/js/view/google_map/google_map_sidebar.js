@@ -26,7 +26,8 @@ odoo.define('web_google_maps.GoogleMapSidebar', function (require) {
             ev.preventDefault();
             const data_id = $(ev.currentTarget).data('res-id');
             if (data_id) {
-                const marker = _.find(this.parent.markers, (m) => m._odooRecord.res_id === data_id);
+                const markers = this.parent.getMarkers();
+                const marker = _.find(markers, (m) => m._odooRecord.res_id === data_id);
                 if (marker) {
                     this.parent.gmap.panTo(marker.getPosition());
                     google.maps.event.addListenerOnce(this.parent.gmap, 'idle', () => {
@@ -43,7 +44,8 @@ odoo.define('web_google_maps.GoogleMapSidebar', function (require) {
          */
         getMarkerColor: function (record) {
             let color = '#989696';
-            const marker = _.find(this.parent.markers, (m) => m._odooRecord.res_id === record.res_id);
+            const markers = this.parent.getMarkers();
+            const marker = _.find(markers, (m) => m._odooRecord.res_id === record.res_id);
             if (marker) {
                 color = marker._odooMarkerColor;
             }

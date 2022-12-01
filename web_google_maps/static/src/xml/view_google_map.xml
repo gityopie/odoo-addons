@@ -67,7 +67,7 @@
                         </li>
                     </t>
                     <t t-else="">
-                        <li class="list-group-item d-flex justify-content-between align-items-center pb-1 pt-1 disabled">
+                        <li class="list-group-item d-flex justify-content-between align-items-center pb-1 pt-1">
                             <a href="#" class="flex-grow-1 o_map_sidebar_record" data-toggle="tooltip" title="No geolocation" t-att-data-id="record.id" t-attf-style="color: #{marker_color};">
                                 <span class="title" t-esc="title"/>
                                 <t t-if="subtitle">
