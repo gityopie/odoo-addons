@@ -67,7 +67,7 @@
                         </li>
                     </t>
                     <t t-else="">
-                        <li class="list-group-item d-flex justify-content-between align-items-center pb-1 pt-1 disabled">
+                        <li class="list-group-item d-flex justify-content-between align-items-center pb-1 pt-1">
                             <a href="#" class="flex-grow-1 o_map_sidebar_record" data-toggle="tooltip" title="No geolocation" t-att-data-id="record.id" t-attf-style="color: #{marker_color};">
                                 <span class="title" t-esc="title"/>
                                 <t t-if="subtitle">
@@ -94,25 +94,20 @@
         </div>
     </t>
     <t t-name="GoogleMapView.InfoMarkerButtonAction">
-        <div>
-            <div class="row float-right pt-1">
-                <div class="col-md-12">
-                    <button type="button" class="btn btn-primary" id="btn-open_form" data-toggle="tooltip" title="Open form view">
-                        <i class="fa fa-wpforms"></i>
-                        <span class="text-uppercase">Open</span>
-                    </button>
-                    <a t-attf-href="https://www.google.com/maps/dir/?api=1&amp;destination={{ destination }}" target="_blank" class="btn btn-info" id="btn-navigate_to" data-toggle="tooltip" title="Navigate to this location" t-if="!widget.disableNavigation">
-                        <i class="fa fa-map-signs"></i>
-                        <span class="text-uppercase">Navigate to</span>
-                    </a>
-                </div>
-            </div>
-            <div class="row float-right pb-1">
-                <div class="col-md-12">
-                    <a t-attf-href="https://www.google.com/maps/search/?api=1&amp;query={{ destination }}" target="_blank" class="btn btn-link" id="btn-view-on-googlemaps" data-toggle="tooltip" title="View on Google Maps website">
-                        <small>View on Google Maps</small>
-                    </a>
-                </div>
+        <div style="border-bottom: 1px dotted #cccccc;">
+            <div class="d-flex justify-content-between pt-1 pb-4">
+                <button type="button" class="btn btn-sm btn-light" tabindex="-1" id="btn-open_form" data-toggle="tooltip" title="Open form view">
+                    <i class="fa fa-wpforms"></i>
+                    <span>Open</span>
+                </button>
+                <a t-attf-href="https://www.google.com/maps/dir/?api=1&amp;destination={{ destination }}" tabindex="-1" target="_blank" class="btn btn-sm btn-light" id="btn-navigate_to" data-toggle="tooltip" title="Navigate to this location" t-if="!widget.disableNavigation">
+                    <i class="fa fa-map-signs"></i>
+                    <span>Navigate to</span>
+                </a>
+                <a t-attf-href="https://www.google.com/maps/search/?api=1&amp;query={{ destination }}" target="_blank" class="btn btn-sm btn-light" tabindex="-1" id="btn-view-on-googlemaps" data-toggle="tooltip" title="View on Google Maps website">
+                    <i class="fa fa-external-link-square"></i>
+                    <span>View on Google Maps</span>
+                </a>
             </div>
         </div>
     </t>

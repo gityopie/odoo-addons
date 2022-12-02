@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 15.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-02 09:41+0000\n"
-"PO-Revision-Date: 2022-12-02 09:41+0000\n"
+"POT-Creation-Date: 2022-12-02 09:44+0000\n"
+"PO-Revision-Date: 2022-12-02 09:44+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -18,7 +18,7 @@ msgstr ""
 #. module: web_google_maps
 #: model:ir.model,name:web_google_maps.model_ir_actions_act_window_view
 msgid "Action Window View"
-msgstr ""
+msgstr "Vue de la Fenêtre d'Action"
 
 #. module: web_google_maps
 #: model:ir.model.fields.selection,name:web_google_maps.selection__res_config_settings__google_maps_lang_localization__af
@@ -131,7 +131,7 @@ msgstr ""
 #. module: web_google_maps
 #: model:ir.model,name:web_google_maps.model_res_config_settings
 msgid "Config Settings"
-msgstr ""
+msgstr "Paramètres de config"
 
 #. module: web_google_maps
 #: model_terms:ir.ui.view,arch_db:web_google_maps.view_res_partner_google_map
@@ -181,7 +181,7 @@ msgstr ""
 #: code:addons/web_google_maps/static/src/js/view/form/form_controller.js:0
 #, python-format
 msgid "Edit Geolocation"
-msgstr ""
+msgstr "Modifier la géolocalisation"
 
 #. module: web_google_maps
 #: model:ir.model.fields.selection,name:web_google_maps.selection__res_config_settings__google_maps_lang_localization__en
@@ -213,7 +213,7 @@ msgstr ""
 #: code:addons/web_google_maps/static/src/xml/view_google_map.xml:0
 #, python-format
 msgid "Expand side panel"
-msgstr ""
+msgstr "Développer le panneau latéral"
 
 #. module: web_google_maps
 #: model:ir.model.fields.selection,name:web_google_maps.selection__res_config_settings__google_maps_lang_localization__fa
@@ -270,7 +270,7 @@ msgstr ""
 #. module: web_google_maps
 #: model:ir.model.fields,field_description:web_google_maps.field_res_config_settings__google_autocomplete_lang_restrict
 msgid "Google Autocomplete Language Restriction"
-msgstr ""
+msgstr "Restriction de langue de saisie semi-automatique de Google"
 
 #. module: web_google_maps
 #. openerp-web
@@ -288,22 +288,22 @@ msgstr ""
 #. module: web_google_maps
 #: model:ir.model.fields,field_description:web_google_maps.field_res_config_settings__google_maps_lang_localization
 msgid "Google Maps Language Localization"
-msgstr ""
+msgstr "Localisation de la langue de Google Maps"
 
 #. module: web_google_maps
 #: model:ir.model.fields,field_description:web_google_maps.field_res_config_settings__google_maps_region_localization
 msgid "Google Maps Region Localization"
-msgstr ""
+msgstr "Localisation de la région Google Maps"
 
 #. module: web_google_maps
 #: model_terms:ir.ui.view,arch_db:web_google_maps.res_config_settings_view_form
 msgid "Google Maps View"
-msgstr ""
+msgstr "Vue Google Maps"
 
 #. module: web_google_maps
 #: model:ir.model.fields,field_description:web_google_maps.field_res_config_settings__google_maps_view_api_key
 msgid "Google Maps View Api Key"
-msgstr ""
+msgstr "Google Maps Afficher la clé API"
 
 #. module: web_google_maps
 #: model:ir.model.fields.selection,name:web_google_maps.selection__res_config_settings__google_maps_lang_localization__el
@@ -342,6 +342,9 @@ msgid ""
 "region too. This helps ensure that your application complies with local "
 "laws."
 msgstr ""
+"Si vous définissez la langue de la carte, il est important d'envisager également de définir la région."
+" Cela permet de garantir que votre application est conforme aux lois"
+" locales."
 
 #. module: web_google_maps
 #: model:ir.model.fields.selection,name:web_google_maps.selection__res_config_settings__google_maps_lang_localization__id
@@ -386,7 +389,7 @@ msgstr ""
 #. module: web_google_maps
 #: model_terms:ir.ui.view,arch_db:web_google_maps.res_config_settings_view_form
 msgid "Language"
-msgstr ""
+msgstr "Langue"
 
 #. module: web_google_maps
 #: model:ir.model.fields.selection,name:web_google_maps.selection__res_config_settings__google_maps_lang_localization__lo
@@ -402,7 +405,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:web_google_maps.field_res_config_settings__google_maps_libraries
 #: model_terms:ir.ui.view,arch_db:web_google_maps.res_config_settings_view_form
 msgid "Libraries"
-msgstr ""
+msgstr "Bibliothèques"
 
 #. module: web_google_maps
 #: model:ir.model.fields.selection,name:web_google_maps.selection__res_config_settings__google_maps_lang_localization__lt
@@ -414,7 +417,7 @@ msgstr ""
 #: code:addons/web_google_maps/static/src/js/view/google_map/google_map_controller.js:0
 #, python-format
 msgid "Location information is unavailable."
-msgstr ""
+msgstr "Les informations de localisation ne sont pas disponibles."
 
 #. module: web_google_maps
 #: model:ir.model.fields.selection,name:web_google_maps.selection__res_config_settings__google_maps_lang_localization__mk
@@ -434,7 +437,7 @@ msgstr ""
 #. module: web_google_maps
 #: model:ir.model.fields,field_description:web_google_maps.field_res_config_settings__google_maps_theme
 msgid "Map theme"
-msgstr ""
+msgstr "Thème de la carte"
 
 #. module: web_google_maps
 #: model:ir.model.fields.selection,name:web_google_maps.selection__res_config_settings__google_maps_lang_localization__mr
@@ -456,21 +459,21 @@ msgstr ""
 #: code:addons/web_google_maps/static/src/xml/view_google_map.xml:0
 #, python-format
 msgid "My Current location"
-msgstr ""
+msgstr "Ma position actuelle"
 
 #. module: web_google_maps
 #. openerp-web
 #: code:addons/web_google_maps/static/src/xml/view_google_map.xml:0
 #, python-format
 msgid "Navigate to"
-msgstr ""
+msgstr "Aller vers"
 
 #. module: web_google_maps
 #. openerp-web
 #: code:addons/web_google_maps/static/src/xml/view_google_map.xml:0
 #, python-format
 msgid "Navigate to this location"
-msgstr ""
+msgstr "Accédez à cet emplacement"
 
 #. module: web_google_maps
 #: model:ir.model.fields.selection,name:web_google_maps.selection__res_config_settings__google_maps_lang_localization__ne
@@ -487,7 +490,7 @@ msgstr ""
 #: code:addons/web_google_maps/static/src/xml/view_google_map.xml:0
 #, python-format
 msgid "No geolocation"
-msgstr ""
+msgstr "Pas de géolocalisation"
 
 #. module: web_google_maps
 #: model:ir.model.fields.selection,name:web_google_maps.selection__res_config_settings__google_maps_lang_localization__no
@@ -499,7 +502,7 @@ msgstr ""
 #: code:addons/web_google_maps/static/src/xml/view_google_map.xml:0
 #, python-format
 msgid "Open"
-msgstr ""
+msgstr "Ouvert"
 
 #. module: web_google_maps
 #. openerp-web
@@ -507,14 +510,14 @@ msgstr ""
 #: code:addons/web_google_maps/static/src/xml/view_google_map.xml:0
 #, python-format
 msgid "Open form"
-msgstr ""
+msgstr "Formulaire ouvert"
 
 #. module: web_google_maps
 #. openerp-web
 #: code:addons/web_google_maps/static/src/xml/view_google_map.xml:0
 #, python-format
 msgid "Open form view"
-msgstr ""
+msgstr "Ouvrir la vue du formulaire"
 
 #. module: web_google_maps
 #: model:ir.model.fields.selection,name:web_google_maps.selection__res_config_settings__google_maps_theme__pale_down
@@ -549,7 +552,7 @@ msgstr ""
 #. module: web_google_maps
 #: model_terms:ir.ui.view,arch_db:web_google_maps.res_config_settings_view_form
 msgid "Region"
-msgstr ""
+msgstr "Région"
 
 #. module: web_google_maps
 #: model:ir.model.fields.selection,name:web_google_maps.selection__res_config_settings__google_maps_theme__retro
@@ -574,7 +577,7 @@ msgstr ""
 #. module: web_google_maps
 #: model_terms:ir.ui.view,arch_db:web_google_maps.res_config_settings_view_form
 msgid "Set API keys and map localization"
-msgstr ""
+msgstr "Définir les clés API et la localisation de la carte"
 
 #. module: web_google_maps
 #: model:ir.model.fields.selection,name:web_google_maps.selection__res_config_settings__google_maps_theme__shift_worker
@@ -616,7 +619,7 @@ msgstr ""
 #: code:addons/web_google_maps/static/src/js/view/google_map/google_map_renderer.js:0
 #, python-format
 msgid "Styled Map"
-msgstr ""
+msgstr "Carte stylisée"
 
 #. module: web_google_maps
 #: model:ir.model.fields.selection,name:web_google_maps.selection__res_config_settings__google_maps_theme__subtle_gray
@@ -654,7 +657,7 @@ msgstr ""
 #: code:addons/web_google_maps/static/src/js/widgets/gplaces_autocomplete.js:0
 #, python-format
 msgid "The following fields are invalid: <ul><li></li></ul>"
-msgstr ""
+msgstr "Les champs suivants sont invalides: : <ul><li></li></ul>"
 
 #. module: web_google_maps
 #: model_terms:ir.ui.view,arch_db:web_google_maps.res_config_settings_view_form
@@ -663,18 +666,21 @@ msgid ""
 "returned, if possible. Searches are also biased to the selected language; "
 "results in the selected language may be given a higher ranking."
 msgstr ""
+"Le code de langue, indiquant dans quelle langue les résultats doivent être retournés, si possible."
+" Les recherches sont également orientées vers la langue sélectionnée;"
+" les résultats dans la langue sélectionnée peuvent être classés plus haut."
 
 #. module: web_google_maps
 #. openerp-web
 #: code:addons/web_google_maps/static/src/js/view/google_map/google_map_controller.js:0
 #, python-format
 msgid "The request to get user location timed out."
-msgstr ""
+msgstr "La demande d'obtention de la position de l'utilisateur a expiré."
 
 #. module: web_google_maps
 #: model_terms:ir.ui.view,arch_db:web_google_maps.res_config_settings_view_form
 msgid "Theme"
-msgstr ""
+msgstr "Thème"
 
 #. module: web_google_maps
 #: model:ir.model.fields.selection,name:web_google_maps.selection__res_config_settings__google_maps_lang_localization__tr
@@ -709,6 +715,8 @@ msgid ""
 "User denied the request for Geolocation. Please update your configuration to"
 " allow browser detect your current location"
 msgstr ""
+"L'utilisateur a refusé la demande de géolocalisation. Veuillez mettre à jour votre configuration"
+" pour permettre au navigateur de détecter votre position actuelle"
 
 #. module: web_google_maps
 #: model:ir.model.fields.selection,name:web_google_maps.selection__res_config_settings__google_maps_lang_localization__uz
@@ -723,27 +731,27 @@ msgstr ""
 #. module: web_google_maps
 #: model:ir.model,name:web_google_maps.model_ir_ui_view
 msgid "View"
-msgstr ""
+msgstr "Vue"
 
 #. module: web_google_maps
 #: model:ir.model.fields,field_description:web_google_maps.field_ir_actions_act_window_view__view_mode
 #: model:ir.model.fields,field_description:web_google_maps.field_ir_ui_view__type
 msgid "View Type"
-msgstr ""
+msgstr "Type de Vue"
 
 #. module: web_google_maps
 #. openerp-web
 #: code:addons/web_google_maps/static/src/xml/view_google_map.xml:0
 #, python-format
 msgid "View on Google Maps"
-msgstr ""
+msgstr "Voir sur Google Maps"
 
 #. module: web_google_maps
 #. openerp-web
 #: code:addons/web_google_maps/static/src/xml/view_google_map.xml:0
 #, python-format
 msgid "View on Google Maps website"
-msgstr ""
+msgstr "Voir sur le site Google Maps"
 
 #. module: web_google_maps
 #: model_terms:ir.ui.view,arch_db:web_google_maps.res_config_settings_view_form

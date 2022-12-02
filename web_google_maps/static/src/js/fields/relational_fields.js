@@ -3,6 +3,7 @@ odoo.define('web_google_maps.relational_fields', function (require) {
 
     const core = require('web.core');
     const relational_fields = require('web.relational_fields');
+    const pyUtils = require('web.py_utils');
     const GoogleMapRenderer = require('web_google_maps.GoogleMapRenderer').GoogleMapRenderer;
     const Utils = require('web_google_maps.Utils');
 
@@ -47,7 +48,7 @@ odoo.define('web_google_maps.relational_fields', function (require) {
                 fieldLng: arch.attrs.lng,
                 markerColor: arch.attrs.color,
                 markerColors: colors,
-                disableClusterMarker: arch.attrs.disable_cluster_marker,
+                disableClusterMarker: arch.attrs.disable_cluster_marker !== undefined ? !!pyUtils.py_eval(arch.attrs.disable_cluster_marker) : false,
                 gestureHandling: arch.attrs.gesture_handling || 'cooperative',
                 mapMode: this.mapMode,
                 markerClusterConfig: {},
@@ -73,9 +74,10 @@ odoo.define('web_google_maps.relational_fields', function (require) {
             this.$buttons.on('click', 'button.o-map-button-center-map', this._onMapCenter.bind(this));
         },
         _onMapCenter: function (event) {
+            event.preventDefault();
             event.stopPropagation();
             const func_name = '_map_center_' + this.renderer.mapMode;
-            this.renderer[func_name].call(this.renderer, true);
+            this.renderer[func_name].call(this.renderer);
         },
         is_action_enabled: function (action) {
             return this.activeActions[action];
