@@ -26,7 +26,8 @@ odoo.define('web_google_maps.GoogleMapSidebar', function (require) {
             ev.preventDefault();
             const data_id = $(ev.currentTarget).data('res-id');
             if (data_id) {
-                const marker = _.find(this.parent.markers, (m) => m._odooRecord.res_id === data_id);
+                const markers = this.parent.getMarkers();
+                const marker = _.find(markers, (m) => m._odooRecord.res_id === data_id);
                 if (marker) {
                     this.parent.gmap.panTo(marker.getPosition());
                     google.maps.event.addListenerOnce(this.parent.gmap, 'idle', () => {
@@ -43,62 +44,72 @@ odoo.define('web_google_maps.GoogleMapSidebar', function (require) {
          */
         getMarkerColor: function (record) {
             let color = '#989696';
-            const marker = _.find(this.parent.markers, (m) => m._odooRecord.res_id === record.res_id);
+            const markers = this.parent.getMarkers();
+            const marker = _.find(markers, (m) => m._odooRecord.res_id === record.res_id);
             if (marker) {
                 color = marker._odooMarkerColor;
             }
             return color;
         },
-        /**
-         * Get display_name of record
-         * @param {Object} record
-         */
-        getTitle: function (record) {
-            let default_display_name = 'Unknown';
-            if (this.fieldTitle) {
-                let title = record.data[this.fieldTitle];
-                if (typeof title !== 'string') {
-                    console.warn('Title field is not a string!');
+        _getDisplayName: function (record, fieldName, defaultLabel) {
+            let default_display_name = defaultLabel || 'Unknown';
+            if (fieldName) {
+                if (record.fields.hasOwnProperty(fieldName)) {
+                    if (record.fields[fieldName].type === 'many2one') {
+                        default_display_name = record.data[fieldName].data ? record.data[fieldName].data.display_name : ' - ';
+                    } else if (record.fields[fieldName].type === 'char') {
+                        default_display_name = record.data[fieldName];
+                    }
                     return default_display_name;
                 }
-                default_display_name = title;
+                console.warn(
+                    'Field "' +
+                    fieldName +
+                    '" not found in record. Field type supported are "many2one" and "char".'
+                );
+                return default_display_name;
             } else if (record.data.hasOwnProperty('display_name')) {
                 default_display_name = record.data.display_name;
             } else if (record.data.hasOwnProperty('name')) {
                 default_display_name = record.data.name;
             } else if (record.fields.hasOwnProperty('display_name')) {
-                const display_name_field =
-                    record.fields['display_name'].depends.length > 0 ? record.fields['display_name'].depends[0] : false;
-                if (display_name_field) {
-                    try {
-                        default_display_name = record.data[display_name_field].data.display_name;
-                    } catch (error) {
-                        console.warn(error);
+                let display_name_field;
+                if (record.fields.display_name.type === 'char') {
+                    default_display_name = record.data.display_name;
+                } else if (
+                    record.fields['display_name'].hasOwnProperty('depends') &&
+                    record.fields['display_name'].depends.length > 0
+                ) {
+                    display_name_field = record.fields[record.fields['display_name'].depends[0]];
+                    if (display_name_field) {
+                        try {
+                            default_display_name = record.data[display_name_field].data.display_name;
+                        } catch (error) {
+                            console.warn(error);
+                        }
                     }
                 }
             }
             return default_display_name;
         },
         /**
+         * Get display_name of record
+         * @param {Object} record
+         */
+        getTitle: function (record) {
+            let title = this._getDisplayName(record, this.fieldTitle, 'Unknown');
+            return title;
+        },
+        /**
          * Get subtitle of record
          * @param {*} record
          */
         getSubtitle: function (record) {
-            let subtitle;
             if (this.fieldSubtitle) {
-                let val = record.data[this.fieldSubtitle];
-                if (typeof val !== 'string') {
-                    console.warn('Subtitle field is not a string!');
-                    return subtitle;
-                }
-                if (val) {
-                    subtitle = val
-                        .split('\n')
-                        .filter((val) => val.trim())
-                        .join(', ');
-                }
+                let title = this._getDisplayName(record, this.fieldSubtitle, '');
+                return title;
             }
-            return subtitle;
+            return;
         },
         /**
          * Check if record has geolocated

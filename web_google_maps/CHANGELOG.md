@@ -1,4 +1,17 @@
 # Change Log
+## [14.0.2.2.0] - 2022-12-08
+- The two attributes: `sidebar_title` and `sidebar_subtitle` used in the `google_map` sidebar is now now support `many2one` field (before only support `char` field)    
+
+    Example:
+    ```xml
+        <google_map sidebar_title="display_name" sidebar_subtitle="partner_id">
+           ...
+        </google_map>
+    ```
+- Fixed the bugs on action (ADD | REMOVE) for `google_map` view render inside form view
+- Improved the Google map instantiation in the GoogleMapRenderer, any time `google_map` view is loaded it's no longer creates new instance instead it will use the previous instance created. 
+- Small changes on the marker infowindow
+
 ## [14.0.2.1.10] - 2022-04-05
 ### Added
 - Improved "Edit geolocation" button functionality. Make easier for user to edit geolocation.
