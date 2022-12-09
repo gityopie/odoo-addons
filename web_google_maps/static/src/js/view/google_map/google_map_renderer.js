@@ -193,7 +193,6 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
             this.fieldLng = params.fieldLng;
             this.markerColor = params.markerColor;
             this.markerColors = params.markerColors;
-            this.markerClusterConfig = params.markerClusterConfig;
             this.disableClusterMarker = params.disableClusterMarker;
             this.sidebarRender = null;
             this.googleMapStyle = params.googleMapStyle;
@@ -359,6 +358,9 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
          * Reset markers list
          */
         clearMarkers: function () {
+            if (this.markerCluster) {
+                this.markerCluster.clearMarkers();
+            }
             this.markers.splice(0);
         },
         /**
@@ -442,7 +444,7 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
          * @private
          * @param {Object} record
          */
-         _renderMarkers: function () {
+        _renderMarkers: function () {
             let color, latLng, lat, lng, marker;
             this.state.data.forEach((record) => {
                 color = this._getIconColor(record);
@@ -486,11 +488,12 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
         },
         _initMarkerCluster: function () {
             if (!this.disableClusterMarker) {
-                if (!this.markerClusterConfig.imagePath) {
-                    this.markerClusterConfig['imagePath'] = '/web_google_maps/static/lib/markerclusterer/img/m';
-                }
                 const markers = this.getMarkers();
-                new MarkerClusterer(this.gmap, markers, this.markerClusterConfig);
+                if (!this.markerCluster) {
+                    this.markerCluster = new markerClusterer.MarkerClusterer({ map: this.gmap, markers });
+                } else {
+                    this.markerCluster.addMarkers(markers);
+                }
             }
         },
         /**

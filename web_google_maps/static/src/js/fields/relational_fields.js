@@ -57,7 +57,6 @@ odoo.define('web_google_maps.relational_fields', function (require) {
                 markerColors: colors,
                 disableClusterMarker: arch.attrs.disable_cluster_marker !== undefined ? !!pyUtils.py_eval(arch.attrs.disable_cluster_marker) : true,
                 gestureHandling: arch.attrs.gesture_handling || 'cooperative',
-                markerClusterConfig: {},
                 googleMapStyle: arch.attrs.map_style,
                 sidebarTitle: arch.attrs.sidebar_title,
                 sidebarSubtitle: arch.attrs.sidebar_subtitle,
