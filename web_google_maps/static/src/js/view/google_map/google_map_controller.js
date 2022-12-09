@@ -235,7 +235,8 @@ odoo.define('web_google_maps.GoogleMapController', function (require) {
         _onButtonSaveMarker: function (event) {
             event.stopPropagation();
             const record = this.model.get(this.handle);
-            const marker_position = this.renderer.markers[0].getPosition();
+            const markers = this.renderer.getMarkers();
+            const marker_position = markers[0].getPosition();
             this.is_marker_edit = false;
 
             this._updateMarkerButtons();

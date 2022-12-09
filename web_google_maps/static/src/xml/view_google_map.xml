@@ -31,6 +31,20 @@
             </div>
         </div>
     </t>
+    <t t-name="GoogleMapView.InlineFormButtons">
+        <div class="o_list_buttons">
+            <div class="o_form_marker_buttons_actions pb-2">
+                <t t-if="widget.canCreate &amp;&amp; widget.mode === 'edit'">
+                    <button type="button" class="btn btn-primary o-map-button-new" accesskey="c">
+                        <t t-esc="create_text || _t('Create')"/>
+                    </button>
+                </t>
+                <button type="button" class="btn btn-secondary o-map-button-center-map">
+                    <t t-esc="_t('Center Map')"/>
+                </button>
+            </div>
+        </div>
+    </t>
     <t t-name="FormView.marker_edit_button">
         <t t-if="widget.is_action_enabled('edit')">
             <button type="button" class="btn btn-secondary o-map-button-marker-edit o_hidden">
@@ -94,25 +108,20 @@
         </div>
     </t>
     <t t-name="GoogleMapView.InfoMarkerButtonAction">
-        <div>
-            <div class="row float-right pt-1">
-                <div class="col-md-12">
-                    <button type="button" class="btn btn-primary" id="btn-open_form" data-toggle="tooltip" title="Open form view">
-                        <i class="fa fa-wpforms"></i>
-                        <span class="text-uppercase">Open</span>
-                    </button>
-                    <a t-attf-href="https://www.google.com/maps/dir/?api=1&amp;destination={{ destination }}" target="_blank" class="btn btn-info" id="btn-navigate_to" data-toggle="tooltip" title="Navigate to this location" t-if="!widget.disableNavigation">
-                        <i class="fa fa-map-signs"></i>
-                        <span class="text-uppercase">Navigate to</span>
-                    </a>
-                </div>
-            </div>
-            <div class="row float-right pb-1">
-                <div class="col-md-12">
-                    <a t-attf-href="https://www.google.com/maps/search/?api=1&amp;query={{ destination }}" target="_blank" class="btn btn-link" id="btn-view-on-googlemaps" data-toggle="tooltip" title="View on Google Maps website">
-                        <small>View on Google Maps</small>
-                    </a>
-                </div>
+        <div style="border-bottom: 1px dotted #cccccc;">
+            <div class="d-flex justify-content-between pt-1 pb-4">
+                <button type="button" class="btn btn-sm btn-light" tabindex="-1" id="btn-open_form" data-toggle="tooltip" title="Open form view">
+                    <i class="fa fa-wpforms"></i>
+                    <span class="text-uppercase">Open</span>
+                </button>
+                <a t-attf-href="https://www.google.com/maps/dir/?api=1&amp;destination={{ destination }}" tabindex="-1" target="_blank" class="btn btn-sm btn-light" id="btn-navigate_to" data-toggle="tooltip" title="Navigate to this location" t-if="!widget.disableNavigation">
+                    <i class="fa fa-map-signs"></i>
+                    <span class="text-uppercase">Navigate to</span>
+                </a>
+                <a t-attf-href="https://www.google.com/maps/search/?api=1&amp;query={{ destination }}" tabindex="-1" target="_blank" class="btn btn-sm btn-light" id="btn-view-on-googlemaps" data-toggle="tooltip" title="View on Google Maps website">
+                    <i class="fa fa-external-link-square"></i>
+                    <span>View on Google Maps</span>
+                </a>
             </div>
         </div>
     </t>

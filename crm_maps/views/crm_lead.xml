@@ -4,39 +4,49 @@
         <field name="name">view.crm.leads.google_map</field>
         <field name="model">crm.lead</field>
         <field name="arch" type="xml">
-            <google_map string="Maps" lat="customer_latitude" lng="customer_longitude" color="orange">
+            <google_map string="Maps" lat="customer_latitude" lng="customer_longitude" color="orange" sidebar_subtitle="partner_id">
                 <field name="customer_latitude"/>
                 <field name="customer_longitude"/>
                 <field name="contact_name"/>
                 <field name="priority"/>
-                <field name="tag_ids"/>
                 <field name="user_id"/>
-                <field name="activity_ids"/>
-                <field name="activity_state"/>
-                <progressbar field="activity_state" colors='{"planned": "success", "today": "warning", "overdue": "danger"}'/>
+                <field name="partner_id"/>
+                <field name="color"/>
+                <field name="expected_revenue"/>
+                <field name="company_currency"/>
                 <templates>
                     <t t-name="kanban-box">
-                        <div t-attf-class="oe_kanban_content">
-                            <div>
-                                <strong class="o_kanban_record_title"><span><field name="name"/></span></strong>
-                            </div>
-                            <div>
-                                <span class="o_kanban_record_subtitle"><field name="contact_name"/></span>
-                            </div>
-                            <div>
-                                <field name="tag_ids"/>
-                            </div>
-                            <div class="o_kanban_record_bottom">
-                                <div class="oe_kanban_bottom_left">
-                                    <field name="priority" widget="priority"/>
-                                    <div class="o_kanban_inline_block">
+                        <div class="oe_kanban_global_click">
+                            <div class="oe_kanban_content">
+                                <div class="o_kanban_record_title">
+                                    <strong>
+                                        <field name="name"/>
+                                    </strong>
+                                </div>
+                                <div class="o_kanban_record_subtitle">
+                                    <t t-if="record.expected_revenue.raw_value">
+                                        <field name="expected_revenue" widget="monetary" options="{'currency_field': 'company_currency'}"/>
+                                        <span t-if="record.recurring_revenue and record.recurring_revenue.raw_value"> + </span>
+                                    </t>
+                                    <t t-if="record.recurring_revenue and record.recurring_revenue.raw_value">
+                                        <field name="recurring_revenue" widget="monetary" options="{'currency_field': 'company_currency'}"/>
+                                        <field name="recurring_plan"/>
+                                    </t>
+                                </div>
+                                <div>
+                                    <span t-if="record.partner_id.value" t-esc="record.partner_id.value"></span>
+                                </div>
+                                <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_left">
+                                        <field name="priority" widget="priority" groups="base.group_user"/>
                                         <field name="activity_ids" widget="kanban_activity"/>
                                     </div>
-                                </div>
-                                <div class="oe_kanban_bottom_right">
-                                    <field name="user_id" widget="many2one_avatar_user"/>
+                                    <div class="oe_kanban_bottom_right">
+                                        <field name="user_id" widget="many2one_avatar_user"/>
+                                    </div>
                                 </div>
                             </div>
+                            <div class="oe_clear"/>
                         </div>
                     </t>
                 </templates>
@@ -76,10 +86,7 @@
                 </page>
             </xpath>
             <xpath expr="//div[@name='button_box']" position="inside">
-                <button name="%(crm_maps.action_crm_lead_map)d" type="action" class="oe_stat_button"
-                context="{'search_default_name': name}" icon="fa-map-marker"
-                string="Google Map"
-                attrs="{'invisible': ['|',('customer_latitude', '=', 0.0), ('customer_longitude', '=', 0.0)]}"/>
+                <button name="%(crm_maps.action_crm_lead_map)d" type="action" class="oe_stat_button" context="{'search_default_name': name}" icon="fa-map-marker" string="Google Map" attrs="{'invisible': ['|',('customer_latitude', '=', 0.0), ('customer_longitude', '=', 0.0)]}"/>
             </xpath>
             <xpath expr="//page[@name='lead']/group/group/field[@name='partner_name']" position="attributes">
                 <attribute name="widget">gplaces_autocomplete</attribute>
@@ -151,7 +158,7 @@
             </xpath>
         </field>
     </record>
-    
+
     <record id="crm.crm_lead_action_pipeline" model="ir.actions.act_window">
         <field name="view_mode">kanban,tree,graph,pivot,form,calendar,activity,google_map</field>
     </record>
