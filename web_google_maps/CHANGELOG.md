@@ -1,4 +1,6 @@
 # Change Log
+## [14.0.2.2.1] - 2022-12-09
+- Update markerclusterer source
 ## [14.0.2.2.0] - 2022-12-08
 - The two attributes: `sidebar_title` and `sidebar_subtitle` used in the `google_map` sidebar is now now support `many2one` field (before only support `char` field)    
 
