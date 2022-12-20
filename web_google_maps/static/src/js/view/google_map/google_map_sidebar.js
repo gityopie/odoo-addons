@@ -52,7 +52,6 @@ odoo.define('web_google_maps.GoogleMapSidebar', function (require) {
             return color;
         },
         _getDisplayName: function (record, fieldName, defaultLabel) {
-            console.log({displayName: record});
             let default_display_name = defaultLabel || 'Unknown';
             if (fieldName) {
                 if (record.fields.hasOwnProperty(fieldName)) {
