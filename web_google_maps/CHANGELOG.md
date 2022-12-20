@@ -1,5 +1,13 @@
 # Change Log
 
+## [15.0.1.0.3] - 2022-12-20
+### Added
+
+### Updated
+- Update clustermarkerer source
+### Fixed
+- Fixed `google_map` view used inside `form` view
+
 ## [15.0.1.0.1] - 2022-04-10
 ### Added
 - Improved "Edit geolocation" button functionality. Make easier for user to edit geolocation.

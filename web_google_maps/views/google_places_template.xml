@@ -5,13 +5,13 @@
         <t t-set="google_maps_lang_localization" t-value="request.env['ir.config_parameter'].sudo().get_param('web_google_maps.lang_localization')"/>
         <t t-set="google_maps_libraries" t-value="request.env['ir.config_parameter'].sudo().get_param('web_google_maps.libraries')"/>
         <t t-set="google_maps_region_localization" t-value="request.env['ir.config_parameter'].sudo().get_param('web_google_maps.region_localization', default='')"/>
-        <script src="/web_google_maps/static/lib/markerclusterer/markerclusterer.min.js"></script>
         <t t-if="google_maps_api_key">
             <script t-attf-src="https://maps.googleapis.com/maps/api/js?v=quarterly&amp;key=#{google_maps_api_key}&amp;libraries=#{google_maps_libraries}#{google_maps_lang_localization and '&amp;language=' + google_maps_lang_localization or ''}#{google_maps_region_localization and '&amp;region=' + google_maps_region_localization or ''}"></script>
         </t>
         <t t-else="">
             <script t-attf-src="https://maps.googleapis.com/maps/api/js?v=quarterly&amp;libraries=#{google_maps_libraries}#{google_maps_lang_localization and '&amp;language=' + google_maps_lang_localization or ''}#{google_maps_region_localization and '&amp;region=' + google_maps_region_localization or ''}"></script>
         </t>
+        <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
     </template>
     <template id="webclient_bootstrap" name="webclient_bootstrap gmaps" inherit_id="web.webclient_bootstrap">
         <xpath expr="//t[@t-call-assets='web.assets_common']" position="before">

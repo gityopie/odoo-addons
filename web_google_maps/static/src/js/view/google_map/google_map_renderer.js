@@ -180,33 +180,38 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
             this.disableNavigation = params.disableNavigation;
         },
         /**
-         * Style the map
          * @private
+         * @param {string} style
+         * @returns
          */
-        _getMapTheme: async function () {
-            const self = this;
+        _setMapTheme: function (style) {
             const themes = GoogleMapUtils.MAP_THEMES;
-            const update_map = function (style) {
-                const styledMapType = new google.maps.StyledMapType(themes[style], {
-                    name: _lt('Styled Map'),
-                });
-                self.gmap.setOptions({
-                    mapTypeControlOptions: {
-                        mapTypeIds: ['roadmap', 'satellite', 'hybrid', 'terrain', 'styled_map'],
-                    },
-                });
-                // Associate the styled map with the MapTypeId and set it to display.
-                if (self.theme === 'default') return;
-                self.gmap.mapTypes.set('styled_map', styledMapType);
-                self.gmap.setMapTypeId('styled_map');
-            };
+            if (!Object.prototype.hasOwnProperty.call(themes, style) || style === 'default') {
+                return;
+            }
+            const styledMapType = new google.maps.StyledMapType(themes[style], {
+                name: _lt('Styled Map'),
+            });
+            this.gmap.setOptions({
+                mapTypeControlOptions: {
+                    mapTypeIds: ['roadmap', 'satellite', 'hybrid', 'terrain', 'styled_map'],
+                },
+            });
+            // Associate the styled map with the MapTypeId and set it to display.
+            this.gmap.mapTypes.set('styled_map', styledMapType);
+            this.gmap.setMapTypeId('styled_map');
+        },
+        /**
+         * Style the map
+         */
+        setMapTheme: async function () {
             if (this.googleMapStyle) {
-                update_map(this.googleMapStyle);
+                this._setMapTheme(this.googleMapStyle);
             } else if (!this.theme) {
                 const data = await this._rpc({ route: '/web/map_theme' });
-                if (data.theme && Object.prototype.hasOwnProperty.call(themes, data.theme)) {
+                if (data.theme) {
                     this.theme = data.theme;
-                    update_map(data.theme);
+                    this._setMapTheme(data.theme);
                 }
             }
         },
@@ -224,13 +229,11 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
                     mapTypeControl: true,
                     gestureHandling: this.gestureHandling,
                 });
-                this._getMapTheme();
+                this.setMapTheme();
                 const func_name = '_post_load_map_' + this.mapMode;
                 this[func_name].call(this);
             }
-            if (!this.infoWindow) {
-                this.infoWindow = new google.maps.InfoWindow();
-            }
+            this.infoWindow = new google.maps.InfoWindow();
             if (!this.$right_sidebar) {
                 this.$right_sidebar = this.$('.o_map_right_sidebar');
             }
@@ -293,7 +296,7 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
                     fillOpacity: 1,
                     strokeWeight: 0.75,
                     strokeColor: '#444',
-                    scale: 0.06,
+                    scale: 0.07,
                     anchor: new google.maps.Point(
                         GoogleMapUtils.MARKER_ICON_WIDTH / 2,
                         GoogleMapUtils.MARKER_ICON_HEIGHT
@@ -316,12 +319,15 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
          * @returns Array
          */
         getMarkers: function () {
-            return this.markers;
+            return this.markers || [];
         },
         /**
          * Reset markers list
          */
         clearMarkers: function () {
+            if (this.markerCluster) {
+                this.markerCluster.clearMarkers();
+            }
             this.markers.splice(0);
         },
         /**
@@ -434,7 +440,7 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
          * @override
          */
         _renderView: function () {
-            return this._super.apply(this, arguments).then(this.renderGoogleMap.bind(this))
+            return this._super.apply(this, arguments).then(this.renderGoogleMap.bind(this));
         },
         /**
          * Render google maps
@@ -455,11 +461,12 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
         },
         _initMarkerCluster: function () {
             if (!this.disableClusterMarker) {
-                if (!this.markerClusterConfig.imagePath) {
-                    this.markerClusterConfig['imagePath'] = '/web_google_maps/static/lib/markerclusterer/img/m';
-                }
                 const markers = this.getMarkers();
-                new MarkerClusterer(this.gmap, markers, this.markerClusterConfig);
+                if (!this.markerCluster) {
+                    this.markerCluster = new markerClusterer.MarkerClusterer({ map: this.gmap, markers });
+                } else {
+                    this.markerCluster.addMarkers(markers);
+                }
             }
         },
         /**

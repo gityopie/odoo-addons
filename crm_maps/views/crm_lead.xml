@@ -12,11 +12,9 @@
                 <field name="tag_ids"/>
                 <field name="user_id"/>
                 <field name="activity_ids"/>
-                <field name="activity_state"/>
-                <progressbar field="activity_state" colors='{"planned": "success", "today": "warning", "overdue": "danger"}'/>
                 <templates>
                     <t t-name="kanban-box">
-                        <div t-attf-class="oe_kanban_content">
+                        <div class="oe_kanban_content">
                             <div>
                                 <strong class="o_kanban_record_title"><span><field name="name"/></span></strong>
                             </div>
