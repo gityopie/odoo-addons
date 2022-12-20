@@ -67,39 +67,6 @@ odoo.define('web_google_maps.GoogleMapView', function (require) {
             this.rendererParams.sidebarTitle = attrs.sidebar_title || false;
             this.rendererParams.sidebarSubtitle = attrs.sidebar_subtitle || false;
             this.rendererParams.disableNavigation = attrs.disable_navigation !== undefined ? !!pyUtils.py_eval(attrs.disable_navigation) : false;
-            this._setClusterParams(attrs);
-        },
-        _setClusterParams: function (attrs) {
-            const optionClusterConfig = {};
-            const defaultMarkerClusterConfig = this._getDefaultClusterMarkerConfig();
-            if (attrs.options) {
-                const configMapper = this._getClusterMarkerConfigMapper();
-                for (const key in attrs.options) {
-                    const conf = configMapper[key];
-                    if (conf !== undefined) {
-                        optionClusterConfig[conf] = attrs.options[key];
-                    }
-                }
-            }
-            this.rendererParams.markerClusterConfig = _.defaults(optionClusterConfig, defaultMarkerClusterConfig);
-        },
-        _getClusterMarkerConfigMapper: function () {
-            // more options can be check on this link: https://googlemaps.github.io/v3-utility-library/interfaces/_google_markerclustererplus.markerclustereroptions.html
-            // override this function and the `_getDefaultClusterMarkerConfig` if you want cover more
-            return {
-                cluster_grid_size: 'gridSize',
-                cluster_max_zoom_level: 'maxZoom',
-                cluster_zoom_on_click: 'zoomOnClick',
-                cluster_image_path: 'imagePath',
-            };
-        },
-        _getDefaultClusterMarkerConfig: function () {
-            return {
-                gridSize: 40,
-                maxZoom: 7,
-                zoomOnClick: true,
-                imagePath: '/web_google_maps/static/lib/markerclusterer/img/m',
-            };
         },
     });
 
