@@ -1,4 +1,7 @@
-# Odoo addons version 14.0
+# Odoo addons version 15.0
+
+
+> Notes: If you are looking for the version 16.0, you can find more information at the following link [https://github.com/mithnusa](https://github.com/mithnusa)
 
 These Odoo addons are mainly focus on integrating Odoo with Google maps services.
 
