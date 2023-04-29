@@ -296,7 +296,7 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
                             ? this.attrs.options.mode
                             : 'address_format';
                 }
-                if (this.edit === 'edit') {
+                if (this.mode === 'edit') {
                     if (this.attrs.options.hasOwnProperty('force_override')) {
                         this.force_override = true;
                     }
