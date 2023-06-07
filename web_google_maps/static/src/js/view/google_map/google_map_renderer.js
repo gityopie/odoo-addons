@@ -327,6 +327,8 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
         clearMarkers: function () {
             if (this.markerCluster) {
                 this.markerCluster.clearMarkers();
+            } else {
+                this.markers.map((m) => m.setMap(null));
             }
             this.markers.splice(0);
         },
