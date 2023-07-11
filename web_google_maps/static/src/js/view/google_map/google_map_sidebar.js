@@ -52,7 +52,7 @@ odoo.define('web_google_maps.GoogleMapSidebar', function (require) {
             return color;
         },
         _getDisplayName: function (record, fieldName, defaultLabel) {
-            let default_display_name = defaultLabel || 'Unknown';
+            let default_display_name = defaultLabel || ' — ';
             if (fieldName) {
                 if (record.fields.hasOwnProperty(fieldName)) {
                     if (record.fields[fieldName].type === 'many2one') {

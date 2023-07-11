@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- This assets are no longer usable, they are replaced by Google Loader, see assets_gmaps_loader  -->
     <template id="assets_gmaps" name="Google Maps Assets">
         <t t-set="google_maps_api_key" t-value="request.env['ir.config_parameter'].sudo().get_param('web_google_maps.api_key')"/>
         <t t-set="google_maps_lang_localization" t-value="request.env['ir.config_parameter'].sudo().get_param('web_google_maps.lang_localization')"/>
@@ -13,15 +14,20 @@
         </t>
         <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
     </template>
+    <template id="assets_gmaps_loader" name="Google Maps Assets">
+        <script src="https://unpkg.com/@googlemaps/js-api-loader@1.16.2/dist/index.min.js"></script>
+        <script src="https://unpkg.com/@googlemaps/markerclusterer@2.3.1/dist/index.min.js"></script>
+    </template>
     <template id="webclient_bootstrap" name="webclient_bootstrap gmaps" inherit_id="web.webclient_bootstrap">
         <xpath expr="//t[@t-call-assets='web.assets_common']" position="before">
-            <t t-call="web_google_maps.assets_gmaps"/>
+            <t t-call="web_google_maps.assets_gmaps_loader"/>
         </xpath>
     </template>
     <template id="assets_backend" name="web_google_maps assets backend" inherit_id="web.assets_backend">
         <xpath expr="." position="inside">
             <link rel="stylesheet" type="text/scss" href="/web_google_maps/static/src/scss/view_google_map.scss"/>
             <link rel="stylesheet" type="text/scss" href="/web_google_maps/static/src/scss/view_google_map_mobile.scss"/>
+            <script type="text/javascript" src="/web_google_maps/static/src/js/view/google_map/utils.js"></script>
             <script type="text/javascript" src="/web_google_maps/static/src/js/view/google_map/google_map_sidebar.js"></script>
             <script type="text/javascript" src="/web_google_maps/static/src/js/view/google_map/google_map_model.js"></script>
             <script type="text/javascript" src="/web_google_maps/static/src/js/view/google_map/google_map_controller.js"></script>
