@@ -9,6 +9,7 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
     const KanbanRecord = require('web.KanbanRecord');
     const GoogleMapUtils = require('web_google_maps.Utils');
     const GoogleMapSidebar = require('web_google_maps.GoogleMapSidebar');
+    const GoogleMapLoaderUtil = require('web_google_maps.GoogleMapLoaderUtil');
 
     const qweb = core.qweb;
     const _lt = core._lt;
@@ -121,7 +122,7 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
         }
     }
 
-    const GoogleMapRenderer = BasicRenderer.extend({
+    const GoogleMapRenderer = BasicRenderer.extend(GoogleMapLoaderUtil, {
         className: 'o_google_map_view',
         template: 'GoogleMapView.MapView',
         events: _.extend({}, BasicRenderer.prototype.events, {
@@ -217,18 +218,14 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
                     },
                 });
                 // Associate the styled map with the MapTypeId and set it to display.
-                if (self.theme === 'default') return;
+                if (style === 'default') return;
                 self.gmap.mapTypes.set('styled_map', styledMapType);
                 self.gmap.setMapTypeId('styled_map');
             };
             if (this.googleMapStyle) {
                 update_map(this.googleMapStyle);
-            } else if (!this.theme) {
-                const data = await this._rpc({ route: '/web/map_theme' });
-                if (data.theme && Object.prototype.hasOwnProperty.call(themes, data.theme)) {
-                    this.theme = data.theme;
-                    update_map(data.theme);
-                }
+            } else if (this.loaderOptions && this.loaderOptions.theme) {
+                update_map(this.loaderOptions.theme);
             }
         },
         /**
@@ -360,6 +357,8 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
         clearMarkers: function () {
             if (this.markerCluster) {
                 this.markerCluster.clearMarkers();
+            } else {
+                this.markers.map((marker) => marker.setMap(null));
             }
             this.markers.splice(0);
         },
@@ -466,8 +465,15 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
         /**
          * @override
          */
-        _renderView: function () {
-            return this._super.apply(this, arguments).then(this.renderGoogleMap.bind(this));
+        initializeGoogle: function () {
+            this.renderGoogleMap();
+        },
+        /**
+         * @override
+         */
+        async _renderView() {
+            await this._super.apply(this, arguments);
+            this.handleGoogleMapLoader();
         },
         /**
          * Render google maps
@@ -500,19 +506,16 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
          * Center map
          * @param {boolean} no_delay
          */
-        _map_center_geometry: function (no_delay) {
-            let delay_ms = no_delay ? 100 : 50;
+        _map_center_geometry: function () {
             const mapBounds = new google.maps.LatLngBounds();
             this.markers.forEach((marker) => {
                 mapBounds.extend(marker.getPosition());
             });
-            window.setTimeout(() => {
-                this.gmap.fitBounds(mapBounds);
-                google.maps.event.addListenerOnce(this.gmap, 'idle', () => {
-                    google.maps.event.trigger(this.gmap, 'resize');
-                    if (this.gmap.getZoom() > 17) this.gmap.setZoom(17);
-                });
-            }, delay_ms);
+            this.gmap.fitBounds(mapBounds);
+            google.maps.event.addListenerOnce(this.gmap, 'idle', () => {
+                google.maps.event.trigger(this.gmap, 'resize');
+                if (this.gmap.getZoom() > 17) this.gmap.setZoom(17);
+            });
         },
         /**
          * Clear marker clusterer and list markers

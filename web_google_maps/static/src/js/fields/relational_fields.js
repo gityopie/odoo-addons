@@ -25,7 +25,7 @@ odoo.define('web_google_maps.relational_fields', function (require) {
                 const func_name = '_render_map_' + this.mapMode;
                 this.renderer = this[func_name].call(this, arch);
                 this.$el.addClass('o_field_x2many o_field_x2many_google_map');
-                return this.renderer.appendTo(this.$el);;
+                return this.renderer.appendTo(this.$el);
             }
             return this._super();
         },

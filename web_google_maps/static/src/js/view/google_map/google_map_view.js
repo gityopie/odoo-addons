@@ -21,6 +21,7 @@ odoo.define('web_google_maps.GoogleMapView', function (require) {
             Renderer: GoogleMapRenderer,
             Controller: GoogleMapController,
         }),
+        searchMenuTypes: ['filter', 'favorite'],
         viewType: 'google_map',
         mobile_friendly: true,
         _map_mode: function () {

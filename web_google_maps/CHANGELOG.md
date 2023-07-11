@@ -1,4 +1,11 @@
 # Change Log
+## [14.0.2.3.1] - 2023-07-11
+### Added
+- Added utility JS module (`web_google_maps.GoogleMapLoaderUtil`) to handle Google Loader
+### Changed
+- Replaced the manual Google script load via script tag with Google Loader
+- Hide "Group By"
+### Fixed
 ## [14.0.2.2.1] - 2022-12-09
 - Update markerclusterer source
 ## [14.0.2.2.0] - 2022-12-08
