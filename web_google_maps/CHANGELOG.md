@@ -1,4 +1,31 @@
 # Change Log
+## [14.0.3.3.1] - 2023-07-29
+### Added
+- Two new attributes `marker_icon` and `marker_icons` for the view `google_map`. Allows you to set predefined FontAwesome icon as marker. Check this link https://fontawesome.com/v6/search?o=r&m=free&s=solid for available icon that can be used. Please only use the icon name, for example: this icon https://fontawesome.com/icons/flag?f=classic&s=solid `fa-flag` then in the `marker_icon` attribute just use `flag`.
+    - `marker_icon`    
+    An icon for all markers in the `google_map`.
+    - `marker_icons`    
+    You can set different marker based on the certain condition given.    
+
+
+    Example:
+    1. `marker_icon`
+    ```xml
+        <google_map ... marker_icon="flag">
+            ...
+        </google_map>
+    ```
+    2. `marker_icons`
+    ```xml
+        <google_map ... marker_icons="person:company_type=='person';building:company_type=='company';">
+            ...
+        </google_map>
+    ```
+- Four new map theme: tactic, cobalt, blueish, wy
+### Changed
+
+### Fixed
+- Clicking clusterer marker icon doesn't work properly when there is already marker info window opened
 ## [14.0.2.3.1] - 2023-07-11
 ### Added
 - Added utility JS module (`web_google_maps.GoogleMapLoaderUtil`) to handle Google Loader

@@ -10,6 +10,7 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
     const GoogleMapUtils = require('web_google_maps.Utils');
     const GoogleMapSidebar = require('web_google_maps.GoogleMapSidebar');
     const GoogleMapLoaderUtil = require('web_google_maps.GoogleMapLoaderUtil');
+    const FontAwesomeSVG = require('web_google_maps.FontAwesomeSVG');
 
     const qweb = core.qweb;
     const _lt = core._lt;
@@ -200,6 +201,8 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
             this.sidebarTitle = params.sidebarTitle;
             this.sidebarSubtitle = params.sidebarSubtitle;
             this.disableNavigation = params.disableNavigation;
+            this.markerIcon = params.markerIcon;
+            this.markerIcons = params.markerIcons;
         },
         /**
          * Style the map
@@ -293,29 +296,59 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
             return result;
         },
         /**
+         * Compute marker icon
+         * @param {any} record
+         * @return string
+         */
+        _getIcon: function (record) {
+            if (this.markerIcon) {
+                return this.markerIcon;
+            }
+
+            if (!this.markerIcons) {
+                return 'location-dot';
+            }
+
+            let icon = null;
+            let expression = null;
+            let result = null;
+
+            for (let i = 0; i < this.markerIcons.length; i++) {
+                icon = this.markerIcons[i][0];
+                expression = this.markerIcons[i][1];
+                if (py.PY_isTrue(py.evaluate(expression, record.evalContext))) {
+                    result = icon;
+                    break;
+                }
+            }
+            return result;
+        },
+        /**
          * Create marker
          * @param {any} latLng: instance of google LatLng
          * @param {any} record
          * @param {string} color
          */
-        _createMarker: function (latLng, record, color) {
+        _createMarker: function (latLng, record, color, markerIcon) {
+            markerIcon = markerIcon || '';
+            const strokeColor = '#2b2b2b';
+            const iconFa = FontAwesomeSVG.getIcon(markerIcon);
             const options = {
                 position: latLng,
                 map: this.gmap,
                 optimized: true,
                 _odooRecord: record,
                 _odooMarkerColor: color,
+                _defaultStrokeColor: strokeColor,
                 icon: {
-                    path: GoogleMapUtils.MARKER_ICON_SVG_PATH,
+                    path: iconFa[4],
                     fillColor: color,
-                    fillOpacity: 1,
-                    strokeWeight: 0.75,
-                    strokeColor: '#444',
-                    scale: 0.06,
-                    anchor: new google.maps.Point(
-                        GoogleMapUtils.MARKER_ICON_WIDTH / 2,
-                        GoogleMapUtils.MARKER_ICON_HEIGHT
-                    ),
+                    fillOpacity: 0.95,
+                    strokeWeight: 1,
+                    strokeColor: strokeColor,
+                    // scale: 0.06,
+                    scale: 0.07,
+                    anchor: new google.maps.Point(iconFa[0] / 2, iconFa[1]),
                 },
             };
             const title = this.fieldTitle ? record.data[this.fieldTitle] : record.data.name || record.data.display_name;
@@ -444,14 +477,15 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
          * @param {Object} record
          */
         _renderMarkers: function () {
-            let color, latLng, lat, lng, marker;
+            let color, latLng, lat, lng, marker, markerIcon;
             this.state.data.forEach((record) => {
                 color = this._getIconColor(record);
+                markerIcon = this._getIcon(record);
                 lat = typeof record.data[this.fieldLat] === 'number' ? record.data[this.fieldLat] : 0.0;
                 lng = typeof record.data[this.fieldLng] === 'number' ? record.data[this.fieldLng] : 0.0;
                 if (lat !== 0.0 || lng !== 0.0) {
                     latLng = new google.maps.LatLng(lat, lng);
-                    marker = this._createMarker(latLng, record, color);
+                    marker = this._createMarker(latLng, record, color, markerIcon);
                     this._onHandleMarker(marker);
                 }
             });
@@ -497,6 +531,9 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
                 const markers = this.getMarkers();
                 if (!this.markerCluster) {
                     this.markerCluster = new markerClusterer.MarkerClusterer({ map: this.gmap, markers });
+                    this.markerCluster.addListener('click', () => {
+                        this.infoWindow.close();
+                    });
                 } else {
                     this.markerCluster.addMarkers(markers);
                 }

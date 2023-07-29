@@ -16,12 +16,12 @@ odoo.define('google_marker_icon_picker.GoogleMapRenderer', function (require) {
          * @param {*} color
          * @returns GoogleMarker
          */
-        _createMarker: function (latLng, record, color) {
+        _createMarker: function (latLng, record, color, markerIcon) {
             color =
                 (typeof record.data[this.fieldMarkerColor] !== 'undefined'
                     ? record.data[this.fieldMarkerColor]
                     : color) || 'red';
-            return this._super(latLng, record, color);
+            return this._super(latLng, record, color, markerIcon);
         },
     });
 });

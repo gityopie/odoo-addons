@@ -67,10 +67,10 @@
                     <t t-set="marker_color" t-value="widget.getMarkerColor(record)"/>
                     <t t-if="has_geolocation">
                         <li class="list-group-item d-flex justify-content-between align-items-center pb-1 pt-1">
-                            <a href="#" class="flex-grow-1 o_map_sidebar_record" t-att-data-id="record.id" t-att-data-res-id="record.res_id" t-attf-style="color: #{marker_color};">
-                                <span class="title" t-esc="title"/>
+                            <a href="#" class="flex-grow-1 o_map_sidebar_record" t-att-data-id="record.id" t-att-data-res-id="record.res_id">
+                                <span t-esc="title"/>
                                 <br/>
-                                <i class="fa fa-map-marker"></i>
+                                <i class="fa fa-map-marker" t-attf-style="color: #{marker_color};"></i>
                                 <t t-if="subtitle">
                                     <small class="text-muted" t-esc="subtitle"/>
                                 </t>
@@ -82,8 +82,8 @@
                     </t>
                     <t t-else="">
                         <li class="list-group-item d-flex justify-content-between align-items-center pb-1 pt-1 disabled">
-                            <a href="#" class="flex-grow-1 o_map_sidebar_record" data-toggle="tooltip" title="No geolocation" t-att-data-id="record.id" t-attf-style="color: #{marker_color};">
-                                <span class="title" t-esc="title"/>
+                            <a href="#" class="flex-grow-1 o_map_sidebar_record" data-toggle="tooltip" title="No geolocation" t-att-data-id="record.id">
+                                <span t-esc="title"/>
                                 <t t-if="subtitle">
                                     <br/>
                                     <small class="text-muted" t-esc="subtitle"/>
