@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Google Marker Icon Picker',
-    'version': '14.0.1.0.0',
+    'version': '14.0.2.0.0',
     'author': 'Yopi Angi',
     'license': 'AGPL-3',
     'maintainer': 'Yopi Angi<yopiangi@gmail.com>',

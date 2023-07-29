@@ -62,6 +62,9 @@ odoo.define('web_google_maps.GoogleMapView', function (require) {
         },
         set_property_geometry: function (attrs) {
             const colors = Utils.parseMarkersColor(attrs.colors);
+            const markerIcons = Utils.parseMarkersColor(attrs.marker_icons);
+            this.rendererParams.markerIcon = attrs.marker_icon;
+            this.rendererParams.markerIcons = markerIcons;
             this.rendererParams.markerColor = attrs.color;
             this.rendererParams.markerColors = colors;
             this.rendererParams.fieldLat = attrs.lat;
