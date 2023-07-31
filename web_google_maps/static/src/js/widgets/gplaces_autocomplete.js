@@ -4,9 +4,11 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
     const BasicFields = require('web.basic_fields');
     const core = require('web.core');
     const Utils = require('web_google_maps.Utils');
+    const GoogleMapLoaderUtil = require('web_google_maps.GoogleMapLoaderUtil');
+
     const _t = core._t;
 
-    const GplaceAutocomplete = BasicFields.InputField.extend({
+    const GplaceAutocomplete = BasicFields.InputField.extend(GoogleMapLoaderUtil, {
         tagName: 'span',
         supportedFieldTypes: ['char'],
         /**
@@ -100,9 +102,15 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
                 }
 
                 this.target_fields = this.getFillFieldsType();
-                const self = await this.initGplacesAutocomplete();
-                self._geolocate();
+                // async function to load Google script
+                this.handleGoogleMapLoader();
             }
+        },
+        /**
+         * @override
+         */
+        initializeGoogle: function () {
+            this.initGplacesAutocomplete().then(() => this._geolocate.bind(this));
         },
         /**
          * Geolocate
@@ -452,7 +460,7 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
          * @override
          */
         destroy: function () {
-            if (this.places_autocomplete) {
+            if (this.places_autocomplete && typeof google !== 'undefined') {
                 google.maps.event.clearInstanceListeners(this.places_autocomplete);
             }
             return this._super();
@@ -702,7 +710,7 @@ odoo.define('web_google_maps.GplaceAutocompleteFields', function (require) {
          * @override
          */
         destroy: function () {
-            if (this.places_autocomplete) {
+            if (this.places_autocomplete && typeof google !== 'undefined') {
                 google.maps.event.clearInstanceListeners(this.places_autocomplete);
             }
             return this._super();

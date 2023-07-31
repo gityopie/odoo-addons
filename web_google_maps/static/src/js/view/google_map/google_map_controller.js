@@ -230,7 +230,6 @@ odoo.define('web_google_maps.GoogleMapController', function (require) {
         _onEditMarker: function () {
             this.is_marker_edit = true;
             this._updateMarkerButtons();
-            this.renderer.setMarkerDraggable();
         },
         _prepareGeolocationValues: function (marker) {
             return {
