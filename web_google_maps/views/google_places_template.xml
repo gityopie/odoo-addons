@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- This assets is no longer useful, replaced by assets_gmaps_loader -->
     <template id="assets_gmaps" name="Google Maps Assets">
         <t t-set="google_maps_api_key" t-value="request.env['ir.config_parameter'].sudo().get_param('web_google_maps.api_key')"/>
         <t t-set="google_maps_lang_localization" t-value="request.env['ir.config_parameter'].sudo().get_param('web_google_maps.lang_localization')"/>
@@ -13,9 +14,13 @@
         </t>
         <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
     </template>
+    <template id="assets_gmaps_loader" name="Google Maps Assets">
+        <script src="https://unpkg.com/@googlemaps/js-api-loader@1.16.2/dist/index.min.js"></script>
+        <script src="https://unpkg.com/@googlemaps/markerclusterer@2.4.0/dist/index.min.js"></script>
+    </template>
     <template id="webclient_bootstrap" name="webclient_bootstrap gmaps" inherit_id="web.webclient_bootstrap">
         <xpath expr="//t[@t-call-assets='web.assets_common']" position="before">
-            <t t-call="web_google_maps.assets_gmaps"/>
+            <t t-call="web_google_maps.assets_gmaps_loader"/>
         </xpath>
     </template>
 </odoo>

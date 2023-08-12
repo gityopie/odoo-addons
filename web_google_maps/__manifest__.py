@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Web Google Maps',
-    'version': '15.0.1.0.4',
+    'version': '15.0.2.0.4',
     'author': 'Yopi Angi',
     'license': 'AGPL-3',
     'maintainer': 'Yopi Angi<yopiangi@gmail.com>',
@@ -33,6 +33,8 @@ form view, provide autocomplete feature when typing address of partner
         'web.assets_backend': [
             '/web_google_maps/static/src/scss/view_google_map.scss',
             '/web_google_maps/static/src/scss/view_google_map_mobile.scss',
+            '/web_google_maps/static/src/js/view/google_map/utils.js',
+            '/web_google_maps/static/src/js/view/google_map/fontawesome.js',
             '/web_google_maps/static/src/js/view/google_map/google_map_sidebar.js',
             '/web_google_maps/static/src/js/view/google_map/google_map_model.js',
             '/web_google_maps/static/src/js/view/google_map/google_map_controller.js',

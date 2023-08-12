@@ -1,9 +1,36 @@
 # Change Log
 
+## [15.0.2.0.4] - 2023-08-12
+### Added
+- Two new attributes `marker_icon` and `marker_icons` for the view `google_map`. Allows you to set predefined FontAwesome icon as marker. Check this link https://fontawesome.com/v6/search?o=r&m=free&s=solid for available icon that can be used. Please only use the icon name, for example: this icon https://fontawesome.com/icons/flag?f=classic&s=solid `fa-flag` then in the `marker_icon` attribute just use `flag`.
+    - `marker_icon`    
+    An icon for all markers in the `google_map`.
+    - `marker_icons`    
+    You can set different marker based on the certain condition given.    
+
+
+    Example:
+    1. `marker_icon`
+    ```xml
+        <google_map ... marker_icon="flag">
+            ...
+        </google_map>
+    ```
+    2. `marker_icons`
+    ```xml
+        <google_map ... marker_icons="person:company_type=='person';building:company_type=='company';">
+            ...
+        </google_map>
+    ```
+### Changed
+- Replaced custom (default) marker SVG with FontAwesome icon SVG https://fontawesome.com/v6/search?o=r&m=free&s=solid
+### Fixed
+
+
 ## [15.0.1.0.3] - 2022-12-20
 ### Added
 
-### Updated
+### Changed
 - Update clustermarkerer source
 ### Fixed
 - Fixed `google_map` view used inside `form` view

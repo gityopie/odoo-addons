@@ -4,7 +4,7 @@
         <field name="name">view.crm.leads.google_map</field>
         <field name="model">crm.lead</field>
         <field name="arch" type="xml">
-            <google_map string="Maps" lat="customer_latitude" lng="customer_longitude" color="orange">
+            <google_map string="Maps" lat="customer_latitude" lng="customer_longitude" color="blue" marker_icon="handshake">
                 <field name="customer_latitude"/>
                 <field name="customer_longitude"/>
                 <field name="contact_name"/>

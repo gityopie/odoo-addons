@@ -30,3 +30,27 @@ class Main(http.Controller):
             result['language'] = lang
 
         return result
+
+    @http.route('/web/google_maps_settings', type='json', auth='user')
+    def google_maps_settings(self):
+        IrParam = request.env['ir.config_parameter'].sudo()
+        api_key = IrParam.get_param('web_google_maps.api_key', default='')
+        lang = IrParam.get_param('web_google_maps.lang_localization', default='')
+        libraries = [
+            lib.strip()
+            for lib in IrParam.get_param(
+                'web_google_maps.libraries', default='geometry'
+            ).split(',')
+        ]
+        region = IrParam.get_param('web_google_maps.region_localization', default='')
+        theme = IrParam.get_param('web_google_maps.theme', default='default')
+        version = IrParam.get_param('web_google_maps.version', default='quarterly')
+
+        return {
+            'api_key': api_key,
+            'language': lang,
+            'libraries': libraries,
+            'region': region,
+            'theme': theme,
+            'version': version,
+        }
