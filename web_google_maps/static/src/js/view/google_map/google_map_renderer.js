@@ -311,6 +311,8 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
          * @param {any} latLng: instance of google LatLng
          * @param {any} record
          * @param {string} color
+         * @param {string} markerIcon: fontAwesome icon name
+         * @returns {object} Google marker instance
          */
         _createMarker: function (latLng, record, color, markerIcon) {
             markerIcon = markerIcon || '';
@@ -506,7 +508,7 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
          * Render google maps in edit mode by allow user to drag marker
          * Expected to render only one marker
          */
-        renderEditGoogleMap: function() {
+        renderEditGoogleMap: function () {
             // reset markers
             this.clearMarkers();
             // create instance of google maps
@@ -516,7 +518,7 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
             // set marker editable
             this.setMarkerDraggable();
             // center the map
-            this._map_center_geometry();
+            this._map_edit_center_geometry();
         },
         _initMarkerCluster: function () {
             if (!this.disableClusterMarker) {
@@ -527,6 +529,21 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
                 } else {
                     this.markerCluster.addMarkers(markers);
                 }
+            }
+        },
+        _map_edit_center_geometry: function() {
+            const markers = this.getMarkers();
+            if (markers.length) {
+                const markerPosition = markers[0].getPosition();
+                this.gmap.setCenter(markerPosition);
+                google.maps.event.addListenerOnce(this.gmap, 'idle', () => {
+                    google.maps.event.trigger(this.gmap, 'resize');
+                    if ( markerPosition.lat() === 0.0 && markerPosition.lng() === 0.0) {
+                        this.gmap.setZoom(2);
+                    } else {
+                        this.gmap.setZoom(17);
+                    }
+                });
             }
         },
         /**
@@ -575,7 +592,7 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
         disableMarkerDraggable: function () {
             const markers = this.getMarkers();
             if (markers.length) {
-                markers[0].setOptions({ draggable: false });
+                markers[0].setOptions({ draggable: false, animation: null });
                 if (this.editableMarkerDragEnd) {
                     google.maps.event.removeListener(this.editableMarkerDragEnd);
                 }

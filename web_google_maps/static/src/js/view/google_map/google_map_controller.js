@@ -252,10 +252,9 @@ odoo.define('web_google_maps.GoogleMapController', function (require) {
             }).then(() => {
                 this.is_marker_edit = false;
                 this.renderer.disableMarkerDraggable();
-                this.reload();
                 setTimeout(() => {
                     this.trigger_up('history_back');
-                }, 2000);
+                }, 500);
             });
         },
         _onButtonDiscardMarker: function (event) {
