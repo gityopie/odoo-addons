@@ -1,4 +1,16 @@
 # Change Log
+## [14.0.3.4.1] - 2023-08-20
+### Added
+- New attribute `icon_scale`, a config for setting the size of the marker icon (default value is `1`)
+    Example:
+    ```xml
+    <google_map icon_scale="0.5">
+        ...
+    </google_map>
+    ```
+### Changed
+### Fixed
+- 'Edit geolocation' button does not work
 ## [14.0.3.3.1] - 2023-07-29
 ### Added
 - Two new attributes `marker_icon` and `marker_icons` for the view `google_map`. Allows you to set predefined FontAwesome icon as marker. Check this link https://fontawesome.com/v6/search?o=r&m=free&s=solid for available icon that can be used. Please only use the icon name, for example: this icon https://fontawesome.com/icons/flag?f=classic&s=solid `fa-flag` then in the `marker_icon` attribute just use `flag`.
