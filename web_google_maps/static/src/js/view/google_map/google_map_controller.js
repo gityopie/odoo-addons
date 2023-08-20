@@ -218,7 +218,7 @@ odoo.define('web_google_maps.GoogleMapController', function (require) {
         _onButtonMapCenter: function (event) {
             event.stopPropagation();
             const func_name = '_map_center_' + this.renderer.mapMode;
-            this.renderer[func_name].call(this.renderer, true);
+            this.renderer[func_name].call(this.renderer);
         },
         _onButtonNew: function (event) {
             event.stopPropagation();
@@ -230,33 +230,32 @@ odoo.define('web_google_maps.GoogleMapController', function (require) {
         _onEditMarker: function () {
             this.is_marker_edit = true;
             this._updateMarkerButtons();
-            this.renderer.setMarkerDraggable();
+        },
+        _prepareGeolocationValues: function (marker) {
+            return {
+                [this.renderer.fieldLat]: marker.lat(),
+                [this.renderer.fieldLng]: marker.lng(),
+            };
         },
         _onButtonSaveMarker: function (event) {
             event.stopPropagation();
             const record = this.model.get(this.handle);
             const markers = this.renderer.getMarkers();
             const marker_position = markers[0].getPosition();
-            this.is_marker_edit = false;
 
             this._updateMarkerButtons();
-
+            const values = this._prepareGeolocationValues(marker_position);
             return this._rpc({
                 model: this.modelName,
                 method: 'write',
-                args: [
-                    record.res_ids,
-                    {
-                        [this.renderer.fieldLat]: marker_position.lat(),
-                        [this.renderer.fieldLng]: marker_position.lng(),
-                    },
-                ],
+                args: [record.res_ids, values],
             }).then(() => {
+                this.is_marker_edit = false;
                 this.renderer.disableMarkerDraggable();
                 this.reload();
                 setTimeout(() => {
                     this.trigger_up('history_back');
-                }, 2000);
+                }, 500);
             });
         },
         _onButtonDiscardMarker: function (event) {

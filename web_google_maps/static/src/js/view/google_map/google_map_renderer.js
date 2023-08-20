@@ -195,6 +195,7 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
             this.fieldLng = params.fieldLng;
             this.markerColor = params.markerColor;
             this.markerColors = params.markerColors;
+            this.markerIconScale = params.markerIconScale;
             this.disableClusterMarker = params.disableClusterMarker;
             this.sidebarRender = null;
             this.googleMapStyle = params.googleMapStyle;
@@ -333,6 +334,7 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
             markerIcon = markerIcon || '';
             const strokeColor = '#2b2b2b';
             const iconFa = FontAwesomeSVG.getIcon(markerIcon);
+            const scale = this.markerIconScale || 1.0;
             const options = {
                 position: latLng,
                 map: this.gmap,
@@ -346,8 +348,7 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
                     fillOpacity: 0.95,
                     strokeWeight: 1,
                     strokeColor: strokeColor,
-                    // scale: 0.06,
-                    scale: 0.07,
+                    scale: 0.07 * scale,
                     anchor: new google.maps.Point(iconFa[0] / 2, iconFa[1]),
                 },
             };
@@ -500,7 +501,11 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
          * @override
          */
         initializeGoogle: function () {
-            this.renderGoogleMap();
+            if (this.state.context.edit_geo_field) {
+                this.renderEditGoogleMap();
+            } else {
+                this.renderGoogleMap();
+            }
         },
         /**
          * @override
@@ -526,6 +531,23 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
             // load sidebar
             this._renderSidebar();
         },
+
+        /**
+         * Render google maps in edit mode by allow user to drag marker
+         * Expected to render only one marker
+         */
+        renderEditGoogleMap: function () {
+            // reset markers
+            this.clearMarkers();
+            // create instance of google maps
+            this._initMap();
+            // create markers
+            this._renderMarkers();
+            // set marker editable
+            this.setMarkerDraggable();
+            // center the map
+            this._map_edit_center_geometry();
+        },
         _initMarkerCluster: function () {
             if (!this.disableClusterMarker) {
                 const markers = this.getMarkers();
@@ -537,6 +559,21 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
                 } else {
                     this.markerCluster.addMarkers(markers);
                 }
+            }
+        },
+        _map_edit_center_geometry: function() {
+            const markers = this.getMarkers();
+            if (markers.length) {
+                const markerPosition = markers[0].getPosition();
+                this.gmap.setCenter(markerPosition);
+                google.maps.event.addListenerOnce(this.gmap, 'idle', () => {
+                    google.maps.event.trigger(this.gmap, 'resize');
+                    if ( markerPosition.lat() === 0.0 && markerPosition.lng() === 0.0) {
+                        this.gmap.setZoom(2);
+                    } else {
+                        this.gmap.setZoom(17);
+                    }
+                });
             }
         },
         /**
@@ -572,6 +609,7 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
                 let record = this.state.data[0];
                 let color = this._getIconColor(record);
                 editableMarker = this._createMarker(latLng, record, color);
+                this.markers.push(editableMarker);
             } else {
                 editableMarker = markers[0];
             }
@@ -580,21 +618,25 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
                 draggable: true,
                 animation: google.maps.Animation.BOUNCE,
             });
+            this.$right_sidebar.toggleClass('open');
             google.maps.event.addListenerOnce(this.gmap, 'idle', () => {
                 google.maps.event.trigger(this.gmap, 'resize');
+                this.gmap.setCenter(editableMarker.getPosition());
             });
             google.maps.event.addListenerOnce(editableMarker, 'dragend', () => {
                 this.gmap.setCenter(editableMarker.getPosition());
             });
-            this.editableMarkerDragEnd2 = google.maps.event.addListener(editableMarker, 'dragend', () => {
+            this.editableMarkerDragEnd = google.maps.event.addListener(editableMarker, 'dragend', () => {
                 this.gmap.panTo(editableMarker.getPosition());
             });
         },
         disableMarkerDraggable: function () {
             const markers = this.getMarkers();
-            markers[0].setOptions({ draggable: false });
-            if (this.editableMarkerDragEnd2) {
-                google.maps.event.removeListener(this.editableMarkerDragEnd2);
+            if (markers.length) {
+                markers[0].setOptions({ draggable: false, animation: null });
+                if (this.editableMarkerDragEnd) {
+                    google.maps.event.removeListener(this.editableMarkerDragEnd);
+                }
             }
         },
         /**

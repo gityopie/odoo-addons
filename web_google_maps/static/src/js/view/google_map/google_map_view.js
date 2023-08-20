@@ -67,6 +67,12 @@ odoo.define('web_google_maps.GoogleMapView', function (require) {
             this.rendererParams.markerIcons = markerIcons;
             this.rendererParams.markerColor = attrs.color;
             this.rendererParams.markerColors = colors;
+
+            let iconScale = 1;
+            if (attrs.icon_scale) {
+                iconScale = parseFloat(attrs.icon_scale)
+            }
+            this.rendererParams.markerIconScale = isNaN(iconScale) ? 1 : iconScale;
             this.rendererParams.fieldLat = attrs.lat;
             this.rendererParams.fieldLng = attrs.lng;
             this.rendererParams.gestureHandling = attrs.gesture_handling;
