@@ -53,6 +53,11 @@ odoo.define('web_google_maps.relational_fields', function (require) {
             if (arch.attrs.marker_icons) {
                 markerIcons = Utils.parseMarkersColor(arch.attrs.marker_icons);
             }
+            let iconScale = 1;
+            if (arch.attrs.icon_scale) {
+                iconScale = parseFloat(arch.attrs.icon_scale)
+            }
+            this.rendererParams.markerIconScale = isNaN(iconScale) ? 1 : iconScale;
             const Renderer = this._getRenderer();
             return new Renderer(this, this.value, {
                 arch: arch,
@@ -73,6 +78,7 @@ odoo.define('web_google_maps.relational_fields', function (require) {
                 sidebarSubtitle: arch.attrs.sidebar_subtitle,
                 markerIcon: arch.attrs.marker_icon,
                 markerIcons: markerIcons,
+                markerIconScale: isNaN(iconScale) ? 1 : iconScale,
             });
         },
         /**
