@@ -274,12 +274,18 @@ odoo.define('web_google_maps.GoogleMapRenderer', function (require) {
          * @return string
          */
         _getIconColor: function (record) {
-            if (this.markerColor) {
-                return this.markerColor;
-            }
-
-            if (!this.markerColors) {
-                return this.defaultMarkerColor;
+            const markerColor = this.markerColor
+            if (markerColor) {
+                const field = record.data[markerColor];
+                if (field && field.res_id) {
+                    const value = field.res_id;
+                    const color_index = _.isArray(value) ? value[0] % 18 : value % 18;
+                    return MARKER_COLORS[color_index];
+                } else if (typeof markerColor === 'string') {
+                    return markerColor;
+                } else {
+                    return this.defaultMarkerColor;
+                }
             }
 
             let color = null;

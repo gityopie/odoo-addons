@@ -111,7 +111,8 @@ There are two attributes:
  - `colors`     
  Allow you to display different marker color to represent a record on map
  - `color`    
- One marker color for all records on map
+ One marker color for all records on map if a color is specified or different colors per group if a field is defined
+   (ex. partner_id or project_id)
 
 
 Example:
@@ -123,6 +124,11 @@ Example:
 
     <!-- color -->
     <google_map string="Map" lat="partner_latitude" lng="partner_longitude" color="orange">
+        ...
+    </google_map>
+
+    <!-- color field -->
+    <google_map string="Map" lat="partner_latitude" lng="partner_longitude" color="partner_id">
         ...
     </google_map>
 ```
